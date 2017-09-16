@@ -1,0 +1,822 @@
+/*
+ *  This file is part of Pulsar CMS
+ *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+html {
+	height: 100%;
+	width: 100%;
+	font-size: 10px;
+	font-family: DejaVu Sans;
+}
+body {
+	height: 100%;
+	width: 100%;
+	background: #e8e8e8;
+}
+*,
+input {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: #111;
+	font-size: 1.1rem;
+	line-height: 1.8rem;
+	box-sizing: border-box;
+}
+a {
+	cursor: pointer;
+	text-decoration: none;
+	color: #127899;
+}
+h1 {
+	font-size: 2.6rem;
+	padding-bottom: 2.0rem;
+}
+h2 {
+	font-size: 2.2rem;
+	padding-bottom: 1.6rem;
+}
+h3 {
+	font-size: 1.8rem;
+	padding-bottom: 1.2rem;
+}
+h4 {
+	font-size: 1.6rem;
+	padding-bottom: 1rem;
+}
+h5 {
+	font-size: 1.4rem;
+	padding-bottom: 0.8rem;
+}
+h6 {
+	font-size: 1.2rem;
+	padding-bottom: 0.6rem;
+}
+ul li {
+	margin-left: 2rem;
+}
+label {
+	user-select: none;
+}
+
+/*
+======================================================================================================================
+------------------------------------------------------------------------------------------------------------------
+	STANDARDOWA TABELA
+------------------------------------------------------------------------------------------------------------------
+======================================================================================================================
+*/
+
+table {
+	column-gap: 0;
+	border-spacing: 0;
+	border-spacing: 0;
+}
+
+table tr th {
+	text-align: left;
+	padding: 0.3rem 0.6rem;
+	border-bottom: 0.1rem #ccc solid;
+	color: #127899;
+	font-size: 1rem;
+	text-transform: uppercase;
+}
+table tr td {
+	border-bottom: 0.1rem #ccc solid;
+	padding: 0.3rem 0.6rem;
+	cursor: default;
+}
+table.form tr td {
+	border-color: #ddd;
+	padding: 0.8rem;
+}
+table tr:last-child td {
+	border-bottom: 0;
+}
+table.zebra tr:nth-child(even) td {
+	background: #f4f4f4;
+}
+table.zebra tr:hover td {
+	background: #e0ecf1;
+}
+table tr th.identity {
+	width: 4rem;
+}
+table tr td .fa {
+	font-size: 1.4rem;
+}
+table tr td .fa {
+	padding-left: 0.3rem;
+	padding-right: 0.3rem;
+}
+table tr.noborder td {
+	border-bottom: 0 !important;
+}
+
+/*
+======================================================================================================================
+------------------------------------------------------------------------------------------------------------------
+	POLA TEKSTOWE
+------------------------------------------------------------------------------------------------------------------
+======================================================================================================================
+*/
+
+input[type=text], input[type=password], .textbox {
+	padding: 0.3rem 0.6rem;
+	min-width: 10rem;
+	background: transparent;
+	border: 0.1rem #999 solid;
+	background: #fff;
+}
+input[type=text]:focus, input[type=password]:focus, .textbox:focus {
+	border-color: #127899;
+	outline: 0;
+}
+input[type=text].fa-icon, input[type=password].fa-icon, .textbox.fa-icon {
+	padding-left: 2.6rem;
+}
+
+/*
+======================================================================================================================
+------------------------------------------------------------------------------------------------------------------
+	PRZYCISKI WYBORU
+------------------------------------------------------------------------------------------------------------------
+======================================================================================================================
+*/
+
+.checkbox input[type=checkbox] {
+	z-index: -1;
+	opacity: 0;
+	position: absolute;
+	visibility: none;
+	margin-top: 0.2rem;
+}
+.checkbox span {
+	width: 1.4rem;
+	height: 1.4rem;
+	margin-top: 0.2rem;
+	margin-right: 0.8rem;
+	border: 0.1rem #999 solid;
+	background: #fff;
+	font: normal normal normal 1.1rem FontAwesome;
+	text-rendering: auto;
+	color: #333;
+	line-height: 1.2rem !important;
+	text-align: center;
+	vertical-align: middle;
+}
+.checkbox.focused span {
+	border-color: #127899;
+}
+.checkbox.checked span:before {
+	content: "\f00c";
+}
+
+/*
+======================================================================================================================
+------------------------------------------------------------------------------------------------------------------
+	PRZYCISKI W KOLUMNIE
+------------------------------------------------------------------------------------------------------------------
+======================================================================================================================
+*/
+
+.tab-control {
+	list-style: none;
+}
+
+.tab-control li {
+	padding: 0 0.8rem;
+	margin-left: 0;
+	cursor: pointer;
+	line-height: 2rem;
+	user-select: none;
+}
+
+.tab-control li:hover {
+	background: #ccc;
+}
+
+.tab-control li.selected {
+	background: #222;
+	color: #fff;
+	cursor: default;
+}
+
+/*
+======================================================================================================================
+------------------------------------------------------------------------------------------------------------------
+	PRZYCISKI
+------------------------------------------------------------------------------------------------------------------
+======================================================================================================================
+*/
+
+input[type=button], input[type=submit], input[type=reset], .button, button {
+	padding: 0.3rem 1.4rem;
+	background: #127899;
+	border: 0.1rem #127899 solid;
+	color: #fff;
+	cursor: pointer;
+	font-size: 1rem;
+	text-transform: uppercase;
+}
+.button .fa, button .fa {
+	font-size: 1.4rem;
+	color: inherit;
+	margin-right: 0.8rem;
+	border-right: 0.1rem #fff solid;
+	border-color: inherit;
+	padding-right: 0.8rem;
+	vertical-align: middle;
+}
+input[type=button]:focus, input[type=submit]:focus, input[type=reset]:focus, .button:focus, button:focus,
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, .button:hover, button:hover {
+	background: #1A8BB2;
+	outline: 0;
+}
+.button.red, button.red {
+	background: #c83737;
+	border-color: #982020;
+}
+.button.red:hover, button.red:hover,
+.button.red:focus, button.red:focus {
+	background: #dc4343;
+	border-color: #a92929;
+}
+.button.green, button.green {
+	background: #3e8c26;
+	border-color: #2c6819;
+}
+.button.green:hover, button.green:hover,
+.button.green:focus, button.green:focus {
+	background: #51a038;
+	border-color: #387925;
+}
+.button.simple, button.simple {
+	background-color: transparent;
+	border: none;
+	padding: 0 1rem;
+	text-transform: none;
+	font-size: 1.1rem;
+}
+.button.simple:hover, button.simple:hover 
+.button.simple:focus, button.simple:focus {
+	background: #ddd;
+}
+.button-container .button .fa, button .fa {
+	border-right: 0;
+	padding: 0 0.5rem 0 0;
+}
+
+/*
+======================================================================================================================
+------------------------------------------------------------------------------------------------------------------
+	PANEL LOGOWANIA
+------------------------------------------------------------------------------------------------------------------
+======================================================================================================================
+*/
+
+#login-logo {
+	margin-top: 1.6rem;
+}
+#login-panel {
+	background: #fff;
+	padding: 1.6rem;
+	margin-top: 1.6rem;
+	border: 1px #a4a4a4 solid;
+}
+#login-panel .message {
+	margin-bottom: 0.7rem;
+}
+
+/*
+======================================================================================================================
+------------------------------------------------------------------------------------------------------------------
+	NAGŁÓWEK
+------------------------------------------------------------------------------------------------------------------
+======================================================================================================================
+*/
+
+#header {
+	background: #222;
+	font-size: 0;
+	line-height: 0;
+	position: relative;
+}
+#header svg {
+	margin: 0.8rem;
+}
+#header h1 {
+	font-size: 2.4rem;
+	line-height: 2.8rem;
+	color: #eaeaea;
+	padding-bottom: 0;
+	font-weight: bold;
+}
+#header h2 {
+	font-size: 1rem;
+	line-height: 1rem;
+	color: #eaeaea;
+	font-weight: normal;
+	font-style: italic;
+	padding-bottom: 0;
+}
+#version-info {
+	font-size: 1rem;
+	margin-bottom: 1.2em;
+	margin-left: 0.8em;
+	color: #777;
+}
+
+/*
+======================================================================================================================
+------------------------------------------------------------------------------------------------------------------
+	MENU
+------------------------------------------------------------------------------------------------------------------
+======================================================================================================================
+*/
+
+#navigation {
+	margin-left: 3rem;
+}
+#navigation aside {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+}
+#navigation aside p, #navigation aside a {
+	color: #fff;
+	padding: 0.2rem 0.8rem;
+	font-size: 1.2rem;
+	line-height: 2.4rem;
+}
+#navigation aside p {
+	padding-right: 2.4rem;
+}
+#navigation aside p * {
+	color: #cacaca;
+}
+#navigation aside a:hover {
+	color: #fff;
+	background: #444;
+}
+#navigation aside a.fa {
+	font-size: 1.4rem;
+}
+#navigation nav * {
+	font-size: 1rem;
+	line-height: 2.4rem;
+	text-transform: uppercase;
+}
+#navigation nav {
+	font-size: 0;
+	line-height: 0;
+}
+#navigation nav .menu-position {
+	color: #fff;
+	padding: 0.2rem 0.8rem;
+	display: inline-block;
+	position: relative;
+	cursor: pointer;
+}
+#navigation nav .menu-position:hover {
+	background: #444;
+	color: #fff;
+}
+#navigation nav .menu-position .submenu {
+	display: none;
+	position: absolute;
+	top: 2.8rem;
+	left: 0;
+	background: #fff;
+	list-style: none;
+	border: 1px #1a1a1a solid;
+	margin-left: -1px;
+	min-width: 18rem;
+	padding: 0;
+}
+#navigation nav .menu-position:hover .submenu {
+	display: block;
+	padding: 1px;
+}
+#navigation nav .menu-position .submenu li {
+	margin: 0;
+	position: relative;
+	background: inherit;
+}
+#navigation nav .menu-position .submenu li .menu-icon {
+	background: #eaeaea;
+	height: 2.4rem;
+	font-size: 1.2rem;
+	border-right: 1px #aaa solid;
+	width: 2.4rem;
+	text-align: center;
+	vertical-align: middle;
+	color: #111;
+}
+#navigation nav .menu-position .submenu .separator .menu-icon {
+	height: 1px;
+	display: block;
+	position: absolute;
+	background: #eaeaea;
+}
+#navigation nav .menu-position .submenu .separator .menu-caption {
+	background: #bbb;
+	display: block;
+	height: 1px;
+}
+#navigation nav .menu-position .submenu li .menu-caption {
+	padding: 0 1.0rem;
+	display: inline-block;
+	color: #111;
+}
+#navigation nav .menu-position .submenu li:hover {
+	background: #e4e4e4;
+	color: #000;
+}
+#navigation nav .menu-position .submenu li:not(.separator):hover .menu-icon {
+	font-style: normal;
+	background: #ccc;
+	color: #000;
+}
+
+/*
+======================================================================================================================
+------------------------------------------------------------------------------------------------------------------
+	PANEL BOCZNY
+------------------------------------------------------------------------------------------------------------------
+======================================================================================================================
+*/
+
+.menu-slider {
+	width: 0.8rem;
+	font-size: 1.4rem;
+	text-align: center;
+	border-left: 1px #bbb solid;
+	border-right: 1px #bbb solid;
+	background: #dadada;
+}
+
+/*
+======================================================================================================================
+------------------------------------------------------------------------------------------------------------------
+	NAWIGACJA OKRUSZKOWA
+------------------------------------------------------------------------------------------------------------------
+======================================================================================================================
+*/
+
+.breadcrumb * {
+	color: #333;
+}
+.breadcrumb {
+	border-bottom: 1px #bbb solid;
+	background: #eee;
+	padding: 0 0 0 1.2rem;
+	font-size: 0;
+	line-height: 0;
+	cursor: default;
+}
+.breadcrumb.bottom {
+	border-top: 1px #b4b4b4 solid;
+	border-bottom: 0;
+}
+.breadcrumb p,
+.breadcrumb i,
+.breadcrumb a {
+	line-height: 3rem;
+}
+.breadcrumb .fa:hover {
+	background: #d4d4d4;
+}
+.breadcrumb .fa {
+	font-size: 1.4rem;
+	line-height: 3rem;
+	padding: 0 1.0rem;
+	margin: 0;
+	cursor: pointer;
+}
+.breadcrumb p.title {
+	font-weight: bold !important;
+}
+.breadcrumb.bottom .flag-switcher {
+	padding: 0 1rem;
+}
+.breadcrumb p.title a:hover {
+	color: #127899;
+}
+.breadcrumb p.title .raquo:last-child {
+	display: none;
+}
+
+/*
+======================================================================================================================
+------------------------------------------------------------------------------------------------------------------
+	??????
+------------------------------------------------------------------------------------------------------------------
+======================================================================================================================
+*/
+
+.form-row {
+	margin-bottom: 1rem;
+	border-bottom: 1px #cacaca solid;
+	padding-bottom: 1rem;
+}
+.form-row .description {
+	margin-top: 0.3rem;
+}
+
+
+.container {
+	padding: 1rem;
+	overflow: auto;
+}
+.hasoptions {
+	padding-right: 1rem;
+}
+#optionsbar header h5 {
+	border-bottom: 1px #cacaca solid;
+	font-weight: bold;
+	font-size: 1.2rem;
+	margin-bottom: 0.8rem;
+	padding-bottom: 0.4rem;
+	cursor: default;
+}
+#optionsbar section {
+	margin-bottom: 0.8rem;
+}
+#optionsbar header h5, #optionsbar header h5 i {
+	color: #127899;
+}
+#optionsbar h6 {
+	padding: 0.4rem;
+	padding-left: 0;
+	margin-bottom: 0;
+	margin-top: 0;
+}
+
+/* 
+ ===========================================================================================================
+	SZEROKOŚCI / MARGINESY / WCIĘCIA
+ ===========================================================================================================
+ */
+
+.inline-block {
+	display: inline-block;
+}
+.mt1 {
+	margin-top: 0.1rem !important;
+}
+.mt2 {
+	margin-top: 0.2rem !important;
+}
+.mt3 {
+	margin-top: 0.3rem !important;
+}
+.mt5 {
+	margin-top: 0.5rem !important;
+}
+.mr02 {
+	margin-right: 0.2rem !important;
+}
+.mr05 {
+	margin-right: 0.5rem !important;
+}
+.mb5 {
+	margin-bottom: 0.5rem !important;
+}
+.mb7 {
+	margin-bottom: 0.7rem !important;
+}
+.mb10 {
+	margin-bottom: 1rem !important;
+}
+.mb12 {
+	margin-bottom: 1.2rem !important;
+}
+.h100p {
+	height: 100% !important;
+}
+.w100p {
+	width: 100% !important;
+}
+.w1p {
+	width: 1% !important;
+	white-space: nowrap;
+}
+.w10p {
+	width: 10% !important;
+}
+.w20p {
+	width: 20% !important;
+}
+.w30p {
+	width: 30% !important;
+}
+.w40p {
+	width: 40% !important;
+}
+.w50p {
+	width: 50% !important;
+}
+.w60p {
+	width: 60% !important;
+}
+.w70p {
+	width: 70% !important;
+}
+.cursor-pointer {
+	cursor: pointer !important;
+}
+.cursor-default {
+	cursor: default !important;
+}
+.font-normal {
+	font-size: 1rem;
+}
+.no-padding {
+	padding: 0 !important;
+}
+.no-margin {
+	margin: 0 !important;
+}
+.hidden {
+	display: none !important;
+}
+.text-center {
+	text-align: center;
+}
+.text-right {
+	text-align: right;
+}
+.fill-free {
+	flex: 1;
+}
+.box-center {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	align-items: center;
+}
+.items-vertical {
+	display: flex;
+	flex-direction: column;
+}
+.items-horizontal {
+	display: flex;
+	flex-direction: row;
+}
+.items-vertical-reverse {
+	display: flex;
+	flex-direction: column-reverse;
+}
+.items-horizontal-reverse {
+	display: flex;
+	flex-direction: row-reverse;
+}
+.items-center {
+	justify-content: center;
+}
+.items-bottom {
+	justify-content: flex-end;
+}
+.items-top {
+	justify-content: flex-start;
+}
+.input-row {
+	position: relative;
+}
+.fa.inside-input {
+	position: absolute;
+	top: 0.4rem;
+	left: 0.8rem;
+	cursor: text;
+	font-size: 1.2rem;
+	line-height: 1.8rem;
+	border: 1px transparent solid;
+	color: #6a6a6a;
+}
+.message.warning,
+.message.error {
+	background: #f4e59f;
+	border: 1px #c6b35b solid;
+	padding: 0.4rem 0.8rem;
+	color: #877314;
+}
+.message.error {
+	background: #f4cecb;
+	border-color: #c65454;
+	color: #932c2c;
+}
+.button-box {
+	margin-bottom: 1rem;
+}
+.button-box .button {
+	margin-right: 1rem;
+}
+.button-box .items-bottom .button {
+	margin-left: 1rem;
+	margin-right: 0.1rem;
+}
+
+.delete, .edit, .clone {
+	cursor: pointer;
+}
+span.delete:hover {
+	color: #c83737;
+}
+span.edit:hover {
+	color: #127899;
+}
+span.clone:hover {
+	color: #7e1c71;
+}
+
+.white-back {
+	background: #fff;
+}
+
+.lightgrey-back {
+	background: #f4f4f4;
+}
+
+.red {
+	color: #c83737;
+}
+.green {
+	color: #51a038;
+}
+.blue {
+	color: #127899;
+}
+.purple {
+	color: #a03394;
+}
+.dark {
+	color: #2c343b;
+}
+.grey {
+	color: #666;
+}
+.bold {
+	font-weight: bold;
+}
+.uppercase {
+	text-transform: uppercase;
+}
+
+.f0 {
+	font-size: 0;
+	line-height: 0;
+}
+.fright {
+	float: right;
+}
+.f14 {
+	font-size: 1.4rem !important;
+}
+.pointer {
+	cursor: pointer;
+}
+.hover-purple:hover {
+	color: #a03394;
+}
+.hover-red:hover {
+	color: #c83737;
+}
+
+.head-bar {
+	background: #f4f4f4;
+	border-bottom: 1px #ccc solid;
+	padding: 1rem 1.6rem;
+	margin-bottom: 0.6rem;
+}
+
+.head-bar.simple {
+	border-bottom: 0;
+}
+
+.head-bar h2 {
+	font-weight: bold;
+	padding: 0.2rem 0;
+}
+
+.description {
+	font-size: 1rem;
+	font-style: italic;
+	color: #666;
+}

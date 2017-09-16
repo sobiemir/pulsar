@@ -1,0 +1,24 @@
+{
+    "name": "pulsar.cms",
+    "version": "0.0.1",
+    "codename": "genesis",
+    "description": "Content Management System based on Phalcon",
+    "scripts": {
+        "postinstall": "node prepare.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/sobiemir/pulsar.git"
+    },
+    "author": "sobiemir",
+    "license": "GPL-3.0",
+    "bugs": {
+        "url": "https://pm.aculo.pl/projects/pulsar"
+    },
+    "homepage": "https://pulsar.aculo.pl",
+    "dependencies": {
+        "copyfiles": "^1.2.0",
+        "font-awesome": "^4.7.0",
+        "jquery": "^3.2.1"
+    }
+}

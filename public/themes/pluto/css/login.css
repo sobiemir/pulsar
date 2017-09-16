@@ -1,0 +1,208 @@
+/*
+ *  This file is part of Pulsar CMS
+ *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* 
+ ===========================================================================================================
+	Główne elementy strony
+ ===========================================================================================================
+ */
+
+html {
+	height: 100%;
+	width: 100%;
+	font-size: 10px;
+	font-family: DejaVu Sans;
+}
+body {
+	height: 100%;
+	width: 100%;
+	background: #eaeaea;
+}
+*,
+input {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: #3a3a3a;
+	font-size: 1.2rem;
+	line-height: 1.8rem;
+	box-sizing: border-box;
+}
+label {
+	user-select: none;
+}
+
+/* 
+ ===========================================================================================================
+	Kontrolki formularzy
+ ===========================================================================================================
+ */
+
+input[type=text], input[type=password], .textbox {
+	padding: 0.4rem 0.8rem;
+	min-width: 22rem;
+	background: #f4f4f4;
+	border: 1px #a4a4a4 solid;
+}
+input[type=text]:focus, input[type=password]:focus, .textbox:focus {
+	border-color: #13647F;
+	outline: 0;
+}
+input[type=text].fa-icon, input[type=password].fa-icon, .textbox.fa-icon {
+	padding-left: 2.8rem;
+}
+input[type=button], input[type=submit], input[type=reset], .button, button {
+	padding: 0.4rem 0.8rem;
+	background: #127899;
+	border: 1px #0E5066 solid;
+	color: #fafafa;
+	cursor: pointer;
+	font-size: 1rem;
+	text-transform: uppercase;
+}
+input[type=button]:focus, input[type=submit]:focus, input[type=reset]:focus, .button:focus, button:focus,
+input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, .button:hover, button:hover {
+	background: #1A8BB2;
+	border-color: #13647F;
+	outline: 0;
+}
+.fa.inside-input {
+	position: absolute;
+	top: 0.4rem;
+	left: 0.9rem;
+	cursor: text;
+	font-size: 1.2rem;
+	line-height: 1.8rem;
+	border: 1px transparent solid;
+	color: #6a6a6a;
+}
+
+/* 
+ ===========================================================================================================
+	Panel logowania
+ ===========================================================================================================
+ */
+
+#login-logo {
+	margin-top: 1.6rem;
+}
+#login-panel {
+	background: #fafafa;
+	padding: 1.6rem;
+	margin-top: 1.6rem;
+	border: 1px #a4a4a4 solid;
+}
+#login-panel .message {
+	margin-bottom: 0.7rem;
+}
+
+/* 
+ ===========================================================================================================
+	Marginesy i długości
+ ===========================================================================================================
+ */
+
+.mb7 {
+	margin-bottom: 0.7rem !important;
+}
+.h100p {
+	height: 100% !important;
+}
+.w100p {
+	width: 100% !important;
+}
+
+/* 
+ ===========================================================================================================
+	Układ
+ ===========================================================================================================
+ */
+
+.box-center {
+	width: 100%;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	align-items: center;
+}
+.items-vertical {
+	display: flex;
+	flex-direction: column;
+}
+.items-horizontal {
+	display: flex;
+	flex-direction: row;
+}
+.items-center {
+	justify-content: center;
+}
+.items-bottom {
+	justify-content: flex-end;
+}
+.items-top {
+	justify-content: flex-start;
+}
+.input-row {
+	position: relative;
+}
+
+/* 
+ ===========================================================================================================
+	Wiadomości
+ ===========================================================================================================
+ */
+
+.message.warning,
+.message.error {
+	background: #f4e59f;
+	border: 1px #c6b35b solid;
+	padding: 0.4rem 0.8rem;
+	color: #877314;
+}
+.message.error {
+	background: #f4cecb;
+	border-color: #c65454;
+	color: #932c2c;
+}
+
+/* 
+ ===========================================================================================================
+	Font Awesome
+ ===========================================================================================================
+ */
+
+@font-face {
+	font-family: 'FontAwesome';
+	src: url('../fonts/fontawesome-webfont.eot?v=4.6.3');
+	src: url('../fonts/fontawesome-webfont.eot?#iefix&v=4.6.3') format('embedded-opentype'), url('../fonts/fontawesome-webfont.woff2?v=4.6.3') format('woff2'), url('../fonts/fontawesome-webfont.woff?v=4.6.3') format('woff'), url('../fonts/fontawesome-webfont.ttf?v=4.6.3') format('truetype'), url('../fonts/fontawesome-webfont.svg?v=4.6.3#fontawesomeregular') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+.fa {
+	display: inline-block;
+	font: normal normal normal 1rem FontAwesome;
+	font-size: inherit;
+	text-rendering: auto;
+}
+.fa-user:before {
+	content: "\f007";
+}
+.fa-key:before {
+	content: "\f084";
+}
