@@ -8,23 +8,17 @@ namespace Pulsar\Model;
  *   / ___/ // / (_-</ _ `/ __/
  *  /_/   \_,_/_/___/\_,_/_/
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ *  This source file is subject to the New BSD License that is bundled
+ *  with this package in the file LICENSE.txt.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the New BSD License along with
+ *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
+
+use Phalcon\Mvc\Model\Resultset;
 
 class Language extends \Phalcon\Mvc\Model
 {
-
     /**
      *
      * @var string
@@ -76,6 +70,27 @@ class Language extends \Phalcon\Mvc\Model
     public $default_name;
 
     /**
+     * Lista języków utworzonych systemie.
+     */
+    protected static $_all_langs = [];
+
+    /**
+     * Aktualnie używany przez użytkownika język.
+     */
+    protected static $_curr_lang = null;
+
+    /**
+     * Lista języków dostępnych na stronie.
+     */
+    protected static $_front_langs = [];
+
+    /**
+     * Lista języków dostępnych dla panelu administratora.
+     */
+    protected static $_back_langs = [];
+
+
+    /**
      * Initialize method for model.
      */
     public function initialize()
@@ -83,8 +98,7 @@ class Language extends \Phalcon\Mvc\Model
         $this->hasMany(
             'id',
             '\Pulsar\Model\Menu',
-            'id_language',
-            ['alias' => 'menu']
+            'id_language'
         );
     }
 
@@ -104,9 +118,9 @@ class Language extends \Phalcon\Mvc\Model
      * @param mixed $parameters
      * @return Language[]
      */
-    public static function find($parameters = null)
+    public static function find( $parameters = null )
     {
-        return parent::find($parameters);
+        return parent::find( $parameters );
     }
 
     /**
@@ -115,9 +129,87 @@ class Language extends \Phalcon\Mvc\Model
      * @param mixed $parameters
      * @return Language
      */
-    public static function findFirst($parameters = null)
+    public static function findFirst( $parameters = null )
     {
-        return parent::findFirst($parameters);
+        return parent::findFirst( $parameters );
     }
 
+    public static function setLanguage( string $id ): void
+    {
+        if( empty(Language::$_curr_lang) )
+        {
+            Language::findAndStore( $id );
+            return;
+        }
+
+        if( Language::$_curr_lang->id != $id )
+        {
+            Language::$_curr_lang = reset( Language::$_all_langs );
+
+            foreach( Language::$all_langs as $lang )
+                if( $lang->id == $id )
+                    Language::$_curr_lang = $lang;
+        }
+    }
+
+    public static function getAll(): array
+    {
+        if( empty(Language::$_all_langs) )
+            Language::findAndStore( null );
+
+        return Language::$_all_langs;
+    }
+
+    public static function getCurrent(): Language
+    {
+        if( empty(Language::$_curr_lang) )
+        {
+            if( empty(Language::$_all_langs) )
+                Language::findAndStore( null );
+
+            Language::$_curr_lang = current( Language::$_all_langs );
+        }
+        return Language::$_curr_lang;
+    }
+
+    public static function getFrontend(): array
+    {
+        if( empty(Language::$_front_langs) )
+            Language::findAndStore( null );
+
+        return Language::$_front_langs;
+    }
+
+    public static function getBackend(): array
+    {
+        if( empty(Language::$_back_langs) )
+            Language::findAndStore( null );
+
+        return Language::$_back_langs;
+    }
+
+    private static function findAndStore( $id ): void
+    {
+        // pobierz języki z bazy danych
+        $langs = Language::find([
+            'order' => '[order]'
+        ]);
+
+        if( count($langs) == 0 )
+            throw new \Exception( "No language available in database!" );
+
+        // uzupełnij tablice w oparciu o pobrane języki
+        foreach( $langs as $lang )
+        {
+            if( $lang->id == $id )
+                Language::$_curr_lang = $lang;
+
+            if( $lang->frontend )
+                Language::$_front_langs[] = $lang;
+
+            if( $lang->backend )
+                Language::$_back_langs[] = $lang;
+        }
+        Language::$_all_langs = $langs;
+    }
 }

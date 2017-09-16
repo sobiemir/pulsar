@@ -8,23 +8,15 @@ namespace Pulsar\Model;
  *   / ___/ // / (_-</ _ `/ __/
  *  /_/   \_,_/_/___/\_,_/_/
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ *  This source file is subject to the New BSD License that is bundled
+ *  with this package in the file LICENSE.txt.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the New BSD License along with
+ *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
 class Menu extends \Phalcon\Mvc\Model
 {
-
     /**
      *
      * @var string
@@ -77,8 +69,7 @@ class Menu extends \Phalcon\Mvc\Model
         $this->belongsTo(
             'id_language',
             '\Pulsar\Model\Language',
-            'id',
-            ['alias' => 'language']
+            'id'
         );
     }
 
@@ -98,9 +89,9 @@ class Menu extends \Phalcon\Mvc\Model
      * @param mixed $parameters
      * @return Menu[]
      */
-    public static function find($parameters = null)
+    public static function find( $parameters = null )
     {
-        return parent::find($parameters);
+        return parent::find( $parameters );
     }
 
     /**
@@ -109,9 +100,8 @@ class Menu extends \Phalcon\Mvc\Model
      * @param mixed $parameters
      * @return Menu
      */
-    public static function findFirst($parameters = null)
+    public static function findFirst( $parameters = null )
     {
-        return parent::findFirst($parameters);
+        return parent::findFirst( $parameters );
     }
-
 }

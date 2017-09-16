@@ -24,7 +24,6 @@ use Phalcon\Config;
 use Phalcon\Mvc\Model\MetaData\Memory as MemoryMetaData;
 use Phalcon\Di                        as DependencyInjector;
 use Phalcon\Mvc\Url                   as UrlProvider;
-use Phalcon\Tag                       as TagManager;
 use Phalcon\Flash\Session             as FlashSession;
 use Phalcon\Session\Adapter\Files     as SessionAdapter;
 use Phalcon\Mvc\Model\Manager         as ModelsManager;

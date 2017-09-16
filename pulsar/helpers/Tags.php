@@ -1,55 +1,74 @@
 <?php
+namespace Pulsar\Helper;
 /*
  *  This file is part of Pulsar CMS
  *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
+ *     ___       __            
+ *    / _ \__ __/ /__ ___ _____
+ *   / ___/ // / (_-</ _ `/ __/
+ *  /_/   \_,_/_/___/\_,_/_/
  *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
+ *  This source file is subject to the New BSD License that is bundled
+ *  with this package in the file LICENSE.txt.
  *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *  You should have received a copy of the New BSD License along with
+ *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
 namespace Pulsar\Helper;
 
+use Phalcon\Mvc\Model\Resultset;
+
 class Tags extends \Phalcon\Tag
 {
-	public static function TabControl( array $source, array $parameters = [] ): string
+	public static $_index = 1;
+
+	private static function getNextId(): string
 	{
-		// jeżeli źródło jest puste to nie ma co wyświetlać
-		if( empty($source) )
+		return 'pulsar-ctrl-agid-' . self::$_index++;
+	}
+
+	public static function tabControl( array $params = [] ): string
+	{
+		$elemid = $params['id'] ?? $params['0'] ?? self::getNextId();
+		$source = $params['source'] ?? self::$_source[$elemid] ?? null;
+
+		// kontrolka musi się powoływać na jakieś źródło...
+		if( !is_array($source) && !is_object($source) )
 			return '';
 
-		// pierwszy argument robi za identyfikator gdy nie został on podany
-		if( !isset($parameters['id']) )
-			$parameters['id'] = $parameters[0];
+		// nazwa klasy i zaznaczony element
+		$class    = $params['class'] ?? '';
+		$selected = $params['selected'] ?? false;
 
-		// klasa przekazywana do listy
-		$parameters['class'] = isset($parameters['class'])
-			? ' ' . $parameters['class']
-			: '';
-		if( !isset($parameters['selected']) )
-			$parameters['selected'] = key( $source );
+		// kontener dla listy
+		$retval = "<ul id=\"{$elemid}\"" .
+			"class=\"tab-control items-horizontal {$class}\">";
 
-		$retval = '<ul id="' . $parameters['id'] . '" class="tab-control items-horizontal' .
-			$parameters['class'] . '">';
+		// wyświetlane pole i element wyłączony z użytku
+		$index    = $params['index'] ?? 'name';
+		$disabled = $params['disabled'] ?? false;
+		$bin2guid = $params['bin2guid'] ?? false;
 
-		// indeks, domyślnie __display__
-		$index = $parameters['index'] ?? '__display__';
-
-		// wypełnij listę wartościami
+		// wypełnij listę elementami
 		foreach( $source as $value )
-			if( $parameters['selected'] == $value['id'] )
-				$retval .= '<li data-id="' . $value['id'] . '" class="selected">' . $value[$index] . '</li>';
-			else
-				$retval .= '<li data-id="' . $value['id'] . '">' . $value[$index] . '</li>';
+		{
+			// konwertuj ID z postaci binarnej na GUID
+			$retval .= $bin2guid
+				? '<li data-id="' . Utils::BinToGUID( $value->id ) . '"'
+				: '<li data-id="' . $value->id . '"';
+
+			// elementy mogą być wyłączone z użytku
+			if( $disabled && $value->{$disabled} )
+				$retval .= ' class="disabled"';
+			// ale zaznaczony element może być tylko jeden
+			else if( $selected && $selected == $value->id )
+				$retval .= ' class="selected"';
+
+			$retval .= ">{$value->{$index}}</li>";
+		}
+		// zwiększ indeks numeru kontrolki
+		self::$_index++;
 
 		return $retval . '</ul>';
 	}
@@ -165,27 +184,27 @@ class Tags extends \Phalcon\Tag
 	 * > source: Źródło pobierania danych do kontrolek (tablica z wartościami którymi mają zostać uzupełnione).
 	 *           Wartości ustawiane są dla kontrolek względem ustawionej nazwy (name).
 	 * 
-	 * @param  array|string $parameters Tablica parametrów przekazywanych do funkcji.
+	 * @param  array|string $params Tablica parametrów przekazywanych do funkcji.
 	 * @return string                   Zwraca tag początkowy formularza.
 	 */
-	public static function form( $parameters ): string
+	public static function form( $parms ): string
 	{
-		$parameters = is_array( $parameters )
-			? $parameters
-			: [ $parameters ];
+		$parms = is_array( $parms )
+			? $parms
+			: [ $parms ];
 
-		self::$_namespace = $parameters['id']     ?? $parameters[0];
-		self::$_source    = $parameters['source'] ?? [];
+		self::$_namespace = $parms['id']     ?? $parms[0];
+		self::$_source    = $parms['source'] ?? [];
 
-		unset( $parameters['source'] );
+		unset( $parms['source'] );
 
-		$retval = parent::form( $parameters );
+		$retval = parent::form( $parms );
 
 		// ukryta kontrolka z nazwą formularza
 		$retval .= parent::hiddenField([
 			'form',
 			'id'    => null,
-			'value' => $parameters['id']
+			'value' => $parms['id']
 		]);
 
 		return $retval;

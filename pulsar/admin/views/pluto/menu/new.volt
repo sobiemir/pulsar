@@ -1,5 +1,10 @@
 <div id="content" class="items-vertical lightgrey-back fill-free">
-    <form id="side-edit" class="" method="post" action="/admin/menu">
+
+    {{ tag.form([
+        'admin/menu',
+        'id': 'side-edit'
+    ]) }}
+
         <div class="head-bar simple">
             <h2>Nowe menu</h2>
             <p class="description mb12">Tworzy nowe menu, tararara, tararara, tararara, tararara.</p>
@@ -7,12 +12,12 @@
                 <tr>
                     <td>Język:</td>
                     <td colspan="2">
-                        <ul class="tab-control items-horizontal">
-                            <li class="selected">Polski</li>
-                            <li>English</li>
-                            <li>Русский</li>
-                            <li>Deutsch</li>
-                        </ul>
+                        {{ tag.tabControl([
+                            'index'   : 'default_name',
+                            'source'  : languages,
+                            'selected': language.id,
+                            'bin2guid': true
+                        ]) }}
                     </td>
                 </tr>
                 <tr>
@@ -44,5 +49,6 @@
                     </div>
                 </footer>
             </section> -->
-    </form>
+
+    {{ tag.endForm() }}
 </div>
