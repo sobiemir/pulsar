@@ -23,17 +23,172 @@ class Tags extends \Phalcon\Tag
 {
 	public static $_index = 1;
 
-	private static function getNextId(): string
+
+	public static function textBoxLang( array $params = [] ): string
 	{
-		return 'pulsar-ctrl-agid-' . self::$_index++;
+		$name  = $params['name'] ?? $params[0] ?? self::getNextId();
+		$class = $params['class'] ?? '';
+
+		$source = $params['source'] ?? self::$_source ?? [];
+		$elemid = $params['id'] ?? $name;
+		$active = $params['active'] ?? self::$_active ?? false;
+
+		if( !(is_object($source) || is_array($source)) || empty($source) )
+			return '';
+
+		// gdy nie podano, domyślnie aktywuj pierwszy podany język
+		if( !$active )
+			$active = $source[0]->id_language;
+
+		$retval = '';
+		$index = 1;
+
+		// generuj pojedyncze elementy
+		foreach( $source as $elem )
+		{
+			$langid = Utils::BinToGUID( $elem->id_language );
+			$retval .= self::textBox([
+				'id'    => "{$elemid}-{$index}",
+				'name'  => "{$name}-{$index}",
+				'value' => $elem->{$name},
+				'class' => $class . ($active != $elem->id_language
+					? ' hidden'
+					: ''
+				),
+				'data' => [
+					'lang' => $langid
+				]
+			]);
+			++$index;
+		}
+
+		return $retval;
+	}
+
+	public static function checkBoxLang( array $params = [] ): string
+	{
+		$name  = $params['name'] ?? $params[0] ?? self::getNextId();
+		$class = $params['class'] ?? '';
+
+		$source = $params['source'] ?? self::$_source ?? [];
+		$elemid = $params['id'] ?? $name;
+		$active = $params['active'] ?? self::$_active ?? false;
+		$label  = $params['label'] ?? null;
+
+		if( !(is_object($source) || is_array($source)) || empty($source) )
+			return '';
+
+		// gdy nie podano, domyślnie aktywuj pierwszy podany język
+		if( !$active )
+			$active = $source[0]->id_language;
+
+		$retval = '';
+		$index = 1;
+
+		// generuj pojedyncze elementy
+		foreach( $source as $elem )
+		{
+			$langid = Utils::BinToGUID( $elem->id_language );
+			$retval .= self::checkBox([
+				'id'      => "{$elemid}-{$index}",
+				'name'    => "{$name}-{$index}",
+				'checked' => $elem->{$name},
+				'label'   => $label,
+				'class'   => $class . ($active != $elem->id_language
+					? ' hidden'
+					: ''
+				),
+				'data' => [
+					'lang' => $langid
+				]
+			]);
+			++$index;
+		}
+
+		return $retval;
+	}
+
+	public static function textBox( array $params = [] ): string
+	{
+		$name   = $params['name'] ?? $params[0] ?? self::getNextId();
+		$elemid = $params['id'] ?? $name;
+		$value  = $params['value'] ?? '';
+		$class  = $params['class'] ?? '';
+
+		$retval = "<input type=\"text\" value=\"{$value}\" " .
+			"id=\"{$elemid}\" name=\"{$name}\" class=\"{$class}\" ";
+
+		// wyłączenie kontrolki
+		if( isset($params['disabled']) && $params['disabled'] )
+			$retval .= 'disabled="disabled" ';
+		
+		// uzupełnianie danych
+		if( isset($params['autocomplete']) && !$params['autocomplete'] )
+			$retval .= 'autocomplete="off" ';
+
+		// kontrolka tylko do odczytu
+		if( isset($params['readonly']) && $params['readonly'] )
+			$retval .= 'readonly="readonly" ';
+
+		// tekst pomocniczy
+		if( isset($params['placeholder']) )
+			$retval .= "placeholder=\"{$params['placeholder']}\" ";
+
+		if( isset($params['data']) )
+			foreach( $params['data'] as $key => $data )
+				$retval .= " data-{$key}=\"{$data}\"";
+
+		return $retval . '/>';
+	}
+
+	public static function checkBox( array $params = [] ): string
+	{
+		$name   = $params['name'] ?? $params[0] ?? self::getNextId();
+		$for    = $params['for'] ?? self::getNextId();
+		$elemid = $params['id'] ?? $name;
+		$label  = $params['label'] ?? null;
+		$class  = $params['class'] ?? '';
+
+		// zaznacz główny kontener gdy kontrolka jest zaznaczona
+		if( isset($params['checked']) )
+			$class = "checked {$class}";
+
+		$retval = "<div id=\"{$elemid}\" " .
+			"class=\"checkbox items-horizontal {$class}\" ";
+
+		// dodatkowe dane
+		if( isset($params['data']) )
+			foreach( $params['data'] as $key => $data )
+				$retval .= " data-{$key}=\"{$data}\"";
+
+		$retval .= "><input id=\"{$for}\" type=\"checkbox\" name=\"{$name}\" ";
+
+		// czy kontrolka ma być zaznaczona?
+		if( isset($params['checked']) )
+			$retval .= 'checked="checked" ';
+
+		// wyłączenie kontrolki
+		if( isset($params['disabled']) )
+			$retval .= 'disabled="disabled" ';
+
+		if( isset($params['readonly']) )
+			$retval .= 'readonly="readonly" ';
+
+		$retval .= '/><span></span>';
+
+		// napis obok kontrolki
+		if( $label )
+			$retval .= "<label for=\"{$for}\">{$label}</label>";
+
+		return $retval . '</div>';
 	}
 
 	public static function tabControl( array $params = [] ): string
 	{
-		$elemid = $params['id'] ?? $params['0'] ?? self::getNextId();
+		$elemid = $params['id'] ?? $params[0] ?? self::getNextId();
 		$source = $params['source'] ?? self::$_source[$elemid] ?? null;
 
-		// kontrolka musi się powoływać na jakieś źródło...
+		// ta kontrolka musi się powoływać na jakieś źródło...
 		if( !is_array($source) && !is_object($source) )
 			return '';
 
@@ -175,7 +330,9 @@ class Tags extends \Phalcon\Tag
 	 * Źródło danych z którego pobierane są wartości kontrolek formularza.
 	 * @var array
 	 */
-	private static $_source = [];
+	private static $_source = null;
+
+	private static $_active = null;
 
 	/**
 	 * Tworzenie formularza dla kontrolek.
@@ -194,7 +351,8 @@ class Tags extends \Phalcon\Tag
 			: [ $parms ];
 
 		self::$_namespace = $parms['id']     ?? $parms[0];
-		self::$_source    = $parms['source'] ?? [];
+		self::$_source    = $parms['source'] ?? null;
+		self::$_active    = $parms['active'] ?? null;
 
 		unset( $parms['source'] );
 
@@ -224,99 +382,14 @@ class Tags extends \Phalcon\Tag
 		return parent::endForm();
 	}
 
-	public static function checkField( $parameters ): string
+	/**
+	 * Generuje identyfikator dla kontrolki.
+	 *
+	 * RETURNS:
+	 *     Wygenerowany identyfikator.
+	 */
+	private static function getNextId(): string
 	{
-		$parameters = is_array( $parameters )
-			? $parameters
-			: [ $parameters ];
-
-		// nazwa i identyfikator
-		$parameters['name'] = $parameters['name'] ?? $parameters[0];
-		$parameters['id']   = $parameters['id']   ?? self::$_namespace . '-' . $parameters['name'];
-
-		// kontrolki i źródło danych
-		$tag   = $parameters['tag']   ?? [ 'name' => 'div' ];
-		$label = $parameters['label'] ?? false;
-
-		// kontrolka opakowująca
-		$tag = is_array( $tag )
-			? $tag
-			: [ $tag ];
-
-		$tag['name']  = $tag['name']  ?? $tag[0];        
-		$tag['class'] = $tag['class'] ?? 'checkbox items-horizontal';
-
-		// etykieta
-		if( $label )
-		{
-			$label = is_array( $label )
-				? $label
-				: [ $label ];
-			$label['name'] = $label['name'] ?? $label[0];
-			$label['for']  = $parameters['id'];
-		}
-
-		unset( $parameters[0] );
-		unset( $parameters['tag'] );
-		unset( $parameters['label'] );
-		unset( $tag[0] );
-		unset( $label[0] );
-
-		// pobierz wartość kontrolki ze źródła danych
-		if( isset(self::$_source[$parameters['name']]) )
-		{
-			$source = self::$_source[$parameters['name']];
-
-			// wiele wartości - element wielojęzyczny
-			if( is_array($source) )
-			{
-				// każdy element zawiera następującą strukturę: język => wartość
-				// TODO
-			}
-			else if( $source == true )
-			{
-				$parameters['checked'] = 'checked';
-				$tag['class'] .= ' checked';
-			}
-		}
-
-		// kontrolka zaznaczania
-		$retval = '<input type="checkbox"';
-		foreach( $parameters as $key => $value )
-			$retval .= ' ' . $key . '="' . $value . '"';
-		$retval .= ' /><span></span>';
-
-		// etykieta
-		if( $label )
-			$retval .= Tags::label( $label );
-
-		// całość
-		return Tags::surroundingTag( $tag, $retval );
-	}
-
-	private static function surroundingTag( array $parameters, string $html ): string
-	{
-		$tag = $parameters['name'];
-		unset( $parameters['name'] );
-
-		$retval = '<' . $tag;
-		foreach( $parameters as $key => $value )
-			$retval .= ' ' . $key . '="' . $value . '"';
-		$retval .= '>' . $html . '</' . $tag . '>';
-
-		return $retval;
-	}
-
-	private static function label( array $parameters ): string
-	{
-		$html = $parameters['name'];
-		unset( $parameters['name'] );
-
-		$retval = '<label ';
-		foreach( $parameters as $key => $value ) 
-			$retval .= ' ' . $key . '="' . $value . '"';
-		$retval .= '>' . $html . '</label>';
-
-		return $retval;
+		return 'pagv-' . self::$_index++;
 	}
 }

@@ -1,6 +1,6 @@
 <div id="content" class="white-back items-vertical fill-free">
-	<div class="head-bar noback">
-		<h2>Menu</h2>
+	<div class="head-bar">
+		<h2 class="mb5">Menu</h2>
 		<p class="description">
 			Lista wszystkich utworzonych menu które można przypisać do
 			odpowiednio skonfigurowanej sekcji na stronie.

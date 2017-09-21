@@ -73,12 +73,29 @@ class MenuController extends Controller
 
 		Language::setLanguage( $this->config->cms->language );
 		
+		// pobierz listę języków
 		$all = Language::getFrontend();
 		$cur = Language::getCurrent();
 
+		// wygeneruj nowy identyfikator dla menu
+		$data = [];
+		$id   = Utils::GenerateBinGUID();
+
+		// utwórz puste menu dla każdego z dostępnych języków
+		foreach( $all as $lang )
+		{
+			$menu = new Menu();
+			$menu->id = $id;
+			$menu->id_language = $lang->id;
+
+			$data[] = $menu;
+		}
+
+		// ustaw zmienne dla widoku
 		$this->view->setVars([
 			'languages'  => $all,
 			'language'   => $cur,
+			'data'       => $data,
 			'title'      => 'Pulsar :: Nowe menu',
 			'breadcrumb' => [
 				[
@@ -111,14 +128,10 @@ class MenuController extends Controller
 
 		$bin = Utils::GUIDToBin( $id );
 
-		// Languages::SetLanguage( $this->config->cms->language );
-
-		// $lang  = Languages::GetCurrent();
-		// $langs = Languages::GetAll();
-
-		// nazwa wyświetlana w zakładkach
-		// foreach( $langs as &$single )
-			// $single['__display__'] = $single['default_name'];
+		Language::setLanguage( $this->config->cms->language );
+		
+		$all = Language::getFrontend();
+		$cur = Language::getCurrent();
 
 		$data = Menu::find([
 			'conditions' => [[
@@ -128,24 +141,13 @@ class MenuController extends Controller
 			]]
 		]);
 
-		// sprawdź czy menu istnieje
-		// $data = Menu::findTranslated([
-		// 	'code'       => $this->translations->menu->name,
-		// 	'limit'      => 1,
-		// 	'conditions' => [[
-		// 		'id = :id:',
-		// 		[ 'id' => $id ],
-		// 		[ 'id' => \PDO::PARAM_INT ]
-		// 	]],
-		// ])->toArray();
-
 		// menu o podanym indeksie nie istnieje!
 		if( count($data) == 0 )
 			throw new \Exception( 'Podany rekord nie istnieje!' );
 
 		$this->view->setVars([
-			// 'Languages' => $langs,
-			// 'Language'  => $lang,
+			'languages' => $all,
+			'language'  => $cur,
 
 			'title'      => 'Pulsar :: Edycja menu',
 			'breadcrumb' => [
@@ -160,7 +162,7 @@ class MenuController extends Controller
 					'url'  => '/admin/menu/edit/' . $id
 				]
 			],
-			'data'       => $data[0],
+			'data'       => $data,
 			'hasSidebar' => false,
 			'topButtons' => [
 				[

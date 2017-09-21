@@ -25,7 +25,7 @@ html {
 body {
 	height: 100%;
 	width: 100%;
-	background: #e8e8e8;
+	background: #f4f4f4;
 }
 *,
 input {
@@ -568,76 +568,6 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, .bu
 	margin-top: 0;
 }
 
-/* 
- ===========================================================================================================
-	SZEROKOŚCI / MARGINESY / WCIĘCIA
- ===========================================================================================================
- */
-
-.inline-block {
-	display: inline-block;
-}
-.mt1 {
-	margin-top: 0.1rem !important;
-}
-.mt2 {
-	margin-top: 0.2rem !important;
-}
-.mt3 {
-	margin-top: 0.3rem !important;
-}
-.mt5 {
-	margin-top: 0.5rem !important;
-}
-.mr02 {
-	margin-right: 0.2rem !important;
-}
-.mr05 {
-	margin-right: 0.5rem !important;
-}
-.mb5 {
-	margin-bottom: 0.5rem !important;
-}
-.mb7 {
-	margin-bottom: 0.7rem !important;
-}
-.mb10 {
-	margin-bottom: 1rem !important;
-}
-.mb12 {
-	margin-bottom: 1.2rem !important;
-}
-.h100p {
-	height: 100% !important;
-}
-.w100p {
-	width: 100% !important;
-}
-.w1p {
-	width: 1% !important;
-	white-space: nowrap;
-}
-.w10p {
-	width: 10% !important;
-}
-.w20p {
-	width: 20% !important;
-}
-.w30p {
-	width: 30% !important;
-}
-.w40p {
-	width: 40% !important;
-}
-.w50p {
-	width: 50% !important;
-}
-.w60p {
-	width: 60% !important;
-}
-.w70p {
-	width: 70% !important;
-}
 .cursor-pointer {
 	cursor: pointer !important;
 }
@@ -646,12 +576,6 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, .bu
 }
 .font-normal {
 	font-size: 1rem;
-}
-.no-padding {
-	padding: 0 !important;
-}
-.no-margin {
-	margin: 0 !important;
 }
 .hidden {
 	display: none !important;
@@ -747,7 +671,7 @@ span.clone:hover {
 }
 
 .white-back {
-	background: #fff;
+	background: #fff !important;
 }
 
 .lightgrey-back {
@@ -819,4 +743,134 @@ span.clone:hover {
 	font-size: 1rem;
 	font-style: italic;
 	color: #666;
+}
+
+
+/* 
+ ===========================================================================================================
+	SZEROKOŚCI / MARGINESY / WCIĘCIA
+ ===========================================================================================================
+ */
+
+.no-padding { padding: 0; }
+.no-margin  { margin:  0; }
+
+.pl00 { padding-left: 0.0rem; }
+.pl02 { padding-left: 0.2rem; }
+.pl04 { padding-left: 0.4rem; }
+.pl05 { padding-left: 0.5rem; }
+.pl06 { padding-left: 0.6rem; }
+.pl08 { padding-left: 0.8rem; }
+.pl10 { padding-left: 1.0rem; }
+.pl15 { padding-left: 1.5rem; }
+.pl20 { padding-left: 2.0rem; }
+.pl25 { padding-left: 2.5rem; }
+.pl30 { padding-left: 3.0rem; }
+
+.pr00 { padding-right: 0.0rem; }
+.pr02 { padding-right: 0.2rem; }
+.pr04 { padding-right: 0.4rem; }
+.pr05 { padding-right: 0.5rem; }
+.pr06 { padding-right: 0.6rem; }
+.pr08 { padding-right: 0.8rem; }
+.pr10 { padding-right: 1.0rem; }
+.pr15 { padding-right: 1.5rem; }
+.pr20 { padding-right: 2.0rem; }
+.pr25 { padding-right: 2.5rem; }
+.pr30 { padding-right: 3.0rem; }
+
+.pt00 { padding-top: 0.0rem; }
+.pt02 { padding-top: 0.2rem; }
+.pt04 { padding-top: 0.4rem; }
+.pt05 { padding-top: 0.5rem; }
+.pt06 { padding-top: 0.6rem; }
+.pt08 { padding-top: 0.8rem; }
+.pt10 { padding-top: 1.0rem; }
+.pt15 { padding-top: 1.5rem; }
+.pt20 { padding-top: 2.0rem; }
+.pt25 { padding-top: 2.5rem; }
+.pt30 { padding-top: 3.0rem; }
+
+.pb00 { padding-bottom: 0.0rem; }
+.pb02 { padding-bottom: 0.2rem; }
+.pb04 { padding-bottom: 0.4rem; }
+.pb05 { padding-bottom: 0.5rem; }
+.pb06 { padding-bottom: 0.6rem; }
+.pb08 { padding-bottom: 0.8rem; }
+.pb10 { padding-bottom: 1.0rem; }
+.pb15 { padding-bottom: 1.5rem; }
+.pb20 { padding-bottom: 2.0rem; }
+.pb25 { padding-bottom: 2.5rem; }
+.pb30 { padding-bottom: 3.0rem; }
+
+
+.inline-block {
+	display: inline-block;
+}
+.mt1 {
+	margin-top: 0.1rem !important;
+}
+.mt2 {
+	margin-top: 0.2rem !important;
+}
+.mt3 {
+	margin-top: 0.3rem !important;
+}
+.mt5 {
+	margin-top: 0.5rem !important;
+}
+.mr02 {
+	margin-right: 0.2rem !important;
+}
+.mr05 {
+	margin-right: 0.5rem !important;
+}
+.mb5 {
+	margin-bottom: 0.5rem !important;
+}
+.mb7 {
+	margin-bottom: 0.7rem !important;
+}
+.mb10 {
+	margin-bottom: 1rem !important;
+}
+.mb12 {
+	margin-bottom: 1.2rem !important;
+}
+.mb15 {
+	margin-bottom: 1.5rem !important;
+}
+.mb20 {
+	margin-bottom: 2rem !important;
+}
+.h100p {
+	height: 100% !important;
+}
+.w100p {
+	width: 100% !important;
+}
+.w1p {
+	width: 1% !important;
+	white-space: nowrap;
+}
+.w10p {
+	width: 10% !important;
+}
+.w20p {
+	width: 20% !important;
+}
+.w30p {
+	width: 30% !important;
+}
+.w40p {
+	width: 40% !important;
+}
+.w50p {
+	width: 50% !important;
+}
+.w60p {
+	width: 60% !important;
+}
+.w70p {
+	width: 70% !important;
 }
