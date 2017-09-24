@@ -7,7 +7,7 @@
         "preserveConstEnums": true,
         "sourceMap": true,
         "outDir": "public/themes/pluto/js",
-        "outFile": "public/themes/pluto/js/application.js"
+        "outFile": "public/themes/pluto/js/app.static.js"
     },
     "files": [
         "public/themes/pluto/ts/Application.Static.ts"

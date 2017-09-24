@@ -13,8 +13,7 @@
 	{{ stylesheet_link("vendors/css/font-awesome") }}
 
 	<!-- skrypty JS -->
-	{{ javascript_include('vendors/js/jquery') }}
-	{{ javascript_include('js/application') }}
+	{{ javascript_include('js/app.static') }}
 </head>
 <body class="items-vertical">
 	<header id="header" class="w100p items-horizontal">

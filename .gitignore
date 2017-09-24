@@ -17,3 +17,6 @@ cache/*
 public/themes/pluto/js/bootstrap.js
 app/installer/languages/*
 app/admin/languages/*
+
+public/themes/pluto/js/app.static.js
+public/themes/pluto/js/app.static.js.map
