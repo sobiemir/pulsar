@@ -96,4 +96,12 @@ class Utils
 			$guid['d']
 		);
 	}
+
+	public static function SafeBinToGUID( $bin )
+	{
+		if( !is_string($bin) || strlen($bin) != 16 )
+			return $bin;
+
+		return self::BinToGUID( $bin );
+	}
 }

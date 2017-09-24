@@ -14,7 +14,7 @@
 
 	<!-- skrypty JS -->
 	{{ javascript_include('vendors/js/jquery') }}
-	{{ javascript_include('js/controls') }}
+	{{ javascript_include('js/application') }}
 </head>
 <body class="items-vertical">
 	<header id="header" class="w100p items-horizontal">

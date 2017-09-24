@@ -87,6 +87,7 @@ class MenuController extends Controller
 			$menu = new Menu();
 			$menu->id = $id;
 			$menu->id_language = $lang->id;
+			$menu->private = true;
 
 			$data[] = $menu;
 		}

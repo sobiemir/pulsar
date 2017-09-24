@@ -16,6 +16,7 @@ namespace Pulsar\Model;
  */
 
 use Phalcon\Mvc\Model\Resultset;
+use Pulsar\Helper\Utils;
 
 class Language extends \Phalcon\Mvc\Model
 {
@@ -110,6 +111,27 @@ class Language extends \Phalcon\Mvc\Model
     public function getSource()
     {
         return 'language';
+    }
+
+
+    private $_id = null;
+    private $_id_language = null;
+
+    public function getRawId(): string
+    {
+        return $this->id;
+    }
+
+    public function getId(): string
+    {
+        if( !$this->_id )
+            $this->_id = Utils::BinToGUID( $this->id );
+        return $this->_id;
+    }
+
+    public function isDisabled(): bool
+    {
+        return !$this->frontend && !$this->backend;
     }
 
     /**

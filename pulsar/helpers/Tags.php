@@ -23,42 +23,48 @@ class Tags extends \Phalcon\Tag
 {
 	public static $_index = 1;
 
-
 	public static function textBoxLang( array $params = [] ): string
 	{
-		$name  = $params['name'] ?? $params[0] ?? self::getNextId();
-		$class = $params['class'] ?? '';
+		$name     = $params['name']     ?? self::getNextId();
+		$class    = $params['class']    ?? '';
+		$elemid   = $params['id']       ?? $name;
+		$source   = $params['source']   ?? self::$_source   ?? null;
+		$selected = $params['selected'] ?? self::$_selected ?? null;
 
-		$source = $params['source'] ?? self::$_source ?? [];
-		$elemid = $params['id'] ?? $name;
-		$active = $params['active'] ?? self::$_active ?? false;
-
-		if( !(is_object($source) || is_array($source)) || empty($source) )
+		if( !$source || empty($source) )
 			return '';
 
-		// gdy nie podano, domyślnie aktywuj pierwszy podany język
-		if( !$active )
-			$active = $source[0]->id_language;
+		unset( $params['selected'] );
+		unset( $params['source'] );
+
+		// utwórz tablicę dla dodatkowych danych gdy nie istnieje
+		if( !isset($params['data']) )
+			$params['data'] = [];
+
+		// gdy nie podano, domyślnie aktywuj pierwszy element
+		if( !$selected )
+			self::$_selected = $selected = $source[0]->getVariant();
 
 		$retval = '';
-		$index = 1;
+		$index  = 1;
 
 		// generuj pojedyncze elementy
 		foreach( $source as $elem )
 		{
-			$langid = Utils::BinToGUID( $elem->id_language );
-			$retval .= self::textBox([
-				'id'    => "{$elemid}-{$index}",
-				'name'  => "{$name}-{$index}",
-				'value' => $elem->{$name},
-				'class' => $class . ($active != $elem->id_language
-					? ' hidden'
-					: ''
-				),
-				'data' => [
-					'lang' => $langid
-				]
-			]);
+			$params['id']    = $elemid . '-' . $index;
+			$params['name']  = $name   . '-' . $index;
+			$params['value'] = $elem->{$name};
+
+			// ukryj element gdy nie jest aktywny
+			if( $selected != $elem->getRawVariant() )
+				$params['class'] = $class . ' hidden';
+			else
+				$params['class'] = $class;
+
+			$params['data']['variant'] = $elem->getVariant();
+
+			// utwórz pole tekstowe
+			$retval .= self::textBox( $params );
 			++$index;
 		}
 
@@ -67,41 +73,46 @@ class Tags extends \Phalcon\Tag
 
 	public static function checkBoxLang( array $params = [] ): string
 	{
-		$name  = $params['name'] ?? $params[0] ?? self::getNextId();
-		$class = $params['class'] ?? '';
+		$name     = $params['name']     ?? self::getNextId();
+		$class    = $params['class']    ?? '';
+		$elemid   = $params['id']       ?? $name;
+		$source   = $params['source']   ?? self::$_source   ?? null;
+		$selected = $params['selected'] ?? self::$_selected ?? null;
 
-		$source = $params['source'] ?? self::$_source ?? [];
-		$elemid = $params['id'] ?? $name;
-		$active = $params['active'] ?? self::$_active ?? false;
-		$label  = $params['label'] ?? null;
-
-		if( !(is_object($source) || is_array($source)) || empty($source) )
+		if( !$source || empty($source) )
 			return '';
 
-		// gdy nie podano, domyślnie aktywuj pierwszy podany język
-		if( !$active )
-			$active = $source[0]->id_language;
+		unset( $params['selected'] );
+		unset( $params['source'] );
+
+		// utwórz tablicę dla dodatkowych danych gdy nie istnieje
+		if( !isset($params['data']) )
+			$params['data'] = [];
+
+		// gdy nie podano, domyślnie aktywuj pierwszy element
+		if( !$selected )
+			self::$_selected = $selected = $source[0]->getVariant();
 
 		$retval = '';
-		$index = 1;
+		$index  = 1;
 
 		// generuj pojedyncze elementy
 		foreach( $source as $elem )
 		{
-			$langid = Utils::BinToGUID( $elem->id_language );
-			$retval .= self::checkBox([
-				'id'      => "{$elemid}-{$index}",
-				'name'    => "{$name}-{$index}",
-				'checked' => $elem->{$name},
-				'label'   => $label,
-				'class'   => $class . ($active != $elem->id_language
-					? ' hidden'
-					: ''
-				),
-				'data' => [
-					'lang' => $langid
-				]
-			]);
+			$params['id']      = $elemid . '-' . $index;
+			$params['name']    = $name   . '-' . $index;
+			$params['checked'] = $elem->{$name};
+
+			// ukryj element gdy nie jest aktywny
+			if( $selected != $elem->getRawVariant() )
+				$params['class'] = $class . ' hidden';
+			else
+				$params['class'] = $class;
+
+			$params['data']['variant'] = $elem->getVariant();
+
+			// utwórz pole tekstowe
+			$retval .= self::checkBox( $params );
 			++$index;
 		}
 
@@ -110,123 +121,240 @@ class Tags extends \Phalcon\Tag
 
 	public static function textBox( array $params = [] ): string
 	{
-		$name   = $params['name'] ?? $params[0] ?? self::getNextId();
-		$elemid = $params['id'] ?? $name;
-		$value  = $params['value'] ?? '';
-		$class  = $params['class'] ?? '';
+		$params['name']  = $params['name']  ?? self::getNextId();
+		$params['id']    = $params['id']    ?? $name;
+		$params['value'] = $params['value'] ?? '';
+		$params['type']  = 'text';
 
-		$retval = "<input type=\"text\" value=\"{$value}\" " .
-			"id=\"{$elemid}\" name=\"{$name}\" class=\"{$class}\" ";
-
-		// wyłączenie kontrolki
-		if( isset($params['disabled']) && $params['disabled'] )
-			$retval .= 'disabled="disabled" ';
-		
-		// uzupełnianie danych
-		if( isset($params['autocomplete']) && !$params['autocomplete'] )
-			$retval .= 'autocomplete="off" ';
-
-		// kontrolka tylko do odczytu
-		if( isset($params['readonly']) && $params['readonly'] )
-			$retval .= 'readonly="readonly" ';
-
-		// tekst pomocniczy
-		if( isset($params['placeholder']) )
-			$retval .= "placeholder=\"{$params['placeholder']}\" ";
-
-		if( isset($params['data']) )
-			foreach( $params['data'] as $key => $data )
-				$retval .= " data-{$key}=\"{$data}\"";
-
-		return $retval . '/>';
+		$params = self::_attributesConverter( $params );
+		return self::_buildTag( 'input', false, $params );
 	}
 
 	public static function checkBox( array $params = [] ): string
 	{
-		$name   = $params['name'] ?? $params[0] ?? self::getNextId();
-		$for    = $params['for'] ?? self::getNextId();
-		$elemid = $params['id'] ?? $name;
-		$label  = $params['label'] ?? null;
-		$class  = $params['class'] ?? '';
+		$params['name']  = $params['name']  ?? self::getNextId();
+		$params['id']    = $params['id']    ?? $name;
+		$params['value'] = $params['value'] ?? 'on';
+		$params['type']  = 'checkbox';
+		$params['class'] = $params['class'] ?? '';
 
-		// zaznacz główny kontener gdy kontrolka jest zaznaczona
-		if( isset($params['checked']) )
-			$class = "checked {$class}";
+		// lista atrybutów przeznaczonych dla kontrolki input
+		$inputattrs = [
+			'disabled' => 'disabled',
+			'checked'  => 'checked',
+			'autofocus'=> '',
+			'form'     => '',
+			'name'     => '',
+			'required' => '',
+			'tabindex' => '',
+			'value'    => '',
+			'type'     => ''
+		];
 
-		$retval = "<div id=\"{$elemid}\" " .
-			"class=\"checkbox items-horizontal {$class}\" ";
+		$retval = '';
+		$chkdat = [];
+		$params = self::_attributesConverter( $params );
 
-		// dodatkowe dane
-		if( isset($params['data']) )
-			foreach( $params['data'] as $key => $data )
-				$retval .= " data-{$key}=\"{$data}\"";
+		// wydziel atrybuty przeznaczone dla kontrolki "label"
+		if( isset($params['label']) )
+		{
+			$label = [
+				'for'   => $params['for'] ?? self::getNextId(),
+				'value' => $params['label']
+			];
 
-		$retval .= "><input id=\"{$for}\" type=\"checkbox\" name=\"{$name}\" ";
+			// wywal atrybuty z głównej tablicy
+			unset( $params['for'] );
+			unset( $params['label'] );
 
-		// czy kontrolka ma być zaznaczona?
-		if( isset($params['checked']) )
-			$retval .= 'checked="checked" ';
+			// utwórz identyfikator kontrolki "checkbox"
+			$chkdat['id'] = $label['for'];
 
-		// wyłączenie kontrolki
-		if( isset($params['disabled']) )
-			$retval .= 'disabled="disabled" ';
+			// zbuduj element
+			$retval .= self::_buildTag( 'label', true, $label );
+		}
 
-		if( isset($params['readonly']) )
-			$retval .= 'readonly="readonly" ';
+		// wydziel atrybuty przeznaczone dla kontrolki "checkbox"
+		foreach( $inputattrs as $key => $value )
+			if( isset($params[$key]) )
+			{
+				if( $value != '' )
+					$params['class'] .= ' ' . $value;
 
-		$retval .= '/><span></span>';
+				$chkdat[$key] = $params[$key];
+				unset( $params[$key] );
+			}
 
-		// napis obok kontrolki
-		if( $label )
-			$retval .= "<label for=\"{$for}\">{$label}</label>";
+		// zbuduj element
+		$retval = self::_buildTag( 'input', false, $chkdat ) .
+			"<span></span>{$retval}";
 
-		return $retval . '</div>';
+		// dopisz wartość i klasę
+		$params['value']  = $retval;
+		$params['class'] .= ' checkbox items-horizontal';
+
+		// zbuduj całą kontrolkę
+		return self::_buildTag( 'div', true, $params );
 	}
 
-	public static function tabControl( array $params = [] ): string
+	public static function tabControl( array $attrs = [] ): string
 	{
-		$elemid = $params['id'] ?? $params[0] ?? self::getNextId();
-		$source = $params['source'] ?? self::$_source[$elemid] ?? null;
+		$attrs['id']    = $attrs['id']    ?? self::getNextId();
+		$attrs['class'] = $attrs['class'] ?? '';
 
-		// ta kontrolka musi się powoływać na jakieś źródło...
-		if( !is_array($source) && !is_object($source) )
+		$source   = $attrs['source']   ?? null;
+		$selected = $attrs['selected'] ?? self::$_selected ?? null;
+		$index    = $attrs['index']    ?? null;
+
+		// usuń nieużywane pola z głównej tablicy
+		unset( $attrs['source'] );
+		unset( $attrs['selected'] );
+		unset( $attrs['index'] );
+
+		$attrs['class'] .= ' tab-control items-horizontal';
+
+		// sprawdź czy kontrolka ma skąd wziąć dane
+		if( !$source )
+			if( isset(self::$_source[$attrs['id']]) )
+				$source = self::$_source[$attrs['id']];
+
+		// nie twórz gdy brak źródła danych
+		if( $source == null || $index == null )
 			return '';
 
-		// nazwa klasy i zaznaczony element
-		$class    = $params['class'] ?? '';
-		$selected = $params['selected'] ?? false;
+		// aktywuj zaznaczony element lub pierwszy lepszy gdy go brak
+		if( !$selected )
+			$selected = self::$_selected = $source[0]->getRawId();
+		else
+			$selected = self::$_selected = $selected->getRawId();
 
-		// kontener dla listy
-		$retval = "<ul id=\"{$elemid}\"" .
-			"class=\"tab-control items-horizontal {$class}\">";
-
-		// wyświetlane pole i element wyłączony z użytku
-		$index    = $params['index'] ?? 'name';
-		$disabled = $params['disabled'] ?? false;
-		$bin2guid = $params['bin2guid'] ?? false;
-
-		// wypełnij listę elementami
+		// twórz pojedyncze elementy kontrolki
+		$retval = '';
 		foreach( $source as $value )
 		{
-			// konwertuj ID z postaci binarnej na GUID
-			$retval .= $bin2guid
-				? '<li data-id="' . Utils::BinToGUID( $value->id ) . '"'
-				: '<li data-id="' . $value->id . '"';
+			$class = '';
+			if( $selected && $selected == $value->getRawId() )
+				$class .= 'selected ';
+			if( $value->isDisabled() )
+				$class .= 'disabled ';
 
-			// elementy mogą być wyłączone z użytku
-			if( $disabled && $value->{$disabled} )
-				$retval .= ' class="disabled"';
-			// ale zaznaczony element może być tylko jeden
-			else if( $selected && $selected == $value->id )
-				$retval .= ' class="selected"';
-
-			$retval .= ">{$value->{$index}}</li>";
+			$elemattrs = [
+				'data' => [
+					'id' => $value->getId()
+				],
+				'class' => $class,
+				'value' => $value->{$index}
+			];
+			$retval .= self::_buildTag( 'li', true, $elemattrs );
 		}
-		// zwiększ indeks numeru kontrolki
-		self::$_index++;
 
-		return $retval . '</ul>';
+		// utwórz kontrolkę zawierającą zakładki
+		$attrs['value'] = $retval;
+		return self::_buildTag( 'ul', true, $attrs );
 	}
+
+	/**
+	 * Konwertuje atrybuty na odpowiadającą im wartość.
+	 *
+	 * DESCRIPTION:
+	 *     Przydatne szczególnie dla kontrolek w których atrybuty liczbowe
+	 *     mają być zamieniane na ich tekstowe odpowiedniki, oraz dla tych,
+	 *     które posiadają atrybuty binarne, czyli atrybuty które są lub których
+	 *     nie ma, ale przekazywane zawsze zawierają wartość TRUE lub FALSE.
+	 *
+	 * PARAMETERS:
+	 *     $attrs Lista atrybutów do konwersji.
+	 *
+	 * RETURNS:
+	 *     Przetworzoną listę atrybutów.
+	 */
+	private static function _attributesConverter( array $attrs ): array
+	{
+		$bool = [
+			'checked',
+			'disabled',
+			'autofocus',
+			'required',
+			'readonly'
+		];
+
+		foreach( $bool as $index )
+			if( isset($attrs[$index]) )
+			{
+				if( $attrs[$index] )
+					$attrs[$index] = true;
+				else
+					unset( $attrs[$index] );
+			}
+
+		return $attrs;
+	}
+
+	/**
+	 * Tworzy element HTML z podanych wartości.
+	 *
+	 * DESCRIPTION:
+	 *     Funkcja tworzy element z podanych do funkcji danych.
+	 *     Atrybuty przekazywane do funkcji nie są konwertowane, trzeba je
+	 *     wcześniej samemu przepuścić przez funkcję _attributesConverter.
+	 *     Atrybuty z przedrostkiem data mogą być przechowywane w tablicy.
+	 *     Utworzony element może być albo złożony albo prosty.
+	 *     Elementy proste w przeciwieństwie do elementów złożonych nie
+	 *     posiadają znacznika zamykającego.
+	 *
+	 *     Element prosty: <input type="text" value="Pulsar" />.
+	 *     Element złożony: <p attr="pulsar">System zarządzania treścią.</p>.
+	 *
+	 * PARAMETERS:
+	 *     $name      Nazwa tworzonego elementu.
+	 *     $composite Czy element jest elementem prostym czy złożonym?
+	 *     $attrs     Lista atrybutów elementu.
+	 *
+	 * RETURNS:
+	 *     Utworzony element HTML.
+	 */
+	private static function _buildTag( string $name, bool $composite = false,
+		array  $attrs = [] ): string
+	{
+		$value  = '';
+		$retval = '';
+
+		// jeżeli element jest złożony, wyciągnij wartość na zewnątrz
+		if( $composite )
+		{
+			$value = $attrs['value'] ?? '';
+			unset( $attrs['value'] );
+		}
+
+		// atrybuty z "data"
+		if( isset($attrs['data']) )
+		{
+			foreach( $attrs['data'] as $key => $data )
+				$retval .= " data-{$key}=\"{$data}\"";
+			unset( $attrs['data'] );
+		}
+		// pozostałe atrybuty
+		foreach( $attrs as $key => $data )
+			$retval .= is_bool( $data )
+				? " {$key}"
+				: " {$key}=\"{$data}\"";
+
+		// element złożony - <div></div>
+		if( $composite )
+			return "<{$name}{$retval}>{$value}</{$name}>";
+
+		// element prosty - <input />
+		return "<{$name}{$retval} />";
+	}
+
+
+
+
+
+
+
+
+
 
 	public static function stylesheetLink( $parameters = NULL, $local = NULL )
 	{
@@ -332,7 +460,7 @@ class Tags extends \Phalcon\Tag
 	 */
 	private static $_source = null;
 
-	private static $_active = null;
+	private static $_selected = null;
 
 	/**
 	 * Tworzenie formularza dla kontrolek.
@@ -352,7 +480,6 @@ class Tags extends \Phalcon\Tag
 
 		self::$_namespace = $parms['id']     ?? $parms[0];
 		self::$_source    = $parms['source'] ?? null;
-		self::$_active    = $parms['active'] ?? null;
 
 		unset( $parms['source'] );
 

@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "amd",
+        "target": "ES5",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "outDir": "public/themes/pluto/js",
+        "outFile": "public/themes/pluto/js/application.js"
+    },
+    "files": [
+        "public/themes/pluto/ts/Application.Static.ts"
+    ]
+}

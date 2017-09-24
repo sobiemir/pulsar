@@ -146,6 +146,7 @@ input[type=text], input[type=password], .textbox {
 input[type=text]:focus, input[type=password]:focus, .textbox:focus {
 	border-color: #127899;
 	outline: 0;
+	box-shadow: 0 0 0.1rem #1A8BB2;
 }
 input[type=text].fa-icon, input[type=password].fa-icon, .textbox.fa-icon {
 	padding-left: 2.6rem;
@@ -182,6 +183,7 @@ input[type=text].fa-icon, input[type=password].fa-icon, .textbox.fa-icon {
 }
 .checkbox.focused span {
 	border-color: #127899;
+	box-shadow: 0 0 0.1rem #1A8BB2;
 }
 .checkbox.checked span:before {
 	content: "\f00c";
@@ -203,7 +205,7 @@ input[type=text].fa-icon, input[type=password].fa-icon, .textbox.fa-icon {
 	padding: 0 0.8rem;
 	margin-left: 0;
 	cursor: pointer;
-	line-height: 2rem;
+	line-height: 2.6rem;
 	user-select: none;
 }
 
@@ -212,7 +214,7 @@ input[type=text].fa-icon, input[type=password].fa-icon, .textbox.fa-icon {
 }
 
 .tab-control li.selected {
-	background: #222;
+	background: #333;
 	color: #fff;
 	cursor: default;
 }
@@ -803,6 +805,8 @@ span.clone:hover {
 .pb25 { padding-bottom: 2.5rem; }
 .pb30 { padding-bottom: 3.0rem; }
 
+
+.mb00 { margin-bottom: 0.0rem; }
 
 .inline-block {
 	display: inline-block;

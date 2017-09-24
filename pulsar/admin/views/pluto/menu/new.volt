@@ -3,11 +3,10 @@
     {{ tag.form([
         'admin/menu',
         'id': 'menu-edit',
-        'source': data,
-        'active': language.id
+        'source': data
     ]) }}
 
-        <div class="head-bar white-back">
+        <div class="head-bar mb00">
             <h2 class="mb5">Nowe menu</h2>
             <p class="description">
                 Utworzone menu będzie puste, dlatego warto od razu podpiąć
@@ -15,20 +14,17 @@
             </p>
         </div>
 
-        <table class="w100p form container">
-            <!-- język dodawanego menu -->
-            <tr>
-                <td>Język:</td>
-                <td colspan="2">
-                    {{ tag.tabControl([
-                        'index'   : 'default_name',
-                        'bin2guid': true,
-                        'source'  : languages,
-                        'selected': language.id,
-                        'class'   : 'language-selector'
-                    ]) }}
-                </td>
-            </tr>
+        {{ tag.tabControl([
+            'index'   : 'default_name',
+            'source'  : languages,
+            'selected': language,
+            'class'   : 'white-back head-bar',
+            'data'    : [
+                'searcher': '#menu-edit-container'
+            ]
+        ]) }}
+
+        <table id="menu-edit-container" class="w100p form container">
             <!-- nazwa menu -->
             <tr>
                 <td><label for="menu-name">Nazwa:</label></td>

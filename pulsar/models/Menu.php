@@ -15,6 +15,8 @@ namespace Pulsar\Model;
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
+use Pulsar\Helper\Utils;
+
 class Menu extends \Phalcon\Mvc\Model
 {
     /**
@@ -23,7 +25,7 @@ class Menu extends \Phalcon\Mvc\Model
      * @Primary
      * @Column(type="string", length=16, nullable=false)
      */
-    public $id;
+    public $id = null;
 
     /**
      *
@@ -31,35 +33,35 @@ class Menu extends \Phalcon\Mvc\Model
      * @Primary
      * @Column(type="string", length=16, nullable=false)
      */
-    public $id_language;
+    public $id_language = null;
 
     /**
      *
      * @var integer
      * @Column(type="integer", length=1, nullable=false)
      */
-    public $private;
+    public $private = false;
 
     /**
      *
      * @var integer
      * @Column(type="integer", length=1, nullable=false)
      */
-    public $online;
+    public $online = false;
 
     /**
      *
      * @var integer
      * @Column(type="integer", length=11, nullable=false)
      */
-    public $order;
+    public $order = 0;
 
     /**
      *
      * @var string
      * @Column(type="string", length=255, nullable=false)
      */
-    public $name;
+    public $name = '';
 
     /**
      * Initialize method for model.
@@ -81,6 +83,33 @@ class Menu extends \Phalcon\Mvc\Model
     public function getSource()
     {
         return 'menu';
+    }
+
+    private $_id = null;
+    private $_id_language = null;
+
+    public function getRawId(): string
+    {
+        return $this->id;
+    }
+
+    public function getRawVariant(): string
+    {
+        return $this->id_language;
+    }
+
+    public function getId(): string
+    {
+        if( !$this->_id )
+            $this->_id = Utils::BinToGUID( $this->id );
+        return $this->_id;
+    }
+
+    public function getVariant(): string
+    {
+        if( !$this->_id_language )
+            $this->_id_language = Utils::BinToGUID( $this->id_language );
+        return $this->_id_language;
     }
 
     /**
