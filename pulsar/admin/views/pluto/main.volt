@@ -19,7 +19,7 @@
 	<header id="header" class="w100p items-horizontal">
 		
 		<!-- logo Pulsar CMS wraz z nazwą -->
-		{{ tag.logo(48, '#e4e4e4') }}
+		{{ tag.logo(48, '#EEE', '#E16428') }}
 
 		<div class="items-vertical items-center">
 			<h1>Pulsar</h1>
@@ -41,7 +41,7 @@
 	</header>
 
 	<div id="main" class="items-horizontal fill-free">
-		<aside id="pagebar" class="items-vertical" style="width:300px;">
+<!-- 		<aside id="pagebar" class="items-vertical" style="width:300px;">
 			<div class="breadcrumb no-padding items-horizontal">
 				<span class="text-right fill-free"><i class="fa fa-bars"></i></span>
 				<span class="text-right"><i class="fa fa-arrow-circle-o-left"></i></span>
@@ -50,7 +50,7 @@
 			</div>
 		</aside>
 
-		<div class="menu-slider"></div>
+		<div class="menu-slider"></div> -->
 
 		<main class="w100p items-vertical fill-free">
 
@@ -87,7 +87,7 @@
 
 		<!-- pasek boczny - nie zawsze jest dostępny -->
 		{% if hasSidebar %}
-			{{ partial("partial/settings") }}
+			<!-- {{ partial("partial/settings") }} -->
 		{% endif %}
 	</div>
 </body>

@@ -1,7 +1,7 @@
 <div id="content" class="items-vertical lightgrey-back fill-free">
 
     {{ tag.form([
-        'admin/menu',
+        'admin/menu/new',
         'id': 'menu-edit',
         'source': data
     ]) }}

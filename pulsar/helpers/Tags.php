@@ -23,23 +23,23 @@ class Tags extends \Phalcon\Tag
 {
 	public static $_index = 1;
 
-	public static function textBoxLang( array $params = [] ): string
+	public static function textBoxLang( array $attrs = [] ): string
 	{
-		$name     = $params['name']     ?? self::getNextId();
-		$class    = $params['class']    ?? '';
-		$elemid   = $params['id']       ?? $name;
-		$source   = $params['source']   ?? self::$_source   ?? null;
-		$selected = $params['selected'] ?? self::$_selected ?? null;
+		$name     = $attrs['name']     ?? self::getNextId();
+		$class    = $attrs['class']    ?? '';
+		$elemid   = $attrs['id']       ?? $name;
+		$source   = $attrs['source']   ?? self::$_source   ?? null;
+		$selected = $attrs['selected'] ?? self::$_selected ?? null;
 
 		if( !$source || empty($source) )
 			return '';
 
-		unset( $params['selected'] );
-		unset( $params['source'] );
+		unset( $attrs['selected'] );
+		unset( $attrs['source'] );
 
 		// utwórz tablicę dla dodatkowych danych gdy nie istnieje
-		if( !isset($params['data']) )
-			$params['data'] = [];
+		if( !isset($attrs['data']) )
+			$attrs['data'] = [];
 
 		// gdy nie podano, domyślnie aktywuj pierwszy element
 		if( !$selected )
@@ -51,43 +51,43 @@ class Tags extends \Phalcon\Tag
 		// generuj pojedyncze elementy
 		foreach( $source as $elem )
 		{
-			$params['id']    = $elemid . '-' . $index;
-			$params['name']  = $name   . '-' . $index;
-			$params['value'] = $elem->{$name};
+			$attrs['id']    = $elemid . '-' . $index;
+			$attrs['name']  = $name   . '-' . $index;
+			$attrs['value'] = $elem->{$name};
 
 			// ukryj element gdy nie jest aktywny
 			if( $selected != $elem->getRawVariant() )
-				$params['class'] = $class . ' hidden';
+				$attrs['class'] = $class . ' hidden';
 			else
-				$params['class'] = $class;
+				$attrs['class'] = $class;
 
-			$params['data']['variant'] = $elem->getVariant();
+			$attrs['data']['variant'] = $elem->getVariant();
 
 			// utwórz pole tekstowe
-			$retval .= self::textBox( $params );
+			$retval .= self::textBox( $attrs );
 			++$index;
 		}
 
 		return $retval;
 	}
 
-	public static function checkBoxLang( array $params = [] ): string
+	public static function checkBoxLang( array $attrs = [] ): string
 	{
-		$name     = $params['name']     ?? self::getNextId();
-		$class    = $params['class']    ?? '';
-		$elemid   = $params['id']       ?? $name;
-		$source   = $params['source']   ?? self::$_source   ?? null;
-		$selected = $params['selected'] ?? self::$_selected ?? null;
+		$name     = $attrs['name']     ?? self::getNextId();
+		$class    = $attrs['class']    ?? '';
+		$elemid   = $attrs['id']       ?? $name;
+		$source   = $attrs['source']   ?? self::$_source   ?? null;
+		$selected = $attrs['selected'] ?? self::$_selected ?? null;
 
 		if( !$source || empty($source) )
 			return '';
 
-		unset( $params['selected'] );
-		unset( $params['source'] );
+		unset( $attrs['selected'] );
+		unset( $attrs['source'] );
 
 		// utwórz tablicę dla dodatkowych danych gdy nie istnieje
-		if( !isset($params['data']) )
-			$params['data'] = [];
+		if( !isset($attrs['data']) )
+			$attrs['data'] = [];
 
 		// gdy nie podano, domyślnie aktywuj pierwszy element
 		if( !$selected )
@@ -99,44 +99,44 @@ class Tags extends \Phalcon\Tag
 		// generuj pojedyncze elementy
 		foreach( $source as $elem )
 		{
-			$params['id']      = $elemid . '-' . $index;
-			$params['name']    = $name   . '-' . $index;
-			$params['checked'] = $elem->{$name};
+			$attrs['id']      = $elemid . '-' . $index;
+			$attrs['name']    = $name   . '-' . $index;
+			$attrs['checked'] = $elem->{$name};
 
 			// ukryj element gdy nie jest aktywny
 			if( $selected != $elem->getRawVariant() )
-				$params['class'] = $class . ' hidden';
+				$attrs['class'] = $class . ' hidden';
 			else
-				$params['class'] = $class;
+				$attrs['class'] = $class;
 
-			$params['data']['variant'] = $elem->getVariant();
+			$attrs['data']['variant'] = $elem->getVariant();
 
 			// utwórz pole tekstowe
-			$retval .= self::checkBox( $params );
+			$retval .= self::checkBox( $attrs );
 			++$index;
 		}
 
 		return $retval;
 	}
 
-	public static function textBox( array $params = [] ): string
+	public static function textBox( array $attrs = [] ): string
 	{
-		$params['name']  = $params['name']  ?? self::getNextId();
-		$params['id']    = $params['id']    ?? $name;
-		$params['value'] = $params['value'] ?? '';
-		$params['type']  = 'text';
+		$attrs['name']  = $attrs['name']  ?? self::getNextId();
+		$attrs['id']    = $attrs['id']    ?? $attrs['name'];
+		$attrs['value'] = $attrs['value'] ?? '';
+		$attrs['type']  = 'text';
 
-		$params = self::_attributesConverter( $params );
-		return self::_buildTag( 'input', false, $params );
+		$attrs = self::_attributesConverter( $attrs );
+		return self::_buildTag( 'input', false, $attrs );
 	}
 
-	public static function checkBox( array $params = [] ): string
+	public static function checkBox( array $attrs = [] ): string
 	{
-		$params['name']  = $params['name']  ?? self::getNextId();
-		$params['id']    = $params['id']    ?? $name;
-		$params['value'] = $params['value'] ?? 'on';
-		$params['type']  = 'checkbox';
-		$params['class'] = $params['class'] ?? '';
+		$attrs['name']  = $attrs['name']  ?? self::getNextId();
+		$attrs['id']    = $attrs['id']    ?? $attrs['name'];
+		$attrs['value'] = $attrs['value'] ?? 'on';
+		$attrs['type']  = 'checkbox';
+		$attrs['class'] = $attrs['class'] ?? '';
 
 		// lista atrybutów przeznaczonych dla kontrolki input
 		$inputattrs = [
@@ -153,19 +153,19 @@ class Tags extends \Phalcon\Tag
 
 		$retval = '';
 		$chkdat = [];
-		$params = self::_attributesConverter( $params );
+		$attrs = self::_attributesConverter( $attrs );
 
 		// wydziel atrybuty przeznaczone dla kontrolki "label"
-		if( isset($params['label']) )
+		if( isset($attrs['label']) )
 		{
 			$label = [
-				'for'   => $params['for'] ?? self::getNextId(),
-				'value' => $params['label']
+				'for'   => $attrs['for'] ?? self::getNextId(),
+				'value' => $attrs['label']
 			];
 
 			// wywal atrybuty z głównej tablicy
-			unset( $params['for'] );
-			unset( $params['label'] );
+			unset( $attrs['for'] );
+			unset( $attrs['label'] );
 
 			// utwórz identyfikator kontrolki "checkbox"
 			$chkdat['id'] = $label['for'];
@@ -176,13 +176,13 @@ class Tags extends \Phalcon\Tag
 
 		// wydziel atrybuty przeznaczone dla kontrolki "checkbox"
 		foreach( $inputattrs as $key => $value )
-			if( isset($params[$key]) )
+			if( isset($attrs[$key]) )
 			{
 				if( $value != '' )
-					$params['class'] .= ' ' . $value;
+					$attrs['class'] .= ' ' . $value;
 
-				$chkdat[$key] = $params[$key];
-				unset( $params[$key] );
+				$chkdat[$key] = $attrs[$key];
+				unset( $attrs[$key] );
 			}
 
 		// zbuduj element
@@ -190,11 +190,11 @@ class Tags extends \Phalcon\Tag
 			"<span></span>{$retval}";
 
 		// dopisz wartość i klasę
-		$params['value']  = $retval;
-		$params['class'] .= ' checkbox items-horizontal';
+		$attrs['value']  = $retval;
+		$attrs['class'] .= ' checkbox items-horizontal';
 
 		// zbuduj całą kontrolkę
-		return self::_buildTag( 'div', true, $params );
+		return self::_buildTag( 'div', true, $attrs );
 	}
 
 	public static function tabControl( array $attrs = [] ): string

@@ -1,5 +1,5 @@
-<div id="content" class="white-back items-vertical fill-free">
-	<div class="head-bar">
+<div id="content" class="items-vertical fill-free">
+	<div class="head-bar mb00">
 		<h2 class="mb5">Menu</h2>
 		<p class="description">
 			Lista wszystkich utworzonych menu które można przypisać do
@@ -7,7 +7,14 @@
 		</p>
 	</div>
 
+	{{ tag.checkBox([
+		'checked': false,
+		'label': 'Elementy bez tłumaczenia',
+		'class': 'head-bar white-back'
+	]) }}
+
 	<section class="container">
+
 		<table class="w100p zebra">
 			<tr>
 				<th class="identity">#</th>

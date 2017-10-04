@@ -17,6 +17,7 @@ namespace Pulsar\Admin;
 
 use Phalcon\Db\Column;
 use Phalcon\Mvc\{Controller, Model\Resultset};
+use Phalcon\Http\Response;
 use Pulsar\Model\{Menu, Language};
 use Pulsar\Helper\Utils;
 
@@ -66,10 +67,19 @@ class MenuController extends Controller
 		]);
 	}
 
-	public function newAction(): void
+	public function newAction()
 	{
 		if( $this->postRedirect('new') )
+		{
+			echo '<pre>';
+			var_dump($this->request->getPost());
+			echo '</pre>';
+			$this->view->disable();
 			return;
+
+			$response = new Response();
+			return $response->redirect( "admin/menu" );
+		}
 
 		Language::setLanguage( $this->config->cms->language );
 		
