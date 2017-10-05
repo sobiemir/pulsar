@@ -71,12 +71,6 @@ class MenuController extends Controller
 	{
 		if( $this->postRedirect('new') )
 		{
-			echo '<pre>';
-			var_dump($this->request->getPost());
-			echo '</pre>';
-			$this->view->disable();
-			return;
-
 			$response = new Response();
 			return $response->redirect( "admin/menu" );
 		}
@@ -97,7 +91,6 @@ class MenuController extends Controller
 			$menu = new Menu();
 			$menu->id = $id;
 			$menu->id_language = $lang->id;
-			$menu->private = true;
 
 			$data[] = $menu;
 		}
@@ -144,13 +137,43 @@ class MenuController extends Controller
 		$all = Language::getFrontend();
 		$cur = Language::getCurrent();
 
-		$data = Menu::find([
+		// wyszukaj menu do edycji
+		// zwracana jest lista, ponieważ edytowane są wszystkie języki
+		$menus = Menu::find([
 			'conditions' => [[
 				'id = :id:',
 				[ 'id' => $bin ],
 				[ 'id' => \PDO::PARAM_STR ]
 			]]
 		]);
+
+		$data    = [];
+		$avlangs = [];
+
+		// zapisz identyfikatory znanych języków
+		foreach( $all as $lang )
+			$avlangs[$lang->id] = true;
+
+		// odrzuć nieużywane języki
+		foreach( $menus as $menu )
+			if( isset($avlangs[$menu->id_language]) )
+			{
+				$data[] = $menu;
+				$avlangs[$menu->id_language] = false;
+			}
+
+		// uzupełnij pustymi danymi brakujące języki
+		foreach( $avlangs as $langid => $missing )
+		{
+			if( !$missing )
+				continue;
+
+			$menu = new Menu();
+			$menu->id = $id;
+			$menu->id_language = $langid;
+
+			$data[] = $menu;
+		}
 
 		// menu o podanym indeksie nie istnieje!
 		if( count($data) == 0 )
@@ -200,41 +223,5 @@ class MenuController extends Controller
 	private function addMenu(): void
 	{
 		$menu = new Menu();
-	}
-
-	private function splitLanguages( string $data, string $idsep, string $langsep ): array
-	{
-		$langs   = explode( $langsep, $data );
-		$content = [];
-
-		// rozdziel tłumaczenia
-		if( count($langs) > 0 )
-			foreach( $langs as $lang )
-			{
-				if( $lang == '' )
-					continue;
-
-				// rozdziel treść od identyfikatora
-				$expl = explode( $idsep, $lang );
-				if( count($expl) != 2 )
-					continue;
-
-				// usuń przecinek gdy jest przed identyfikatorem
-				if( $expl[0][0] == ',' )
-					$expl[0] = substr( $expl[0], 1 );
-
-				// przypisz wartość
-				$content[$expl[0]] = $expl[1];
-			}
-
-		// przypisz wartość dla głównego języka
-		// indeks ten w ogóle nie będzie brany pod uwagę podczas zapisu
-		if( count($content) > 0 )
-			if( isset($content[$this->config->cms->language]) )
-				$content[0] = $content[$this->config->cms->language];
-			else
-				$content[0] = current( $content );
-
-		return $content;
 	}
 }

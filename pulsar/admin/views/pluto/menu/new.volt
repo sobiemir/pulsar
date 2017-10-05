@@ -2,7 +2,7 @@
 
     {{ tag.form([
         'admin/menu/new',
-        'id': 'menu-edit',
+        'id': 'menu-new',
         'source': data
     ]) }}
 
@@ -20,11 +20,11 @@
             'selected': language,
             'class'   : 'white-back head-bar',
             'data'    : [
-                'searcher': '#menu-edit-container'
+                'searcher': '#menu-new-container'
             ]
         ]) }}
 
-        <table id="menu-edit-container" class="w100p form container">
+        <table id="menu-new-container" class="w100p form container">
             <!-- nazwa menu -->
             <tr>
                 <td><label for="menu-name">Nazwa:</label></td>

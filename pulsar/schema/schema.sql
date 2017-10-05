@@ -1,19 +1,16 @@
 --
 --  This file is part of Pulsar CMS
 --  Copyright (c) by sobiemir <sobiemir@aculo.pl>
+--     ___       __            
+--    / _ \__ __/ /__ ___ _____
+--   / ___/ // / (_-</ _ `/ __/
+--  /_/   \_,_/_/___/\_,_/_/
 --
---  This program is free software: you can redistribute it and/or modify
---  it under the terms of the GNU General Public License as published by
---  the Free Software Foundation, either version 3 of the License, or
---  (at your option) any later version.
+--  This source file is subject to the New BSD License that is bundled
+--  with this package in the file LICENSE.txt.
 --
---  This program is distributed in the hope that it will be useful,
---  but WITHOUT ANY WARRANTY; without even the implied warranty of
---  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
---  GNU General Public License for more details.
---
---  You should have received a copy of the GNU General Public License
---  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+--  You should have received a copy of the New BSD License along with
+--  this program. If not, see <http://www.licenses.aculo.pl/>.
 --
 
 DROP FUNCTION IF EXISTS UUID2BIN;
@@ -105,13 +102,13 @@ INSERT INTO `language` VALUES
 		1, 1, 1, 1, "pl", "Polski"),
 
 	(UUID2BIN("6f2b56fc-6ad5-4bbd-abac-646ed79b5cd0"),
-		0, 1, 1, 2, "en", "English"),
+		1, 1, 1, 2, "en", "English"),
 
 	(UUID2BIN("5ecc2846-0b64-4595-8328-dd47cc5a5e2e"),
 		1, 0, 1, 3, "ru", "Русский"),
 
 	(UUID2BIN("78bc6fee-679a-4782-abf2-ad1e8dd20860"),
-		1, 0, 1, 4, "de", "Deutsch"),
+		0, 1, 1, 4, "de", "Deutsch"),
 
 	(UUID2BIN("0b8b117e-a10a-463f-8155-d1a00196e537"),
 		0, 0, 1, 5, "ko", "한국어");

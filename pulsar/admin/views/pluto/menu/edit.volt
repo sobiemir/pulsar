@@ -3,48 +3,74 @@
     <!-- formularz edycji -->
     {{ tag.form([
         'admin/menu',
-        'id': 'menu-form'
+        'id': 'menu-form',
+        'source': data
     ]) }}
 
-        <div class="head-bar white-back">
+        <div class="head-bar mb00">
             <h2 class="mb5">Edycja menu</h2>
-            <p class="description"><span class="purple">GUID:</span> {{bin2guid(data.id)}}</p>
-
-            <table class="w100p form">
-                <!-- wybór języka dla edytowanej treści -->
-
-            </table>
+            <p class="description"><span class="blue">GUID:</span> {{bin2guid(data[0].id)}}</p>
         </div>
 
-        <table class="w100p form container">
-            <tr>
-                <td>Język:</td>
-                <td colspan="2">
-                    {{ tag.tabControl([
-                        'index'   : 'default_name',
-                        'source'  : languages,
-                        'bin2guid': true
-                    ]) }}
-                </td>
-            </tr>
+        {{ tag.tabControl([
+            'index'   : 'default_name',
+            'source'  : languages,
+            'selected': language,
+            'class'   : 'white-back head-bar',
+            'data'    : [
+                'searcher': '#menu-edit-container'
+            ]
+        ]) }}
+
+        <table id="menu-edit-container" class="w100p form container">
+            <!-- nazwa menu -->
             <tr>
                 <td><label for="menu-name">Nazwa:</label></td>
-                <td><input id="menu-name" class="w100p" type="text" name="name-pl" /></td>
-                <td><p class="description">Wyświetlana jest głównie na panelu bocznym w PA.</p></td>
+                <td>
+                    {{ tag.textBoxLang([
+                        'name' : 'name',
+                        'id'   : 'menu-name',
+                        'class': 'w100p'
+                    ]) }}
+                </td>
+                <td><p class="description">
+                    Wyświetlana jest głównie na panelu bocznym w PA.
+                </p></td>
             </tr>
+
+            <!-- czy menu jest prywatne? -->
             <tr>
                 <td>Szczegóły:</td>
-                <td>{{ tag.checkField([ 'private-menu',  'label': 'Prywatne menu' ]) }}</td>
-                <td><p class="description">Menu nie jest dostępne do wyboru dla szablonu.</p></td>
+                <td>
+                    {{ tag.checkBoxLang([
+                        'name' : 'private',
+                        'id'   : 'menu-private',
+                        'label': 'Prywatne'
+                    ]) }}
+                </td>
+                <td><p class="description">
+                    Menu nie jest dostępne do wyboru dla szablonu.
+                </p></td>
             </tr>
+
+            <!-- czy menu jest dostępne? -->
             <tr>
                 <td></td>
-                <td>{{ tag.checkField([ 'hide-menu',  'label': 'Ukryj menu' ]) }}</td>
-                <td><p class="description">Menu nie jest widoczne w PA poza listą.</p></td>
+                <td>
+                    {{ tag.checkBoxLang([
+                        'name' : 'online',
+                        'id'   : 'menu-online',
+                        'label': 'Dostępne'
+                    ]) }}
+                </td>
+                <td><p class="description">
+                    Menu nie jest widoczne w PA poza listą.
+                </p></td>
             </tr>
+
             <tr>
                 <td colspan="3">
-                    <button>Dodaj menu</button>
+                    <button>Zapisz menu</button>
                 </td>
             </tr>
         </table>

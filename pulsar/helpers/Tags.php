@@ -15,8 +15,6 @@ namespace Pulsar\Helper;
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-namespace Pulsar\Helper;
-
 use Phalcon\Mvc\Model\Resultset;
 
 class Tags extends \Phalcon\Tag
