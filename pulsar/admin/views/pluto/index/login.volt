@@ -1,13 +1,16 @@
 
 <div class="box-center items-vertical">
-	<!-- logo aplikacji -->
-	<div id="login-logo">
-		{{ tag.logo(96) }}
-	</div>
-
 	<!-- panel logowania -->
-	{{ form('admin/session/login') }}
+	{{ tag.form([
+		'admin/session/login',
+		'id': 'login-form'
+	]) }}
 	<div id="login-panel">
+		<!-- logo aplikacji -->
+		<div id="login-logo">
+			{{ tag.logo(96, '#444', '#c91111') }}
+		</div>
+
 		{{ flashSession.output() }}
 
 		<!-- nazwa użytkownika -->

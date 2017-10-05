@@ -143,9 +143,8 @@ table tr.noborder td {
 */
 
 input[type=text], input[type=password], .textbox {
-	padding: 0.3rem 0.6rem;
+	padding: 0.4rem 0.8rem;
 	min-width: 10rem;
-	background: transparent;
 	border: 0.1rem #999 solid;
 	background: #fff;
 }

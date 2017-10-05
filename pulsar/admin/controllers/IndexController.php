@@ -30,7 +30,9 @@ class IndexController extends Controller
 
 	public function loginAction()
 	{
-		$this->view->setMainView( APP_PATH . 'admin/views/login' );
+		$this->view->setMainView(
+			APP_PATH . 'admin/views/' . $this->config->admin->theme . '/login'
+		);
 		$this->view->setVar( 'title', 'Logowanie do panelu administratora' );
 	}
 }

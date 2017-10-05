@@ -42,8 +42,9 @@ $di->set(
 	'security',
 	function()
 	{
+		$config   = $this->getConfig();
 		$security = new Authorization();
-		$security->setWorkFactor( $this->config->system->work_factor );
+		$security->setWorkFactor( $config->system->work_factor );
 
 		return $security;
 	},

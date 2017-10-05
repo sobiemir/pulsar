@@ -33,6 +33,10 @@ return
 		'charset'    => 'utf8',
 		'prefix'     => ''
 	],
+	'admin' =>
+	[
+		'theme' => 'pluto'
+	],
 	'cms' =>
 	[
 		'dynamic_version' => false,

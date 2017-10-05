@@ -7,7 +7,7 @@
 
 	<title>{{ title }}</title>
 
-	{{ stylesheet_link('login') }}
+	{{ stylesheet_link('css/login') }}
 </head>
 <body>
 	{{ get_content() }}
