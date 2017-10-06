@@ -16,7 +16,7 @@ namespace Pulsar\Library;
  */
 
 use Phalcon\Security;
-use Pulsar\Model\Users;
+use Pulsar\Model\User;
 
 class Authorization extends Security
 {
@@ -35,22 +35,29 @@ class Authorization extends Security
 			return 1;
 		
 		// wyszukaj użytkownika o podanej nazwie
-		$user = Users::findFirst([
+		$user = User::findFirst([
 			'username = :username:',
 			'bind' => [
 				'username' => $username
 			]
 		]);
 
-		// sprawdź czy hasło jest poprawne
-		if( $user && $this->checkHash($password, $user->password) )
-			return 0;
-
-		// jeżeli nie ma użytkownika, wygeneruj hash aby zapobiec atakom czasowym
+		// brak użytkownika
 		if( !$user )
+		{
 			$this->hash( rand() );
+			return 3;
+		}
+		// sprawdź czy hasło jest poprawne
+		if( !$this->checkHash($password, $user->password) )
+			return 3;
 
-		return 2;
+		// sprawdź czy użytkownik jest nieaktywny
+		if( $user->status == 0 )
+			return 2;
+
+		// hasło się zgadza, można zalogować
+		return 0;
 	}
 
 	public function logoutUser()

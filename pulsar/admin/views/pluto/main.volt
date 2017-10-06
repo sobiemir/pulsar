@@ -19,7 +19,7 @@
 	<header id="header" class="w100p items-horizontal">
 		
 		<!-- logo Pulsar CMS wraz z nazwą -->
-		{{ tag.logo(48, '#EEE', '#E16428') }}
+		{{ tag.logo(48, '#EEE', '#c91111') }}
 
 		<div class="items-vertical items-center">
 			<h1>Pulsar</h1>

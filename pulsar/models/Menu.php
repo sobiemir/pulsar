@@ -16,121 +16,173 @@ namespace Pulsar\Model;
  */
 
 use Pulsar\Helper\Utils;
+use Phalcon\Mvc\Model\Resultset;
 
 class Menu extends \Phalcon\Mvc\Model
 {
-    /**
-     *
-     * @var string
-     * @Primary
-     * @Column(type="string", length=16, nullable=false)
-     */
-    public $id = null;
+	/**
+	 * Identyfikator menu w postaci GUID.
+	 *
+	 * TYPE: string
+	 */
+	public $id = null;
 
-    /**
-     *
-     * @var string
-     * @Primary
-     * @Column(type="string", length=16, nullable=false)
-     */
-    public $id_language = null;
+	/**
+	 * Identyfikator języka przypisanego do menu w postaci GUID.
+	 *
+	 * TYPE: string
+	 */
+	public $id_language = null;
 
-    /**
-     *
-     * @var integer
-     * @Column(type="integer", length=1, nullable=false)
-     */
-    public $private = false;
+	/**
+	 * Czy menu jest prywatne?
+	 *
+	 * DESCRIPTION:
+	 *     Prywatne menu nie jest wyświetlane dla użytkownika, jednak jego
+	 *     poszczególne strony mogą być widoczne.
+	 *
+	 * TYPE: boolean
+	 */
+	public $private = false;
 
-    /**
-     *
-     * @var integer
-     * @Column(type="integer", length=1, nullable=false)
-     */
-    public $online = false;
+	/**
+	 * Czy menu jest dostępne?
+	 *
+	 * TYPE: boolean
+	 */
+	public $online = false;
 
-    /**
-     *
-     * @var integer
-     * @Column(type="integer", length=11, nullable=false)
-     */
-    public $order = 0;
+	/**
+	 * Indeks względem którego menu jest sortowane.
+	 *
+	 * TYPE: integer
+	 */
+	public $order = 0;
 
-    /**
-     *
-     * @var string
-     * @Column(type="string", length=255, nullable=false)
-     */
-    public $name = '';
+	/**
+	 * Nazwa menu wyświetlana w panelu administratora.
+	 *
+	 * TYPE: string
+	 */
+	public $name = '';
 
-    /**
-     * Initialize method for model.
-     */
-    public function initialize()
-    {
-        $this->belongsTo(
-            'id_language',
-            '\Pulsar\Model\Language',
-            'id'
-        );
-    }
+// =============================================================================
 
-    /**
-     * Returns table name mapped in the model.
-     *
-     * @return string
-     */
-    public function getSource()
-    {
-        return 'menu';
-    }
+	/**
+	 * Identyfikator menu w formacie GUID.
+	 *
+	 * TYPE: string
+	 */
+	private $_id = null;
 
-    private $_id = null;
-    private $_id_language = null;
+	/**
+	 * Identyfikator języka menu w formacie GUID.
+	 *
+	 * TYPE: string
+	 */
+	private $_id_language = null;
 
-    public function getRawId(): string
-    {
-        return $this->id;
-    }
+// =============================================================================
 
-    public function getRawVariant(): string
-    {
-        return $this->id_language;
-    }
+	/**
+	 * Inicjalizuje dane dla modelu.
+	 */
+	public function initialize(): void
+	{
+		$this->belongsTo(
+			'id_language',
+			'\Pulsar\Model\Language',
+			'id'
+		);
+	}
 
-    public function getId(): string
-    {
-        if( !$this->_id )
-            $this->_id = Utils::BinToGUID( $this->id );
-        return $this->_id;
-    }
+	/**
+	 * Zwraca nazwę tabeli do której przypięty jest model.
+	 *
+	 * RETURNS: string
+	 *     Nazwę tabeli docelowej.
+	 */
+	public function getSource(): string
+	{
+		return 'menu';
+	}
 
-    public function getVariant(): string
-    {
-        if( !$this->_id_language )
-            $this->_id_language = Utils::BinToGUID( $this->id_language );
-        return $this->_id_language;
-    }
+	/**
+	 * Zwraca identyfikator menu w formacie binarnym.
+	 *
+	 * RETURNS: string
+	 *     Identyfikator menu w formacie binarnym pobrany z tabeli.
+	 */
+	public function getRawId(): string
+	{
+		return $this->id;
+	}
 
-    /**
-     * Allows to query a set of records that match the specified conditions
-     *
-     * @param mixed $parameters
-     * @return Menu[]
-     */
-    public static function find( $parameters = null )
-    {
-        return parent::find( $parameters );
-    }
+	/**
+	 * Zwraca identyfikator języka w formacie binarnym.
+	 *
+	 * RETURNS: string
+	 *     Identyfikator języka w formacie binarnym pobrany z tabeli.
+	 */
+	public function getRawVariant(): string
+	{
+		return $this->id_language;
+	}
 
-    /**
-     * Allows to query the first record that match the specified conditions
-     *
-     * @param mixed $parameters
-     * @return Menu
-     */
-    public static function findFirst( $parameters = null )
-    {
-        return parent::findFirst( $parameters );
-    }
+	/**
+	 * Zwraca identyfikator menu w formacie GUID.
+	 *
+	 * RETURNS: string
+	 *     Identyfikator menu skonwertowany na typ GUID.
+	 */
+	public function getId(): string
+	{
+		if( !$this->_id )
+			$this->_id = Utils::BinToGUID( $this->id );
+		return $this->_id;
+	}
+
+	/**
+	 * Zwraca identyfikator języka w formacie GUID.
+	 *
+	 * RETURNS: string
+	 *     Identyfikator języka skonwertowany na typ GUID.
+	 */
+	public function getVariant(): string
+	{
+		if( !$this->_id_language )
+			$this->_id_language = Utils::BinToGUID( $this->id_language );
+		return $this->_id_language;
+	}
+
+	/**
+	 * Pobiera rekordy z tabeli spełniające podane kryteria.
+	 *
+	 * PARAMETERS:
+	 *     $parameters (array | string):
+	 *         Kryteria wyszukiwania danych w tabeli.
+	 *
+	 * RETURNS: Resultset
+	 *     Listę rekordów spełniających podane kryteria pobranych z tabeli
+	 *     zawierającej listę menu.
+	 */
+	public static function find( $parameters = null ): Resultset
+	{
+		return parent::find( $parameters );
+	}
+
+	/**
+	 * Pobiera pierwszy dostępny rekord spełniający podane kryteria.
+	 *
+	 * PARAMETERS:
+	 *     $parameters (array | string):
+	 *         Kryteria wyszukiwania danych w tabeli.
+	 *
+	 * RETURNS: Menu
+	 *     Menu spełniające podane kryteria.
+	 */
+	public static function findFirst( $parameters = null ): Menu
+	{
+		return parent::findFirst( $parameters );
+	}
 }

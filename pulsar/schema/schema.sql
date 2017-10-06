@@ -30,6 +30,7 @@ CREATE FUNCTION UUID2BIN(s CHAR(36))
 
 DROP TABLE IF EXISTS `menu`;
 DROP TABLE IF EXISTS `language`;
+DROP TABLE IF EXISTS `user`;
 
 -- DOSTĘPNE JĘZYKI
 -- =============================================================================
@@ -89,6 +90,36 @@ CREATE TABLE `menu`
 	FOREIGN KEY (id_language) REFERENCES language (id)
 );
 
+-- LISTA ZAREJESTROWANYCH UŻYTKOWNIKÓW
+-- =============================================================================
+-- Na chwilę obecną jest to prosta lista pól które są obowiązkowe dla każdego
+-- użytkownika.
+-- Tabela ta będzie ewentualnie rozszerzana przez inną tabelę modyfikowaną
+-- z poziomu aplikacji (użytkownik będzie mógł dodawać i usuwać pola).
+-- 
+-- id           Identyfikator użytkownika.
+-- username     Nazwa użytkownika po której użytkownik będzie się logował.
+-- screen_name  Wyświetlana nazwa użytkownika.
+-- email        Adres email użytkownika.
+-- password     Hasło przepuszczone przez funkcję haszującą.
+-- join_date    Data rejestracji użytkownika.
+-- status       Status użytkownika (np. aktywny / nieaktywny / zbanowany itp).
+-- =============================================================================
+CREATE TABLE `user`
+(
+	`id`           BINARY(16)   NOT NULL,
+	`username`     VARCHAR(50)  NOT NULL,
+	`screen_name`  VARCHAR(50)  NOT NULL,
+	`email`        VARCHAR(100) NOT NULL,
+	`password`     VARCHAR(255) NOT NULL,
+	`join_date`    DATETIME     NOT NULL DEFAULT NOW(),
+	`status`       INTEGER      NOT NULL DEFAULT 0,
+
+	PRIMARY KEY (id),
+	UNIQUE  KEY (username),
+	UNIQUE  KEY (email)
+);
+
 -- -----------------------------------------------------------------------------
 --
 -- =============================================================================
@@ -96,6 +127,17 @@ CREATE TABLE `menu`
 -- =============================================================================
 --
 -- -----------------------------------------------------------------------------
+
+INSERT INTO `user` VALUES
+	(UUID2BIN("e123ef97-50be-4641-a3a0-b36bc41e1894"),
+		"admin", "adminex", "admin@test.site",
+		"$2y$10$N0VLcURMV2d5OGdpVk1UV.1gSpUmKuHQcAM/VLn.1cXbYAC7HeGUK",
+		NOW(), 1),
+
+	(UUID2BIN("5e77bedd-0557-4093-9ea9-593d1192641d"),
+		"test", "testowix", "test@test.site",
+		"$2y$10$RDR0cXM1eWRaU3ZuM2U4aeSVmhsByokNIIHBTD1JGgpVaW09BE.4q",
+		NOW(), 0);
 
 INSERT INTO `language` VALUES
 	(UUID2BIN("9e76c39b-fb16-474d-b4aa-cf4c1ff7d441"),

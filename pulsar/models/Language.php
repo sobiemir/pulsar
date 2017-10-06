@@ -20,218 +20,317 @@ use Pulsar\Helper\Utils;
 
 class Language extends \Phalcon\Mvc\Model
 {
-    /**
-     *
-     * @var string
-     * @Primary
-     * @Column(type="string", length=16, nullable=false)
-     */
-    public $id;
+	/**
+	 * Identyfikator języka w postaci GUID.
+	 *
+	 * TYPE: string
+	 */
+	public $id = null;
 
-    /**
-     *
-     * @var integer
-     * @Column(type="integer", length=1, nullable=false)
-     */
-    public $frontend;
+	/**
+	 * Czy język jest dostępny dla użytkownika strony?
+	 *
+	 * TYPE: boolean
+	 */
+	public $frontend = false;
 
-    /**
-     *
-     * @var integer
-     * @Column(type="integer", length=1, nullable=false)
-     */
-    public $backend;
+	/**
+	 * Czy język jest dostępny dla użytkownika panelu administracyjnego?
+	 *
+	 * TYPE: boolean
+	 */
+	public $backend = false;
 
-    /**
-     *
-     * @var integer
-     * @Column(type="integer", length=1, nullable=false)
-     */
-    public $direction;
+	/**
+	 * Identyfikator języka przypisanego do menu.
+	 *
+	 * DESCRIPTION:
+	 *     Wartość 1 oznacza układ tekstu od lewej do prawej, zaś wartość
+	 *     2 układ tekstu do prawej do lewej strony.
+	 *     Dla wartości 0 przyjmowany jest układ domyślny (LTR).
+	 *
+	 * TYPE: integer
+	 */
+	public $direction = 1;
 
-    /**
-     *
-     * @var integer
-     * @Column(type="integer", length=11, nullable=false)
-     */
-    public $order;
+	/**
+	 * Indeks względem którego menu jest sortowane.
+	 *
+	 * TYPE: integer
+	 */
+	public $order = 0;
 
-    /**
-     *
-     * @var string
-     * @Column(type="string", length=20, nullable=false)
-     */
-    public $code;
+	/**
+	 * Kod języka (powinien być jak najkrótszy).
+	 *
+	 * TYPE: integer
+	 */
+	public $code = '';
 
-    /**
-     *
-     * @var string
-     * @Column(type="string", length=100, nullable=false)
-     */
-    public $default_name;
+	/**
+	 * Domyślna nazwa języka wyświetlana gdy nie występuje w tłumaczeniach.
+	 *
+	 * TYPE: integer
+	 */
+	public $default_name = '';
 
-    /**
-     * Lista języków utworzonych systemie.
-     */
-    protected static $_all_langs = [];
+// =============================================================================
 
-    /**
-     * Aktualnie używany przez użytkownika język.
-     */
-    protected static $_curr_lang = null;
+	/**
+	 * Lista języków utworzonych systemie.
+	 *
+	 * TYPE: Language[]
+	 */
+	protected static $_all_langs = [];
 
-    /**
-     * Lista języków dostępnych na stronie.
-     */
-    protected static $_front_langs = [];
+	/**
+	 * Aktualnie używany przez użytkownika język.
+	 *
+	 * TYPE: Language
+	 */
+	protected static $_curr_lang = null;
 
-    /**
-     * Lista języków dostępnych dla panelu administratora.
-     */
-    protected static $_back_langs = [];
+	/**
+	 * Lista języków dostępnych na stronie.
+	 *
+	 * TYPE: Language[]
+	 */
+	protected static $_front_langs = [];
 
+	/**
+	 * Lista języków dostępnych dla panelu administratora.
+	 *
+	 * TYPE: Language[]
+	 */
+	protected static $_back_langs = [];
 
-    /**
-     * Initialize method for model.
-     */
-    public function initialize()
-    {
-        $this->hasMany(
-            'id',
-            '\Pulsar\Model\Menu',
-            'id_language'
-        );
-    }
+// =============================================================================
 
-    /**
-     * Returns table name mapped in the model.
-     *
-     * @return string
-     */
-    public function getSource()
-    {
-        return 'language';
-    }
+	/**
+	 * Identyfikator języka w formacie GUID.
+	 *
+	 * TYPE: string
+	 */
+	private $_id = null;
 
+// =============================================================================
 
-    private $_id = null;
-    private $_id_language = null;
+	/**
+	 * Inicjalizuje dane dla modelu.
+	 */
+	public function initialize(): void
+	{
+		$this->hasMany(
+			'id',
+			'\Pulsar\Model\Menu',
+			'id_language'
+		);
+	}
 
-    public function getRawId(): string
-    {
-        return $this->id;
-    }
+	/**
+	 * Zwraca nazwę tabeli do której przypięty jest model.
+	 *
+	 * RETURNS: string
+	 *     Nazwę tabeli docelowej.
+	 */
+	public function getSource(): string
+	{
+		return 'language';
+	}
 
-    public function getId(): string
-    {
-        if( !$this->_id )
-            $this->_id = Utils::BinToGUID( $this->id );
-        return $this->_id;
-    }
+	/**
+	 * Zwraca identyfikator języka w formacie binarnym.
+	 *
+	 * RETURNS: string
+	 *     Identyfikator języka w formacie binarnym pobrany z tabeli.
+	 */
+	public function getRawId(): string
+	{
+		return $this->id;
+	}
 
-    public function isDisabled(): bool
-    {
-        return !$this->frontend && !$this->backend;
-    }
+	/**
+	 * Zwraca identyfikator języka w formacie GUID.
+	 *
+	 * RETURNS: string
+	 *     Identyfikator języka skonwertowany na typ GUID.
+	 */
+	public function getId(): string
+	{
+		if( !$this->_id )
+			$this->_id = Utils::BinToGUID( $this->id );
+		return $this->_id;
+	}
 
-    /**
-     * Allows to query a set of records that match the specified conditions
-     *
-     * @param mixed $parameters
-     * @return Language[]
-     */
-    public static function find( $parameters = null )
-    {
-        return parent::find( $parameters );
-    }
+	/**
+	 * Sprawdza czy język jest wyłączony z użytku.
+	 * 
+	 * RETURNS: boolean
+	 *     Informację o tym czy język jest nieaktywny.
+	 */
+	public function isDisabled(): bool
+	{
+		return !$this->frontend && !$this->backend;
+	}
 
-    /**
-     * Allows to query the first record that match the specified conditions
-     *
-     * @param mixed $parameters
-     * @return Language
-     */
-    public static function findFirst( $parameters = null )
-    {
-        return parent::findFirst( $parameters );
-    }
+	/**
+	 * Pobiera rekordy z tabeli spełniające podane kryteria.
+	 *
+	 * PARAMETERS:
+	 *     $parameters (array | string):
+	 *         Kryteria wyszukiwania danych w tabeli.
+	 *
+	 * RETURNS: Resultset
+	 *     Listę rekordów spełniających podane kryteria pobranych z tabeli
+	 *     zawierającej listę menu.
+	 */
+	public static function find( $parameters = null ): Resultset
+	{
+		return parent::find( $parameters );
+	}
 
-    public static function setLanguage( string $id ): void
-    {
-        if( empty(Language::$_curr_lang) )
-        {
-            Language::findAndStore( $id );
-            return;
-        }
+	/**
+	 * Pobiera pierwszy dostępny rekord spełniający podane kryteria.
+	 *
+	 * PARAMETERS:
+	 *     $parameters (array | string):
+	 *         Kryteria wyszukiwania danych w tabeli.
+	 *
+	 * RETURNS: Language
+	 *     Język spełniający podane kryteria.
+	 */
+	public static function findFirst( $parameters = null ): Language
+	{
+		return parent::findFirst( $parameters );
+	}
 
-        if( Language::$_curr_lang->id != $id )
-        {
-            Language::$_curr_lang = reset( Language::$_all_langs );
+	/**
+	 * Ustawia aktualny język strony.
+	 *
+	 * DESCRIPTION:
+	 *     Funkcja ta ma wpływ tylko i wyłącznie na wyświetlanie witryny dla
+	 *     danego użytkownika.
+	 *     Każdy użytkownik może mieć inny wyświetlany język, więc zmienna
+	 *     ta nie wiąże się ze stałą zmianą języka dla wszystkich użytkowników.
+	 *
+	 * PARAMETERS:
+	 *     $id (string):
+	 *         Identyfikator języka który ma być używany jako główny.
+	 */
+	public static function setLanguage( string $id ): void
+	{
+		if( empty(Language::$_curr_lang) )
+		{
+			Language::findAndStore( $id );
+			return;
+		}
 
-            foreach( Language::$all_langs as $lang )
-                if( $lang->id == $id )
-                    Language::$_curr_lang = $lang;
-        }
-    }
+		if( Language::$_curr_lang->id != $id )
+		{
+			Language::$_curr_lang = reset( Language::$_all_langs );
 
-    public static function getAll(): array
-    {
-        if( empty(Language::$_all_langs) )
-            Language::findAndStore( null );
+			foreach( Language::$all_langs as $lang )
+				if( $lang->id == $id )
+					Language::$_curr_lang = $lang;
+		}
+	}
 
-        return Language::$_all_langs;
-    }
+	/**
+	 * Zwraca wszystkie dostępne języki w aplikacji.
+	 *
+	 * DESCRIPTION:
+	 *     Funkcja zwraca wszystkie języki, niezależnie od tego czy są dostępne
+	 *     dla administratora lub użytkownika strony czy też są całkowicie
+	 *     wyłączone z użytku.
+	 * 
+	 * RETURNS:
+	 *     Listę wszystkich utworzonych języków.
+	 */
+	public static function getAll(): array
+	{
+		if( empty(Language::$_all_langs) )
+			Language::findAndStore();
 
-    public static function getCurrent(): Language
-    {
-        if( empty(Language::$_curr_lang) )
-        {
-            if( empty(Language::$_all_langs) )
-                Language::findAndStore( null );
+		return Language::$_all_langs;
+	}
 
-            Language::$_curr_lang = current( Language::$_all_langs );
-        }
-        return Language::$_curr_lang;
-    }
+	/**
+	 * Zwraca aktualnie ustawiony język.
+	 *
+	 * RETURNS: Language
+	 *     Język aktualnie używany w aplikacji.
+	 */
+	public static function getCurrent(): Language
+	{
+		if( empty(Language::$_curr_lang) )
+		{
+			if( empty(Language::$_all_langs) )
+				Language::findAndStore();
 
-    public static function getFrontend(): array
-    {
-        if( empty(Language::$_front_langs) )
-            Language::findAndStore( null );
+			Language::$_curr_lang = current( Language::$_all_langs );
+		}
+		return Language::$_curr_lang;
+	}
 
-        return Language::$_front_langs;
-    }
+	/**
+	 * Zwraca języki dostępne dla użytkownika przeglądającego stronę.
+	 *
+	 * RETURNS: Language[]
+	 *     Listę języków dostępnych dla użytkownika strony.
+	 */
+	public static function getFrontend(): array
+	{
+		if( empty(Language::$_front_langs) )
+			Language::findAndStore();
 
-    public static function getBackend(): array
-    {
-        if( empty(Language::$_back_langs) )
-            Language::findAndStore( null );
+		return Language::$_front_langs;
+	}
 
-        return Language::$_back_langs;
-    }
+	/**
+	 * Zwraca języki dostępne dla panelu administratora.
+	 *
+	 * RETURNS: Language[]
+	 *     Listę języków dostępnych dla panelu administratora.
+	 */
+	public static function getBackend(): array
+	{
+		if( empty(Language::$_back_langs) )
+			Language::findAndStore();
 
-    private static function findAndStore( $id ): void
-    {
-        // pobierz języki z bazy danych
-        $langs = Language::find([
-            'order' => '[order]'
-        ]);
+		return Language::$_back_langs;
+	}
 
-        if( count($langs) == 0 )
-            throw new \Exception( "No language available in database!" );
+// =============================================================================
 
-        // uzupełnij tablice w oparciu o pobrane języki
-        foreach( $langs as $lang )
-        {
-            if( $lang->id == $id )
-                Language::$_curr_lang = $lang;
+	/**
+	 * Pobiera języki z bazy i zapisuje do odpowiednich pól w klasie.
+	 *
+	 * PARAMETERS:
+	 *     $id (string):
+	 *         Identyfikator języka który ma zostać ustawiony jako aktualny.
+	 */
+	private static function findAndStore( ?string $id ): void
+	{
+		// pobierz języki z bazy danych
+		$langs = Language::find([
+			'order' => '[order]'
+		]);
 
-            if( $lang->frontend )
-                Language::$_front_langs[] = $lang;
+		if( count($langs) == 0 )
+			throw new \Exception( "No language available in database!" );
 
-            if( $lang->backend )
-                Language::$_back_langs[] = $lang;
-        }
-        Language::$_all_langs = $langs;
-    }
+		// uzupełnij tablice w oparciu o pobrane języki
+		foreach( $langs as $lang )
+		{
+			if( $lang->id == $id )
+				Language::$_curr_lang = $lang;
+
+			if( $lang->frontend )
+				Language::$_front_langs[] = $lang;
+
+			if( $lang->backend )
+				Language::$_back_langs[] = $lang;
+		}
+		Language::$_all_langs = $langs;
+	}
 }

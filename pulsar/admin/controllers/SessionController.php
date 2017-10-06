@@ -62,9 +62,17 @@ class SessionController extends Controller
 				return false;
 			}
 			else if( $retval == 1 )
-				$this->flashSession->warning( 'Poniższe pola nie mogą być puste!' );
+				$this->flashSession->warning(
+					'Poniższe pola nie mogą być puste!'
+				);
+			else if( $retval == 2 )
+				$this->flashSession->error(
+					'Użytkownik nie jest aktywny!'
+				);
 			else
-				$this->flashSession->error( 'Nieprawidłowe dane logowania!' );
+				$this->flashSession->error(
+					'Nieprawidłowe dane logowania!'
+				);
 		}
 
 		// przekierowanie na panel logowania
