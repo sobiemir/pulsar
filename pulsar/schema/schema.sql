@@ -130,12 +130,12 @@ CREATE TABLE `user`
 
 INSERT INTO `user` VALUES
 	(UUID2BIN("e123ef97-50be-4641-a3a0-b36bc41e1894"),
-		"admin", "adminex", "admin@test.site",
+		"admin", "Mr. Admin", "admin@test.site",
 		"$2y$10$N0VLcURMV2d5OGdpVk1UV.1gSpUmKuHQcAM/VLn.1cXbYAC7HeGUK",
 		NOW(), 1),
 
 	(UUID2BIN("5e77bedd-0557-4093-9ea9-593d1192641d"),
-		"test", "testowix", "test@test.site",
+		"test", "Ms. Test", "test@test.site",
 		"$2y$10$RDR0cXM1eWRaU3ZuM2U4aeSVmhsByokNIIHBTD1JGgpVaW09BE.4q",
 		NOW(), 0);
 
@@ -170,4 +170,16 @@ INSERT INTO `menu` VALUES
 
 	(UUID2BIN("0c0ba94e-0c7a-4831-b06b-914c47deb3a6"),
 		UUID2BIN("6f2b56fc-6ad5-4bbd-abac-646ed79b5cd0"),
-		1, 1, 2, "System menu");
+		1, 1, 2, "System menu"),
+
+	(UUID2BIN("7dc7f931-4e5a-474f-a289-dd794b34f099"),
+		UUID2BIN("6f2b56fc-6ad5-4bbd-abac-646ed79b5cd0"),
+		0, 0, 3, "Sidebar menu"),
+
+	(UUID2BIN("e98e4071-9b11-41a8-837f-a797b80bb72d"),
+		UUID2BIN("5ecc2846-0b64-4595-8328-dd47cc5a5e2e"),
+		0, 0, 4, "Нижнее меню"),
+
+	(UUID2BIN("e98e4071-9b11-41a8-837f-a797b80bb72d"),
+		UUID2BIN("6f2b56fc-6ad5-4bbd-abac-646ed79b5cd0"),
+		1, 0, 4, "Footer menu");

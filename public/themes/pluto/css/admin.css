@@ -213,7 +213,7 @@ input[type=text].fa-icon, input[type=password].fa-icon, .textbox.fa-icon {
 }
 
 .tab-control li {
-	padding: 0 0.8rem;
+	padding: 0.2rem 0.8rem;
 	margin-left: 0;
 	cursor: pointer;
 	user-select: none;
@@ -646,11 +646,21 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, .bu
 	border: 1px transparent solid;
 	color: #6a6a6a;
 }
+.message.info,
 .message.warning,
 .message.error {
-	background: #f4e59f;
-	border: 1px #c6b35b solid;
 	padding: 0.4rem 0.8rem;
+	border-width: 1px;
+	border-style: solid;
+}
+.message.info {
+	background: #fff;
+	border-color: #666;
+	color: #333;
+}
+.message.warning {
+	background: #f4e59f;
+	border-color: #c6b35b;
 	color: #877314;
 }
 .message.error {

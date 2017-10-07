@@ -19,16 +19,47 @@ use Phalcon\Db\Column;
 use Phalcon\Mvc\{Controller, Model\Resultset};
 use Phalcon\Http\Response;
 use Pulsar\Model\{Menu, Language};
-use Pulsar\Helper\Utils;
+use Pulsar\Helper\{Utils, ControlElement};
 
 class MenuController extends Controller
 {
 	public function indexAction(): void
 	{
-		$data = Menu::find();
+		$switch = [
+			new ControlElement( 1, 'Przetłumaczone' ),
+			new ControlElement( 2, 'Do tłumaczenia' )
+		];
+
+		$data = [
+			// przetłumaczone elementy, limit 30, sortowanie po 'order'
+			Menu::find([
+				'conditions' => [[
+					'id_language = :lang:',
+					[ 'lang' => $this->config->cms->language ],
+					[ 'lang' => \PDO::PARAM_STR ]
+				]],
+				'order' => '[order]',
+				'limit' => 30
+			]),
+			// nieprzetłumaczone elementy, limit 30, brak sortowania
+			// sortowanie jest wyłączone z racji tego, iż każdy język może mieć
+			// różne sortowanie elementów
+			Menu::find([
+				'group'  => 'id',
+				'having' => "id_language != :lang:",
+				'bind'   => [
+					'lang' => $this->config->cms->language
+				],
+				'bindTypes' => [
+					'lang' => \PDO::PARAM_STR
+				],
+				'limit' => 30
+			])
+		];
 
 		$this->view->setVars([
 			'data'       => $data,
+			'switch'     => $switch,
 			'title'      => 'Pulsar :: Menu',
 			'breadcrumb' => [
 				[

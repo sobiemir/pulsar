@@ -63,14 +63,14 @@ class Language extends \Phalcon\Mvc\Model
 	/**
 	 * Kod języka (powinien być jak najkrótszy).
 	 *
-	 * TYPE: integer
+	 * TYPE: string
 	 */
 	public $code = '';
 
 	/**
 	 * Domyślna nazwa języka wyświetlana gdy nie występuje w tłumaczeniach.
 	 *
-	 * TYPE: integer
+	 * TYPE: string
 	 */
 	public $default_name = '';
 

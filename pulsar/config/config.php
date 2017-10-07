@@ -35,7 +35,8 @@ return
 	],
 	'admin' =>
 	[
-		'theme' => 'pluto'
+		'theme'    => 'pluto',
+		'language' => '9e76c39b-fb16-474d-b4aa-cf4c1ff7d441'
 	],
 	'cms' =>
 	[
