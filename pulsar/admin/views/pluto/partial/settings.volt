@@ -16,7 +16,7 @@
 					{{ tag.checkField([ 'name',   'label': 'Nazwa' ]) }}
 					{{ tag.checkField([ 'online', 'label': 'Dostępność' ]) }}
 
-					<h6 class="bold purple">Dostępne akcje</h6>
+					<h6 class="bold">Dostępne akcje</h6>
 					<ul>
 						{{ tag.checkField([ 'action-clone',  'tag': 'li', 'label': 'Klonowanie' ]) }}
 						{{ tag.checkField([ 'action-edit',   'tag': 'li', 'label': 'Edycja' ]) }}

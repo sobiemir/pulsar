@@ -238,9 +238,8 @@ input[type=text].fa-icon, input[type=password].fa-icon, .textbox.fa-icon {
 */
 
 input[type=button], input[type=submit], input[type=reset], .button, button {
-	padding: 0.3rem 1.4rem;
+	padding: 0.4rem 1.6rem;
 	background: #127899;
-	border: 0.1rem #127899 solid;
 	color: #fff;
 	cursor: pointer;
 	font-size: 1rem;
@@ -249,8 +248,8 @@ input[type=button], input[type=submit], input[type=reset], .button, button {
 .button .fa, button .fa {
 	font-size: 1.4rem;
 	color: inherit;
-	margin-right: 0.8rem;
 	border-right: 0.1rem #fff solid;
+	margin-top: -0.2rem;
 	border-color: inherit;
 	padding-right: 0.8rem;
 	vertical-align: middle;
@@ -260,23 +259,42 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, .bu
 	background: #1A8BB2;
 	outline: 0;
 }
+.button.blue, button.blue {
+	background: #127899;
+	color: #FFF;
+}
+.button.blue:hover, button.blue:hover {
+	background: #1A8BB2;
+	color: #FFF;
+}
 .button.red, button.red {
 	background: #c83737;
-	border-color: #982020;
+	color: #FFF;
 }
 .button.red:hover, button.red:hover,
 .button.red:focus, button.red:focus {
 	background: #dc4343;
-	border-color: #a92929;
+	color: #FFF;
 }
 .button.green, button.green {
 	background: #3e8c26;
-	border-color: #2c6819;
+	color: #FFF;
 }
 .button.green:hover, button.green:hover,
 .button.green:focus, button.green:focus {
 	background: #51a038;
-	border-color: #387925;
+	color: #FFF;
+}
+.button.black, button.black {
+	background: #333;
+	color: #FFF;
+}
+.button.black:hover, button.black:hover {
+	background: #444;
+}
+.button.pink, button.pink {
+	background: #E80C7A;
+	color: #FFF;
 }
 .button.simple, button.simple {
 	background-color: transparent;
@@ -288,6 +306,10 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, .bu
 .button.simple:hover, button.simple:hover 
 .button.simple:focus, button.simple:focus {
 	background: #ddd;
+}
+form .button-container {
+	padding: 1rem 1.6rem;
+	display: flex;
 }
 .button-container .button .fa, button .fa {
 	border-right: 0;
@@ -679,16 +701,19 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, .bu
 	margin-right: 0.1rem;
 }
 
+a.delete, a.edit, a.clone {
+	color: #111;
+}
 .delete, .edit, .clone {
 	cursor: pointer;
 }
-span.delete:hover {
+a.delete:hover, span.delete:hover {
 	color: #c83737;
 }
-span.edit:hover {
+a.edit:hover, span.edit:hover {
 	color: #127899;
 }
-span.clone:hover {
+a.clone:hover, span.clone:hover {
 	color: #7e1c71;
 }
 
@@ -749,7 +774,6 @@ span.clone:hover {
 	background: #f4f4f4;
 	border-bottom: 1px #ccc solid;
 	padding: 1rem 1.6rem;
-	margin-bottom: 0.6rem;
 }
 
 .head-bar.simple {
@@ -828,6 +852,7 @@ span.clone:hover {
 .pb25 { padding-bottom: 2.5rem; }
 .pb30 { padding-bottom: 3.0rem; }
 
+.ml-a { margin-left: auto; }
 
 .mb00 { margin-bottom: 0.0rem; }
 

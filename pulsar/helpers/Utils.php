@@ -104,4 +104,22 @@ class Utils
 
 		return self::BinToGUID( $bin );
 	}
+
+	public static function GetFromArray( array $array, string $variant,
+		array $data ): array
+	{
+		$retval = [];
+
+		foreach( $data as $name => $type )
+		{
+			if( $type == 'text' )
+				$retval[$name] = $array[$name . ':' . $variant] ?? '';
+			else if( $type == 'check' )
+			{
+				$retval[$name] = $array[$name . ':' . $variant] ?? '';
+				$retval[$name] = $retval[$name] == '';
+			}
+		}
+		return $retval;
+	}
 }

@@ -55,9 +55,10 @@
 							<td>{{out.online  ? 'Tak' : 'Nie'}}</td>
 							<td class="text-right w1p">
 								<div class="f0">
-									<span class="fa fa-clone clone"></span>
-									<span class="fa fa-pencil edit"></span>
-									<span class="fa fa-trash delete"></span>
+									<a href="#" class="fa fa-clone clone"></a>
+									<a href="/admin/menu/edit/{{out.getId()}}"
+										class="fa fa-pencil edit"></a>
+									<a href="#" class="fa fa-trash delete"></a>
 								</div>
 							</td>
 						</tr>

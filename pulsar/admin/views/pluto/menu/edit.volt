@@ -1,15 +1,17 @@
-<div id="content" class="items-vertical lightgrey-back fill-free">
+<div class="items-vertical lightgrey-back fill-free">
 
     <!-- formularz edycji -->
     {{ tag.form([
-        'admin/menu',
-        'id': 'menu-form',
+        'admin/menu/edit/' ~ data[0].getId(),
+        'id': 'i01ME-form',
         'source': data
     ]) }}
 
         <div class="head-bar mb00">
             <h2 class="mb5">Edycja menu</h2>
-            <p class="description"><span class="blue">GUID:</span> {{bin2guid(data[0].id)}}</p>
+            <p class="description">
+                <span class="blue">GUID:</span> {{data[0].getId()}}
+            </p>
         </div>
 
         {{ tag.tabControl([
@@ -18,18 +20,20 @@
             'selected': language,
             'class'   : 'white-back head-bar',
             'data'    : [
-                'searcher': '#menu-edit-container'
+                'searcher': '#i01ME-container',
+                'remover':  '#i01ME-remove-lang',
+                'creator':  '#i01ME-add-lang'
             ]
         ]) }}
 
-        <table id="menu-edit-container" class="w100p form container">
+        <table id="i01ME-container" class="w100p form container">
             <!-- nazwa menu -->
             <tr>
                 <td><label for="menu-name">Nazwa:</label></td>
                 <td>
                     {{ tag.textBoxLang([
                         'name' : 'name',
-                        'id'   : 'menu-name',
+                        'id'   : 'i01ME-name',
                         'class': 'w100p'
                     ]) }}
                 </td>
@@ -44,7 +48,7 @@
                 <td>
                     {{ tag.checkBoxLang([
                         'name' : 'private',
-                        'id'   : 'menu-private',
+                        'id'   : 'i01ME-private',
                         'label': 'Prywatne'
                     ]) }}
                 </td>
@@ -59,7 +63,7 @@
                 <td>
                     {{ tag.checkBoxLang([
                         'name' : 'online',
-                        'id'   : 'menu-online',
+                        'id'   : 'i01ME-online',
                         'label': 'Dostępne'
                     ]) }}
                 </td>
@@ -67,13 +71,18 @@
                     Menu nie jest widoczne w PA poza listą.
                 </p></td>
             </tr>
-
-            <tr>
-                <td colspan="3">
-                    <button>Zapisz menu</button>
-                </td>
-            </tr>
         </table>
-
+        <div class="button-container">
+            <button class="blue">Zapisz zmiany</button>
+            <button id="i01ME-add-lang" type="button" class="ml-a green">
+                Dodaj język
+            </button>
+            <button id="i01ME-remove-lang" type="button" class="black">
+                Usuń język
+            </button>
+            <button id="i01ME-remove" type="button" class="red">
+                Usuń menu
+            </button>
+        </div>
     {{ tag.endForm() }}
 </div>

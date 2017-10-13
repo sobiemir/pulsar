@@ -15,13 +15,20 @@ class Application
 
 		for( let x = 0; x < tabs.length; ++x )
 		{
-			const tab      = tabs[x] as HTMLElement;
+			const tab = tabs[x] as HTMLElement;
+
+			if( tab.dataset.searcher == undefined )
+				return;
+
 			const searcher = `${tab.dataset.searcher} [data-variant]`;
 			const variants = document.querySelectorAll( searcher );
 
 			// brak wyników, leć dalej
 			if( variants.length == 0 )
 				continue;
+
+			// wybrany wariant
+			let idselected = (variants[0] as HTMLElement).dataset.variant;
 
 			// akcja po wciśnięciu jednej z zakładek
 			tab.addEventListener( "click", (ev: MouseEvent) => {
@@ -43,7 +50,7 @@ class Application
 				newli.classList.add( "selected" );
 
 				// pobierz identyfikator przełączające
-				const newid = newli.dataset.id;
+				const newid = idselected = newli.dataset.id;
 				const oldid = oldli.dataset.id;
 
 				// szukaj elementów do przełączenia
@@ -58,6 +65,17 @@ class Application
 						variant.classList.add( "hidden" );
 				}
 			} );
+
+			// usuwanie danych znajdujących się w aktywnej zakładce
+			if( tab.dataset.remover != undefined )
+			{
+
+			}
+			// dodawanie danych do aktywnej zakładki
+			if( tab.dataset.creator != undefined )
+			{
+				
+			}
 		}
 	}
 

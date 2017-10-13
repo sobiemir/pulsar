@@ -25,6 +25,7 @@ class MenuController extends Controller
 {
 	public function indexAction(): void
 	{
+		// przełącznik pomiędzy elementami przetłumaczonymi a do tłumaczenia
 		$switch = [
 			new ControlElement( 1, 'Przetłumaczone' ),
 			new ControlElement( 2, 'Do tłumaczenia' )
@@ -87,13 +88,16 @@ class MenuController extends Controller
 				'user'      => false
 			],
 			'showColumn' => [
-				'order'         => true,
-				'id'            => true,
-				'name'          => false,
-				'online'        => true,
-				'action-clone'  => false,
-				'action-edit'   => true,
-				'action-remove' => true
+				'index'   => true,
+				'id'      => false,
+				'name'    => true,
+				'online'  => true,
+				'private' => true
+			],
+			'showAction' => [
+				'clone'  => false,
+				'edit'   => true,
+				'remove' => true
 			]
 		]);
 	}
@@ -118,13 +122,10 @@ class MenuController extends Controller
 
 		// utwórz puste menu dla każdego z dostępnych języków
 		foreach( $all as $lang )
-		{
-			$menu = new Menu();
-			$menu->id = $id;
-			$menu->id_language = $lang->id;
-
-			$data[] = $menu;
-		}
+			$data[] = new Menu([
+				'id'          => $id,
+				'id_language' => $lang->id
+			]);
 
 		// ustaw zmienne dla widoku
 		$this->view->setVars([
@@ -156,20 +157,16 @@ class MenuController extends Controller
 		]);
 	}
 
-	public function editAction( string $id = null ): void
+	public function editAction( string $id = null )
 	{
-		if( $this->postRedirect('edit', [$id]) )
-			return;
-
 		$bin = Utils::GUIDToBin( $id );
 
 		Language::setLanguage( $this->config->cms->language );
-		
+
 		$all = Language::getFrontend();
 		$cur = Language::getCurrent();
 
-		// wyszukaj menu do edycji
-		// zwracana jest lista, ponieważ edytowane są wszystkie języki
+		// wyszukaj menu do edycji (wszystkie języki)
 		$menus = Menu::find([
 			'conditions' => [[
 				'id = :id:',
@@ -178,37 +175,39 @@ class MenuController extends Controller
 			]]
 		]);
 
+		// menu o podanym indeksie nie istnieje!
+		if( count($menus) == 0 )
+			throw new \Exception( 'Podany rekord nie istnieje!' );
+
 		$data    = [];
 		$avlangs = [];
 
 		// zapisz identyfikatory znanych języków
 		foreach( $all as $lang )
-			$avlangs[$lang->id] = true;
+			$avlangs[$lang->id] = $lang->id;
 
 		// odrzuć nieużywane języki
 		foreach( $menus as $menu )
 			if( isset($avlangs[$menu->id_language]) )
 			{
 				$data[] = $menu;
-				$avlangs[$menu->id_language] = false;
+				unset( $avlangs[$menu->id_language] );
 			}
 
 		// uzupełnij pustymi danymi brakujące języki
-		foreach( $avlangs as $langid => $missing )
-		{
-			if( !$missing )
-				continue;
+		foreach( $avlangs as $langid )
+			$data[] = (new Menu([
+				'id'          => $bin,
+				'id_language' => $langid
+			]))->setFlag( ZMFLAG_CLEAN );
 
-			$menu = new Menu();
-			$menu->id = $id;
-			$menu->id_language = $langid;
+		foreach( $data as $single )
+			var_dump($single->getFlag());
+		$this->view->disable();
 
-			$data[] = $menu;
-		}
-
-		// menu o podanym indeksie nie istnieje!
-		if( count($data) == 0 )
-			throw new \Exception( 'Podany rekord nie istnieje!' );
+		// edycja 
+		if( $this->request->isPost() )
+			return $this->editMenu( $id, $data );
 
 		$this->view->setVars([
 			'languages' => $all,
@@ -240,15 +239,33 @@ class MenuController extends Controller
 		]);
 	}
 
-	private function postRedirect( string $action, ?array $args = null ): bool
+	private function editMenu( $id, $data ): Response
 	{
-		if( !$this->request->isPost() )
-			return false;
+		$response = new Response();
 
-		if( $action === 'new' )
-			$this->addMenu();
+		$all  = Language::getFrontend();
+		$post = $this->request->getPost();
 
-		return true;
+		foreach( $data as $single )
+		{
+			$change  = false;
+			$name    = $post['name:'    . $single->getVariant()] ?? '';
+			$private = ($post['private:' . $single->getVariant()] ?? '') != '';
+			$online  = ($post['online:'  . $single->getVariant()] ?? '') != '';
+
+			if( $name   != $single->name || $private != $single->private ||
+				$online != $single->online )
+				$change = true;
+
+			if( $change )
+			{
+				$single->name    = $name;
+				$single->private = $private;
+				$single->online  = $online;
+			}
+		}
+
+		return $response->redirect( 'admin/menu' );
 	}
 
 	private function addMenu(): void

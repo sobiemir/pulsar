@@ -50,7 +50,7 @@ class Tags extends \Phalcon\Tag
 		foreach( $source as $elem )
 		{
 			$attrs['id']    = $elemid . '-' . $index;
-			$attrs['name']  = $name   . '-' . $index;
+			$attrs['name']  = $name   . ':' . $elem->getVariant();
 			$attrs['value'] = $elem->{$name};
 
 			// ukryj element gdy nie jest aktywny
@@ -98,7 +98,7 @@ class Tags extends \Phalcon\Tag
 		foreach( $source as $elem )
 		{
 			$attrs['id']      = $elemid . '-' . $index;
-			$attrs['name']    = $name   . '-' . $index;
+			$attrs['name']    = $name   . ':' . $elem->getVariant();
 			$attrs['checked'] = $elem->{$name};
 
 			// ukryj element gdy nie jest aktywny
