@@ -66,12 +66,20 @@ class Application
 				}
 			} );
 
-			// usuwanie danych znajdujących się w aktywnej zakładce
+			// pierwsze włączenie - pokaż odpowiednie kontrolki
+			const cli = (tab.querySelector("li.selected") as HTMLElement);
+			const cid = cli.dataset.id;
+			for( let y = 0; y < variants.length; ++y )
+			{
+				const variant = variants[y] as HTMLElement;
+				if( variant.dataset.variant == cid )
+					variant.classList.remove( "hidden" );
+			}
+
 			if( tab.dataset.remover != undefined )
 			{
 
 			}
-			// dodawanie danych do aktywnej zakładki
 			if( tab.dataset.creator != undefined )
 			{
 				

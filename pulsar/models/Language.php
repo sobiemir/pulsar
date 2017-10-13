@@ -309,7 +309,7 @@ class Language extends \Phalcon\Mvc\Model
 	 *     $id (string):
 	 *         Identyfikator języka który ma zostać ustawiony jako aktualny.
 	 */
-	private static function findAndStore( ?string $id ): void
+	private static function findAndStore( string $id = null ): void
 	{
 		// pobierz języki z bazy danych
 		$langs = Language::find([
@@ -330,7 +330,8 @@ class Language extends \Phalcon\Mvc\Model
 
 			if( $lang->backend )
 				Language::$_back_langs[] = $lang;
+
+			Language::$_all_langs[$lang->id] = $lang;
 		}
-		Language::$_all_langs = $langs;
 	}
 }

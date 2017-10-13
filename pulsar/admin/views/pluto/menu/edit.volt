@@ -3,7 +3,7 @@
     <!-- formularz edycji -->
     {{ tag.form([
         'admin/menu/edit/' ~ data[0].getId(),
-        'id': 'i01ME-form',
+        'id': 'MenuEdit-form',
         'source': data
     ]) }}
 
@@ -20,20 +20,20 @@
             'selected': language,
             'class'   : 'white-back head-bar',
             'data'    : [
-                'searcher': '#i01ME-container',
-                'remover':  '#i01ME-remove-lang',
-                'creator':  '#i01ME-add-lang'
+                'searcher': '#MenuEdit-container',
+                'remover':  '#MenuEdit-remove-lang',
+                'creator':  '#MenuEdit-add-lang'
             ]
         ]) }}
 
-        <table id="i01ME-container" class="w100p form container">
+        <table id="MenuEdit-container" class="w100p form container">
             <!-- nazwa menu -->
             <tr>
                 <td><label for="menu-name">Nazwa:</label></td>
                 <td>
                     {{ tag.textBoxLang([
                         'name' : 'name',
-                        'id'   : 'i01ME-name',
+                        'id'   : 'MenuEdit-name',
                         'class': 'w100p'
                     ]) }}
                 </td>
@@ -48,7 +48,7 @@
                 <td>
                     {{ tag.checkBoxLang([
                         'name' : 'private',
-                        'id'   : 'i01ME-private',
+                        'id'   : 'MenuEdit-private',
                         'label': 'Prywatne'
                     ]) }}
                 </td>
@@ -63,7 +63,7 @@
                 <td>
                     {{ tag.checkBoxLang([
                         'name' : 'online',
-                        'id'   : 'i01ME-online',
+                        'id'   : 'MenuEdit-online',
                         'label': 'Dostępne'
                     ]) }}
                 </td>
@@ -74,13 +74,13 @@
         </table>
         <div class="button-container">
             <button class="blue">Zapisz zmiany</button>
-            <button id="i01ME-add-lang" type="button" class="ml-a green">
+            <button id="MenuEdit-add-lang" type="button" class="ml-a green">
                 Dodaj język
             </button>
-            <button id="i01ME-remove-lang" type="button" class="black">
+            <button id="MenuEdit-remove-lang" type="button" class="black">
                 Usuń język
             </button>
-            <button id="i01ME-remove" type="button" class="red">
+            <button id="MenuEdit-remove" type="button" class="red">
                 Usuń menu
             </button>
         </div>

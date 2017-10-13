@@ -207,31 +207,31 @@ class Menu extends \Phalcon\Mvc\Model
 	 * Pobiera rekordy z tabeli spełniające podane kryteria.
 	 *
 	 * PARAMETERS:
-	 *     $parameters (array | string):
+	 *     $params (array | string):
 	 *         Kryteria wyszukiwania danych w tabeli.
 	 *
 	 * RETURNS: Resultset
 	 *     Listę rekordów spełniających podane kryteria pobranych z tabeli
 	 *     zawierającej listę menu.
 	 */
-	public static function find( $parameters = null ): Resultset
+	public static function find( $params = null ): Resultset
 	{
-		return parent::find( $parameters );
+		return parent::find( $params );
 	}
 
 	/**
 	 * Pobiera pierwszy dostępny rekord spełniający podane kryteria.
 	 *
 	 * PARAMETERS:
-	 *     $parameters (array | string):
+	 *     $params (array | string):
 	 *         Kryteria wyszukiwania danych w tabeli.
 	 *
 	 * RETURNS: Menu
 	 *     Menu spełniające podane kryteria.
 	 */
-	public static function findFirst( $parameters = null ): Menu
+	public static function findFirst( $params = null ): Menu
 	{
-		return parent::findFirst( $parameters );
+		return parent::findFirst( $params );
 	}
 
 	/**
@@ -242,21 +242,22 @@ class Menu extends \Phalcon\Mvc\Model
 	 *     Dopuszczalne kryteria wyszukiwania danych w tabeli:
 	 *     - limit:
 	 *         największa dopuszczalna ilość pobieranych rekordów
-	 *     - clang:
+	 *     - language:
 	 *         aktualny język, rekordy z tym językiem nie będą wyszukiwane
 	 *
 	 * PARAMETERS:
-	 *     $parameters (array):
+	 *     $params (array):
 	 *         Kryteria wyszukiwania danych w tabeli.
 	 * 
 	 */
-	public static function findUntranslated( array $parameters ): array
+	public static function findUntranslated( array $params ): array
 	{
-		$parameters['limit'] = $parameters['limit'] ?? 30;
-		$parameters['clang'] = $parameters['clang'] ?? null;
+		$limit     = $params['limit']     ?? 30;
+		$language  = $params['language']  ?? null;
+		$languages = $params['languages'] ?? [];
 
 		// pobierz listę identyfikatorów elementów które nie są przetłumaczone
-		$utid = Di::getDefault()->getModelsManager()->executeQuery(
+		$untransids = Di::getDefault()->getModelsManager()->executeQuery(
 			'SELECT id FROM \Pulsar\Model\Menu as Menu
 			WHERE (
 				SELECT COUNT(InnerMenu.id)
@@ -265,10 +266,12 @@ class Menu extends \Phalcon\Mvc\Model
 					AND InnerMenu.id_language = :lang:
 			) = 0
 			GROUP BY id
-			LIMIT :limit:', [
-				'lang'  => $parameters['clang'],
-				'limit' => $parameters['limit']
-			], [
+			LIMIT :limit:',
+			[
+				'lang'  => $language,
+				'limit' => $limit
+			],
+			[
 				'lang'  => \PDO::PARAM_STR,
 				'limit' => \PDO::PARAM_INT
 			]
@@ -276,10 +279,10 @@ class Menu extends \Phalcon\Mvc\Model
 
 		// utwórz listę pobranych identyfikatorów
 		$ids = [];
-		foreach( $utid as $sut )
-			$ids[] = $sut['id'];
+		foreach( $untransids as $untransid )
+			$ids[] = $untransid['id'];
 
-		// pobierz nieptrzetłumaczone rekordy z bazy sortując je po id języka
+		// pobierz nieptrzetłumaczone rekordy
 		$untrans = Menu::find([
 			'id IN ({ids:array})',
 			'bind' => [
@@ -289,13 +292,28 @@ class Menu extends \Phalcon\Mvc\Model
 
 		// grupuj elementy po identyfikatorze
 		$groups = [];
+		$retval = [];
 		foreach( $untrans as $single )
 		{
 			if( !isset($groups[$single->id]) )
-				$groups[$single->id] = [$single];
+				$groups[$single->id] = [];
+
+			if( isset($languages[$single->id_language]) )
+			{
+				$order = $languages[$single->id_language]->order;
+				$groups[$single->id][$order] = $single;
+			}
 			else
 				$groups[$single->id][] = $single;
 		}
-		return $groups;
+
+		// sortuj po polu "order"
+		foreach( $groups as $group )
+		{
+			ksort( $group );
+			$retval[] = array_values( $group );
+		}
+
+		return $retval;
 	}
 }

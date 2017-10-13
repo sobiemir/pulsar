@@ -31,6 +31,9 @@ class MenuController extends Controller
 			new ControlElement( 2, 'Do tłumaczenia' )
 		];
 
+		// pobierz wszystkie dostępne języki
+		$all = Language::getAll();
+
 		$data = [
 			// przetłumaczone elementy, limit 30, sortowanie po 'order'
 			Menu::find([
@@ -43,13 +46,15 @@ class MenuController extends Controller
 				'limit' => 30
 			]),
 			Menu::findUntranslated([
-				'clang' => $this->config->cms->language,
-				'limit' => 30
+				'language'  => $this->config->cms->language,
+				'limit'     => 30,
+				'languages' => $all
 			])
 		];
 
 		$this->view->setVars([
 			'data'       => $data,
+			'languages'  => $all,
 			'switch'     => $switch,
 			'title'      => 'Pulsar :: Menu',
 			'breadcrumb' => [
@@ -191,10 +196,6 @@ class MenuController extends Controller
 				'id_language' => $langid
 			]))->setFlag( ZMFLAG_CLEAN );
 
-		foreach( $data as $single )
-			var_dump($single->getFlag());
-		$this->view->disable();
-
 		// edycja 
 		if( $this->request->isPost() )
 			return $this->editMenu( $id, $data );
@@ -239,7 +240,7 @@ class MenuController extends Controller
 		foreach( $data as $single )
 		{
 			$change  = false;
-			$name    = $post['name:'    . $single->getVariant()] ?? '';
+			$name    =  $post['name:'    . $single->getVariant()] ?? '';
 			$private = ($post['private:' . $single->getVariant()] ?? '') != '';
 			$online  = ($post['online:'  . $single->getVariant()] ?? '') != '';
 
