@@ -7,64 +7,104 @@
 		</p>
 	</div>
 
-    {{ tag.tabControl([
-        'index'   : 'name',
-        'source'  : switch,
-        'class'   : 'white-back head-bar',
-        'data'    : [
-            'searcher': '#menu-index-container'
-        ]
-    ]) }}
+	{{ tag.tabControl([
+		'index'   : 'name',
+		'source'  : switch,
+		'class'   : 'white-back head-bar',
+		'data'    : [
+			'searcher': '#menu-index-container'
+		]
+	]) }}
 
 	<section id="menu-index-container" class="container">
-		<!-- wyświetl dwie tablice z czego jedną ukryj -->
-	    {% for index, single in data %}
 
-	    	<!-- gdy nie ma danych, wyświetl komunikat -->
-	    	{% if single|length == 0 %}
-	    		<p data-variant="{{switch[index].getId()}}"
-	    			class="message info {{ index == 0 ? '' : 'hidden' }}">
-	    			Brak elementów do wyświetlenia.
-    			</p>
+		<!-- gdy nie ma danych, wyświetl komunikat -->
+		{% if data[0]|length == 0 %}
+			<p data-variant="{{switch[0].getId()}}" class="message info">
+				Brak elementów do wyświetlenia.
+			</p>
 
-	    	<!-- w przeciwnym wypadku wyświetl je w tablicy -->
-	    	{% else %}
-				<table class="w100p zebra {{ index == 0 ? '' : 'hidden' }}"
-					data-variant="{{switch[index].getId()}}">
+		<!-- w przeciwnym wypadku wyświetl je w tablicy -->
+		{% else %}
+			<table class="w100p zebra" data-variant="{{switch[0].getId()}}">
 
+				<tr>
+					<th class="identity">#</th>
+					<th>Nazwa</th>
+					<th>Prywatne</th>
+					<th>Dostępne</th>
+					<th class="text-right"></th>
+				</tr>
+
+				{% for idx, out in data[0] %}
 					<tr>
-						<th class="identity">#</th>
-						<th>Nazwa</th>
-						<th>Prywatne</th>
-						<th>Dostępne</th>
-						<th class="text-right"></th>
+						<!-- indeks wyświetlanego elementu -->
+						<td>{{idx + 1}}</td>
+						<td>
+							<a href="/admin/menu/edit/{{out.getId()}}">
+								{{out.name}}
+							</a>
+						</td>
+						<!-- czy menu jest prywatne? -->
+						<td>{{out.private ? 'Tak' : 'Nie'}}</td>
+						<!-- czy menu jest dostępne? -->
+						<td>{{out.online  ? 'Tak' : 'Nie'}}</td>
+						<td class="text-right w1p">
+							<div class="f0">
+								<a href="#" class="fa fa-clone clone"></a>
+								<a href="/admin/menu/edit/{{out.getId()}}"
+									class="fa fa-pencil edit"></a>
+								<a href="#" class="fa fa-trash delete"></a>
+							</div>
+						</td>
 					</tr>
+				{% endfor %}
+			</table>
+		{% endif %}
 
-					{% for idx, out in single %}
-						<tr>
-							<!-- indeks wyświetlanego elementu -->
-							<td>{{idx + 1}}</td>
-							<td>
-								<a href="/admin/menu/edit/{{out.getId()}}">
-									{{out.name}}
-								</a>
-							</td>
-							<!-- czy menu jest prywatne? -->
-							<td>{{out.private ? 'Tak' : 'Nie'}}</td>
-							<!-- czy menu jest dostępne? -->
-							<td>{{out.online  ? 'Tak' : 'Nie'}}</td>
-							<td class="text-right w1p">
-								<div class="f0">
-									<a href="#" class="fa fa-clone clone"></a>
-									<a href="/admin/menu/edit/{{out.getId()}}"
-										class="fa fa-pencil edit"></a>
-									<a href="#" class="fa fa-trash delete"></a>
-								</div>
-							</td>
-						</tr>
-					{% endfor %}
-				</table>
-	    	{% endif %}
-	    {% endfor %}
+		<!-- gdy nie ma danych, wyświetl komunikat -->
+		{% if data[1]|length == 0 %}
+			<p data-variant="{{switch[1].getId()}}" class="message info">
+				Brak elementów do wyświetlenia.
+			</p>
+
+		<!-- w przeciwnym wypadku wyświetl je w tablicy -->
+		{% else %}
+			<table class="w100p zebra" data-variant="{{switch[1].getId()}}">
+
+				<tr>
+					<th class="identity">#</th>
+					<th>Nazwa</th>
+					<th>Utworzone wersje językowe</th>
+					<th class="text-right"></th>
+				</tr>
+
+				{% for idx, out in data[1] %}
+					<tr>
+						<!-- indeks wyświetlanego elementu -->
+						<td>{{1}}</td>
+						<td>
+							<a href="/admin/menu/edit/{{out[0].getId()}}">
+								{{out[0].name}}
+							</a>
+						</td>
+						<td>
+							{% for single in out %}
+								{{single.getVariant()}}
+							{% endfor %}
+						</td>
+						<td class="text-right w1p">
+							<div class="f0">
+								<a href="#" class="fa fa-clone clone"></a>
+								<a href="/admin/menu/edit/{{out[0].getId()}}"
+									class="fa fa-pencil edit"></a>
+								<a href="#" class="fa fa-trash delete"></a>
+							</div>
+						</td>
+					</tr>
+				{% endfor %}
+			</table>
+		{% endif %}
+
 	</section>
 </div>

@@ -17,6 +17,7 @@ namespace Pulsar\Model;
 
 use Pulsar\Helper\Utils;
 use Phalcon\Mvc\Model\Resultset;
+use Phalcon\Di;
 
 define( 'ZMFLAG_SAVE',   0 );
 define( 'ZMFLAG_CLEAN',  1 );
@@ -231,5 +232,70 @@ class Menu extends \Phalcon\Mvc\Model
 	public static function findFirst( $parameters = null ): Menu
 	{
 		return parent::findFirst( $parameters );
+	}
+
+	/**
+	 * Pobiera pogrupowaną listę rekordów które nie zostały przetłumaczone
+	 * na podany język.
+	 *
+	 * DESCRIPTION:
+	 *     Dopuszczalne kryteria wyszukiwania danych w tabeli:
+	 *     - limit:
+	 *         największa dopuszczalna ilość pobieranych rekordów
+	 *     - clang:
+	 *         aktualny język, rekordy z tym językiem nie będą wyszukiwane
+	 *
+	 * PARAMETERS:
+	 *     $parameters (array):
+	 *         Kryteria wyszukiwania danych w tabeli.
+	 * 
+	 */
+	public static function findUntranslated( array $parameters ): array
+	{
+		$parameters['limit'] = $parameters['limit'] ?? 30;
+		$parameters['clang'] = $parameters['clang'] ?? null;
+
+		// pobierz listę identyfikatorów elementów które nie są przetłumaczone
+		$utid = Di::getDefault()->getModelsManager()->executeQuery(
+			'SELECT id FROM \Pulsar\Model\Menu as Menu
+			WHERE (
+				SELECT COUNT(InnerMenu.id)
+					FROM \Pulsar\Model\Menu as InnerMenu
+				WHERE Menu.id = InnerMenu.id
+					AND InnerMenu.id_language = :lang:
+			) = 0
+			GROUP BY id
+			LIMIT :limit:', [
+				'lang'  => $parameters['clang'],
+				'limit' => $parameters['limit']
+			], [
+				'lang'  => \PDO::PARAM_STR,
+				'limit' => \PDO::PARAM_INT
+			]
+		)->setHydrateMode( Resultset::HYDRATE_ARRAYS );
+
+		// utwórz listę pobranych identyfikatorów
+		$ids = [];
+		foreach( $utid as $sut )
+			$ids[] = $sut['id'];
+
+		// pobierz nieptrzetłumaczone rekordy z bazy sortując je po id języka
+		$untrans = Menu::find([
+			'id IN ({ids:array})',
+			'bind' => [
+				'ids' => $ids
+			]
+		]);
+
+		// grupuj elementy po identyfikatorze
+		$groups = [];
+		foreach( $untrans as $single )
+		{
+			if( !isset($groups[$single->id]) )
+				$groups[$single->id] = [$single];
+			else
+				$groups[$single->id][] = $single;
+		}
+		return $groups;
 	}
 }

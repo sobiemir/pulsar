@@ -42,18 +42,8 @@ class MenuController extends Controller
 				'order' => '[order]',
 				'limit' => 30
 			]),
-			// nieprzetłumaczone elementy, limit 30, brak sortowania
-			// sortowanie jest wyłączone z racji tego, iż każdy język może mieć
-			// różne sortowanie elementów
-			Menu::find([
-				'group'  => 'id',
-				'having' => "id_language != :lang:",
-				'bind'   => [
-					'lang' => $this->config->cms->language
-				],
-				'bindTypes' => [
-					'lang' => \PDO::PARAM_STR
-				],
+			Menu::findUntranslated([
+				'clang' => $this->config->cms->language,
 				'limit' => 30
 			])
 		];

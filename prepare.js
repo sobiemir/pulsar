@@ -22,8 +22,6 @@ copyfiles([
 });
 
 copyfiles([
-	"node_modules/jquery/dist/jquery.js",
-	"node_modules/jquery/dist/jquery.min.js",
 	"public/themes/pluto/vendors/js"
 ], true, () => {
 	console.log("Skopiowano skrytpy.");
