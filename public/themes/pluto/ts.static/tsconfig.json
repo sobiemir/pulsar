@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "module": "AMD",
+        "target": "ES5",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "outDir": "../js",
+        "outFile": "../js/app.static.js"
+    },
+    "files": [
+        "Application.ts",
+        "Prototypes.ts"
+    ]
+}
