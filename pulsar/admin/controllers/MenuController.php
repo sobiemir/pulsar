@@ -194,7 +194,7 @@ class MenuController extends Controller
 			$data[] = (new Menu([
 				'id'          => $bin,
 				'id_language' => $langid
-			]))->setFlag( ZMFLAG_CLEAN );
+			]))->setFlag( ZMFLAG_NONE );
 
 		// edycja 
 		if( $this->request->isPost() )
@@ -230,30 +230,54 @@ class MenuController extends Controller
 		]);
 	}
 
-	private function editMenu( $id, $data ): Response
+	private function editMenu( $id, $data ): ?Response
 	{
 		$response = new Response();
-
-		$all  = Language::getFrontend();
-		$post = $this->request->getPost();
+		$post     = $this->request->getPost();
 
 		foreach( $data as $single )
 		{
-			$change  = false;
-			$name    =  $post['name:'    . $single->getVariant()] ?? '';
-			$private = ($post['private:' . $single->getVariant()] ?? '') != '';
-			$online  = ($post['online:'  . $single->getVariant()] ?? '') != '';
+			$variant = $single->getVariant();
+			$flag    = (int)$post['flag:' . $variant] ?? 0;
+			$save    = [
+				'name'    =>  $post['name:'    . $variant] ?? '',
+				'private' => ($post['private:' . $variant] ?? '') != '',
+				'online'  => ($post['online:'  . $variant] ?? '') != ''
+			];
 
-			if( $name   != $single->name || $private != $single->private ||
-				$online != $single->online )
-				$change = true;
+			// pomiń jeżeli dane są takie same
+			if( $single->hasDifference($save) )
+				continue;
+			// pomiń również jeżeli model nie istnieje i nie będzie tworzony
+			if( $flag == ZMFLAG_NONE && $single->getFlag() == ZMFLAG_NONE )
+				continue;
 
-			if( $change )
+			// jeżeli flaga zapisu została usunięta, usuń
+			if( $flag == ZMFLAG_NONE && $single->getFlag() == ZMFLAG_SAVE )
 			{
-				$single->name    = $name;
-				$single->private = $private;
-				$single->online  = $online;
+				$single->delete();
+				continue;
 			}
+
+			// w przeciwnym razie próbuj aktualizować lub tworzyć
+			$single->name    = $save['name'];
+			$single->private = $save['private'];
+			$single->online  = $save['online'];
+
+			// w przypadku gdy model nie istniał, umieść rekord na końcu
+			if( $single->getFlag() == 0 )
+			{
+				$order = Menu::count([
+					'conditions' => [[
+						'id_language = :lang:',
+						[ 'lang' => $single->id_language ],
+						[ 'lang' => \PDO::PARAM_STR ]
+					]]
+				]);
+				$single->order = $order + 1;
+			}
+
+			$single->save();
 		}
 
 		return $response->redirect( 'admin/menu' );

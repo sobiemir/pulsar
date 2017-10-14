@@ -21,6 +21,38 @@ class Tags extends \Phalcon\Tag
 {
 	public static $_index = 1;
 
+	public static function hiddenModelFlags( array $attrs = [] ): string
+	{
+		$name   = 'flag';
+		$elemid = $attrs['id']     ?? $name;
+		$source = $attrs['source'] ?? self::$_source ?? null;
+		$retval = '';
+		$index  = 1;
+
+		// brak źródeł
+		if( !$source || empty($source) )
+			return $retval;
+
+		unset( $attrs['source'] );
+
+		if( !isset($attrs['data']) )
+			$attrs['data'] = [];
+		$attrs['data']['mflag'] = true;
+
+		foreach( $source as $elem )
+		{
+			$attrs['id']    = $elemid . '-' . $index++;
+			$attrs['name']  = $name   . ':' . $elem->getVariant();
+			$attrs['value'] = $elem->getFlag();
+			$attrs['type']  = 'hidden';
+
+			$attrs   = self::_attributesConverter( $attrs );
+			$retval .= self::_buildTag( 'input', false, $attrs );
+		}
+
+		return $retval;
+	}
+
 	public static function textBoxLang( array $attrs = [] ): string
 	{
 		$name     = $attrs['name']     ?? self::getNextId();
@@ -28,9 +60,11 @@ class Tags extends \Phalcon\Tag
 		$elemid   = $attrs['id']       ?? $name;
 		$source   = $attrs['source']   ?? self::$_source   ?? null;
 		$selected = $attrs['selected'] ?? self::$_selected ?? null;
+		$retval   = '';
+		$index    = 1;
 
 		if( !$source || empty($source) )
-			return '';
+			return $retval;
 
 		unset( $attrs['selected'] );
 		unset( $attrs['source'] );
@@ -43,13 +77,11 @@ class Tags extends \Phalcon\Tag
 		if( !$selected )
 			self::$_selected = $selected = $source[0]->getVariant();
 
-		$retval = '';
-		$index  = 1;
 
 		// generuj pojedyncze elementy
 		foreach( $source as $elem )
 		{
-			$attrs['id']    = $elemid . '-' . $index;
+			$attrs['id']    = $elemid . '-' . $index++;
 			$attrs['name']  = $name   . ':' . $elem->getVariant();
 			$attrs['value'] = $elem->{$name};
 
@@ -63,7 +95,6 @@ class Tags extends \Phalcon\Tag
 
 			// utwórz pole tekstowe
 			$retval .= self::textBox( $attrs );
-			++$index;
 		}
 
 		return $retval;
@@ -76,9 +107,11 @@ class Tags extends \Phalcon\Tag
 		$elemid   = $attrs['id']       ?? $name;
 		$source   = $attrs['source']   ?? self::$_source   ?? null;
 		$selected = $attrs['selected'] ?? self::$_selected ?? null;
+		$retval   = '';
+		$index    = 1;
 
 		if( !$source || empty($source) )
-			return '';
+			return $retval;
 
 		unset( $attrs['selected'] );
 		unset( $attrs['source'] );
@@ -91,13 +124,10 @@ class Tags extends \Phalcon\Tag
 		if( !$selected )
 			self::$_selected = $selected = $source[0]->getVariant();
 
-		$retval = '';
-		$index  = 1;
-
 		// generuj pojedyncze elementy
 		foreach( $source as $elem )
 		{
-			$attrs['id']      = $elemid . '-' . $index;
+			$attrs['id']      = $elemid . '-' . $index++;
 			$attrs['name']    = $name   . ':' . $elem->getVariant();
 			$attrs['checked'] = $elem->{$name};
 
@@ -111,7 +141,6 @@ class Tags extends \Phalcon\Tag
 
 			// utwórz pole tekstowe
 			$retval .= self::checkBox( $attrs );
-			++$index;
 		}
 
 		return $retval;
@@ -328,7 +357,10 @@ class Tags extends \Phalcon\Tag
 		if( isset($attrs['data']) )
 		{
 			foreach( $attrs['data'] as $key => $data )
-				$retval .= " data-{$key}=\"{$data}\"";
+				$retval .= is_bool( $data )
+					? " data-{$key}"
+					: " data-{$key}=\"{$data}\"";
+
 			unset( $attrs['data'] );
 		}
 		// pozostałe atrybuty

@@ -13,11 +13,11 @@
 		'source': switch,
 		'class' : 'white-back head-bar',
 		'data'  : [
-			'searcher': '#MenuIndex-container'
+			'search': '#P02_Container'
 		]
 	]) }}
 
-	<section id="MenuIndex-container" class="container">
+	<section id="P02_Container" class="container">
 
 	{% if data[0]|length == 0 %}
 

@@ -19,9 +19,8 @@ use Pulsar\Helper\Utils;
 use Phalcon\Mvc\Model\Resultset;
 use Phalcon\Di;
 
-define( 'ZMFLAG_SAVE',   0 );
-define( 'ZMFLAG_CLEAN',  1 );
-define( 'ZMFLAG_REMOVE', 2 );
+define( 'ZMFLAG_NONE',   0 );
+define( 'ZMFLAG_SAVE',   1 );
 
 class Menu extends \Phalcon\Mvc\Model
 {
@@ -92,7 +91,7 @@ class Menu extends \Phalcon\Mvc\Model
 	 * 
 	 * TYPE: integer
 	 */
-	private $_flag = 0;
+	private $_flag = ZMFLAG_SAVE;
 
 // =============================================================================
 
@@ -173,11 +172,9 @@ class Menu extends \Phalcon\Mvc\Model
 	 * DESCRIPTION:
 	 *     Może przyjmować wartości:
 	 *     - ZMFLAG_SAVE:
-	 *         model tworzony jest na potrzeby wyświetlania, nie ma go w bazie
-	 *     - ZMFLAG_CLEAN:
 	 *         model przeznaczony do aktualizacji / zapisu
-	 *     - ZMFLAG_REMOVE:
-	 *         model przeznaczony do usunięcia
+	 *     - ZMFLAG_NONE:
+	 *         model tworzony jest na potrzeby wyświetlania lub usuwany
 	 *
 	 * PARAMETERS:
 	 *     $flag (integer):
@@ -315,5 +312,13 @@ class Menu extends \Phalcon\Mvc\Model
 		}
 
 		return $retval;
+	}
+
+	public function hasDifference( array $data ): bool
+	{
+		return
+			$data['name']    != $this->name ||
+			$data['private'] != $this->private ||
+			$data['online']  != $this->online;
 	}
 }

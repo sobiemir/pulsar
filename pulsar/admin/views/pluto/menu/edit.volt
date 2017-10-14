@@ -3,7 +3,7 @@
     <!-- formularz edycji -->
     {{ tag.form([
         'admin/menu/edit/' ~ data[0].getId(),
-        'id': 'MenuEdit-form',
+        'id': 'P01_Form',
         'source': data
     ]) }}
 
@@ -14,32 +14,47 @@
             </p>
         </div>
 
+        <!-- kontrolka przełączająca pomiędzy językami -->
         {{ tag.tabControl([
             'index'   : 'default_name',
             'source'  : languages,
             'selected': language,
             'class'   : 'white-back head-bar',
             'data'    : [
-                'searcher': '#MenuEdit-container',
-                'remover':  '#MenuEdit-remove-lang',
-                'creator':  '#MenuEdit-add-lang'
+                'search' : '#P01_Container',
+                'message': '#P01_NotExistMsg',
+                'remove' : '#P01_RemoveLang',
+                'create' : '#P01_AddLang',
+                'form'   : '#P01_Form'
             ]
         ]) }}
 
-        <table id="MenuEdit-container" class="w100p form container">
+        <!-- flagi stanu danego języka -->
+        {{ tag.hiddenModelFlags([
+            'id': 'P01_Flag'
+        ]) }}
+
+        <p id="P01_NotExistMsg" class="message info hidden m15">
+            <b>Tłumaczenie dla wybranego języka nie istnieje.</b><br />
+
+            Aby go utworzyć, kliknij w przycisk dodawania języka, który znajduje
+            się po prawej stronie pod wyświetlaną wiadomością.
+        </p>
+
+        <table id="P01_Container" class="w100p form container hidden">
             <!-- nazwa menu -->
             <tr>
                 <td><label for="menu-name">Nazwa:</label></td>
                 <td>
                     {{ tag.textBoxLang([
                         'name' : 'name',
-                        'id'   : 'MenuEdit-name',
+                        'id'   : 'P01_Name',
                         'class': 'w100p'
                     ]) }}
                 </td>
-                <td><p class="description">
+                <td class="description">
                     Wyświetlana jest głównie na panelu bocznym w PA.
-                </p></td>
+                </td>
             </tr>
 
             <!-- czy menu jest prywatne? -->
@@ -48,13 +63,13 @@
                 <td>
                     {{ tag.checkBoxLang([
                         'name' : 'private',
-                        'id'   : 'MenuEdit-private',
+                        'id'   : 'P01_Private',
                         'label': 'Prywatne'
                     ]) }}
                 </td>
-                <td><p class="description">
+                <td class="description">
                     Menu nie jest dostępne do wyboru dla szablonu.
-                </p></td>
+                </td>
             </tr>
 
             <!-- czy menu jest dostępne? -->
@@ -63,26 +78,29 @@
                 <td>
                     {{ tag.checkBoxLang([
                         'name' : 'online',
-                        'id'   : 'MenuEdit-online',
+                        'id'   : 'P01_Online',
                         'label': 'Dostępne'
                     ]) }}
                 </td>
-                <td><p class="description">
+                <td class="description">
                     Menu nie jest widoczne w PA poza listą.
-                </p></td>
+                </td>
             </tr>
         </table>
+
+        <!-- kontener z przyciskami -->
         <div class="button-container">
             <button class="blue">Zapisz zmiany</button>
-            <button id="MenuEdit-add-lang" type="button" class="ml-a green">
+            <button id="P01_AddLang" type="button" class="ml-a black hidden">
                 Dodaj język
             </button>
-            <button id="MenuEdit-remove-lang" type="button" class="black">
+            <button id="P01_RemoveLang" type="button" class="ml-a black hidden">
                 Usuń język
             </button>
-            <button id="MenuEdit-remove" type="button" class="red">
+            <button id="P01_Remove" type="button" class="red">
                 Usuń menu
             </button>
         </div>
+
     {{ tag.endForm() }}
 </div>

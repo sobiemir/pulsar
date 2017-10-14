@@ -672,14 +672,17 @@ form .button-container {
 .message.info,
 .message.warning,
 .message.error {
-	padding: 0.4rem 0.8rem;
+	padding: 1rem 1.5rem;
 	border-width: 1px;
 	border-style: solid;
 }
 .message.info {
 	background: #fff;
-	border-color: #666;
-	color: #333;
+	border-color: #ccc;
+	color: #555;
+}
+.message.info b {
+	color: #444;
 }
 .message.warning {
 	background: #f4e59f;
@@ -805,6 +808,19 @@ a.clone:hover, span.clone:hover {
 .no-padding { padding: 0; }
 .no-margin  { margin:  0; }
 
+.p00 { padding: 0; }
+.p01 { padding: 0.1rem; }
+.p02 { padding: 0.2rem; }
+.p04 { padding: 0.4rem; }
+.p05 { padding: 0.5rem; }
+.p06 { padding: 0.6rem; }
+.p08 { padding: 0.8rem; }
+.p10 { padding: 1.0rem; }
+.p15 { padding: 1.5rem; }
+.p20 { padding: 2.0rem; }
+.p25 { padding: 2.5rem; }
+.p30 { padding: 3.0rem; }
+
 .pl00 { padding-left: 0.0rem; }
 .pl02 { padding-left: 0.2rem; }
 .pl04 { padding-left: 0.4rem; }
@@ -853,13 +869,28 @@ a.clone:hover, span.clone:hover {
 .pb25 { padding-bottom: 2.5rem; }
 .pb30 { padding-bottom: 3.0rem; }
 
+.m00 { margin: 0; }
+.m01 { margin: 0.1rem; }
+.m02 { margin: 0.2rem; }
+.m04 { margin: 0.4rem; }
+.m05 { margin: 0.5rem; }
+.m06 { margin: 0.6rem; }
+.m08 { margin: 0.8rem; }
+.m10 { margin: 1.0rem; }
+.m15 { margin: 1.5rem; }
+.m20 { margin: 2.0rem; }
+.m25 { margin: 2.5rem; }
+.m30 { margin: 3.0rem; }
+
 .ml-a { margin-left: auto; }
 
 .mb00 { margin-bottom: 0.0rem; }
+.mt00 { margin-top: 0.0rem; }
 
 .inline-block {
 	display: inline-block;
 }
+
 .mt1 {
 	margin-top: 0.1rem !important;
 }

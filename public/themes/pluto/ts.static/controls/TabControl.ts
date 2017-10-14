@@ -100,7 +100,14 @@ export class TabControl
 		if( this._failed )
 			return;
 
-		this._control.addEventListener( "click", this._onTabClick );
+		this._control.addEventListener( "click", this._onTabChange );
+
+		// te dwa przyciski wiążą się ze sobą, więc muszą być razem
+		if( !this._create || !this._remove )
+			return;
+
+		this._create.addEventListener( "click", this._onCreateLanguage );
+		this._remove.addEventListener( "click", this._onRemoveLanguage );
 	}
 
 	public selectTab( index: number, force: boolean = false ): void
@@ -142,7 +149,7 @@ export class TabControl
 
 				if( flag.name == fname && this._remove && this._create ) {
 					// i jeżeli flaga jest dopuszczona do widoku, wyświetl dane
-					if( flag.value == "0" ) {
+					if( flag.value == "1" ) {
 						this._message.classList.add( "hidden" );
 						this._search.classList.remove( "hidden" );
 						this._remove.classList.remove( "hidden" );
@@ -161,7 +168,7 @@ export class TabControl
 		this._selected = index;
 	}
 
-	private _onTabClick = ( ev: MouseEvent ) =>
+	private _onTabChange = ( ev: MouseEvent ) =>
 	{
 		const newli = <HTMLElement>ev.target;
 		if( newli.tagName != "LI" )
@@ -173,5 +180,49 @@ export class TabControl
 		} );
 
 		this.selectTab( newidx );
+	}
+
+	private _onCreateLanguage = ( ev: MouseEvent ) =>
+	{
+		if( this._failed )
+			return;
+
+		const fname = `flag:${this._tabs[this._selected].dataset.id}`;
+		const index = this._flags.findIdxByFunc( (elem: HTMLInputElement) => {
+			return elem.name === fname;
+		} );
+
+		if( index === -1 )
+			return;
+
+		this._create.classList.add( "hidden" );
+		this._remove.classList.remove( "hidden" );
+
+		this._flags[index].value = "1";
+		this.selectTab( this._selected, true );
+	}
+
+	private _onRemoveLanguage = ( ev: MouseEvent ) =>
+	{
+		if( this._failed )
+			return;
+
+		if( !window.confirm("Czy na pewno chcesz usunąć to tłumaczenie?") ) {
+			return;
+		}
+
+		const fname = `flag:${this._tabs[this._selected].dataset.id}`;
+		const index = this._flags.findIdxByFunc( (elem: HTMLInputElement) => {
+			return elem.name === fname;
+		} );
+
+		if( index === -1 )
+			return;
+
+		this._remove.classList.add( "hidden" );
+		this._create.classList.remove( "hidden" );
+
+		this._flags[index].value = "0";
+		this.selectTab( this._selected, true );
 	}
 }
