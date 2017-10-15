@@ -13,20 +13,123 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
+/**
+ * Klasa kontrolki zawierającej zakładki.
+ *
+ * DESCRIPTION:
+ *     Klasa pozwala na standardowe wyświetlanie zakładek i przełączanie się
+ *     pomiędzy kontekstami (panelami) podpiętymi do kontrolki.
+ *     Każdy kontekst który ma zostać wyświetlony po kliknięciu w daną zakładkę
+ *     musi być do niej podpięty przy użyciu parametru 'data-variant', gdzie
+ *     sprawdzany jest z parametrem 'data-id' zakładki.
+ *     
+ *     Aby jednak kontrolka podczas tworzenia mogłą znaleźć podpięte elementy
+ *     należy zdefiniować dla niej parametr 'data-search' który ma zawierać
+ *     regułę dla funkcji 'querySelectorAll', która szuka podpiętych elementów.
+ *     Dodatkowo parametr 'data-form' pozwala na zawężenie wyszukiwania danych
+ *     do konkretnego formularza.
+ *     
+ *     Kontrolka jednak nie oranicza się tylko do zmiany wyświetlanych danych.
+ *     Pozwala również na zmianę flagi ich wyświetlania.
+ *     Podanie parametru 'data-message' pozwala na wyświetlanie wiadomości
+ *     w przypadku gdy elementy podpięte pod zakładkę nie mają być wyświetlane.
+ *     Użycie warunkowego wyświetlania danych wymaga jednak utworzenia
+ *     dodatkowego elementu, najlepiej 'input' o typie 'hidden'.
+ *     Jako wartość parametru 'name' musi przyjmować 'flag:ID', gdzie ID jest
+ *     identyfikatorem zakładki podawanym w 'data-id'.
+ *     Dodatkowo musi posiadać parametr 'data-mflag', po którym będzie pobierany
+ *     z listy wszystkich kontrolek.
+ *     Wartość takiego elementu to "0" lub "1", gdzie "0" wyświetla wiadomość
+ *     a wartość "1" pozwala na wyświetlanie podpiętych kontrolek.
+ */
 export class TabControl
 {
+	/**
+	 * Formularz względem którego wyszukiwane będą kolejne elementy.
+	 *
+	 * TYPE: HTMLElement | Document
+	 */
 	private _form: HTMLElement | Document = null;
+
+	/**
+	 * Flagi względem których wyświetlane będą kontrolki lub wiadomość.
+	 *
+	 * TYPE: NodeListOf<HTMLInputElement>
+	 */
 	private _flags: NodeListOf<HTMLInputElement> = null;
+
+	/**
+	 * Wiadomość do wyświetlenia w przypadku gdy flaga na to pozwoli.
+	 *
+	 * TYPE: HTMLElement
+	 */
 	private _message: HTMLElement = null;
+
+	/**
+	 * Główny element kontrolki.
+	 *
+	 * TYPE: HTMLElement
+	 */
 	private _control: HTMLElement = null;
+
+	/**
+	 * Kontener w którym kontolki będą wyszukiwane.
+	 *
+	 * TYPE: HTMLElement
+	 */
 	private _search: HTMLElement = null;
+
+	/**
+	 * Lista kontrolek w poszczególnych wariantach.
+	 *
+	 * TYPE: NodeListOf<HTMLElement>
+	 */
 	private _variants: NodeListOf<HTMLElement> = null;
+
+	/**
+	 * Lista zakładek w kontrolce.
+	 *
+	 * TYPE: NodeListOf<HTMLLIElement>
+	 */
 	private _tabs: NodeListOf<HTMLLIElement> = null;
-	private _selected: number = null;
+
+	/**
+	 * Indeks zaznaczonej zakładki.
+	 *
+	 * TYPE: number
+	 */
+	private _selected: number = -1;
+
+	/**
+	 * Przycisk służący do zmiany flagi modelu (usuwanie).
+	 *
+	 * TYPE: HTMLElement
+	 */
 	private _remove: HTMLElement = null;
+
+	/**
+	 * Przycisk służący do zmiany flagi modelu (tworzenie).
+	 *
+	 * TYPE: HTMLElement
+	 */
 	private _create: HTMLElement = null;
+
+	/**
+	 * Flaga błędu przetwarzania danych w kontrolce.
+	 *
+	 * TYPE: boolean
+	 */
 	private _failed: boolean = false;
 
+// =============================================================================
+
+	/**
+	 * Konstruktor kontrolki.
+	 *
+	 * PARAMETERS:
+	 *     tab: (HTMLElement)
+	 *         Element z którego tworzona będzie kontrolka.
+	 */
 	public constructor( tab: HTMLElement )
 	{
 		this._selected = -1;
@@ -37,18 +140,22 @@ export class TabControl
 			? document.querySelector( tab.dataset.form ) as HTMLElement
 			: document;
 
-		if( !this._form ) {
+		if( !this._form )
+		{
 			this._failed = true;
 			return;
 		}
 
 		// wiadomość w przypadku gdy model jest oznaczony jako nieistniejący
-		if( tab.dataset.message !== undefined ) {
+		if( tab.dataset.message !== undefined )
+		{
 			this._message = <HTMLElement>
 				this._form.querySelector( tab.dataset.message );
 			this._flags = <NodeListOf<HTMLInputElement>>
 				this._form.querySelectorAll( "input[data-mflag" );
-		} else {
+		}
+		else
+		{
 			this._message = null;
 			this._flags   = null;
 		}
@@ -66,7 +173,8 @@ export class TabControl
 		this._search = <HTMLElement>
 			this._form.querySelector( tab.dataset.search );
 
-		if( !this._search ) {
+		if( !this._search )
+		{
 			this._failed = true;
 			return;
 		}
@@ -85,6 +193,16 @@ export class TabControl
 			this._failed = true;
 	}
 
+	/**
+	 * Pobiera wartość parametru o podanym indeksie.
+	 *
+	 * PARAMETERS:
+	 *     index: (string)
+	 *         Indeks z którego wartość parametru ma zostać pobrana.
+	 *
+	 * RETURNS: (any)
+	 *     Wartość parametru o podanym indeksie.
+	 */
 	public get( index: string ): any
 	{
 		const name = `_${index}`;
@@ -95,7 +213,16 @@ export class TabControl
 		return null;
 	}
 
-	public addEvents()
+	/**
+	 * Dodaje zdarzenia do kontrolki.
+	 *
+	 * DESCRIPTION:
+	 *     Kontrolka oprócz przełączania kontekstu i zakładek obsługuje również
+	 *     inne akcje, jak np. czyszczenie lub ustawianie flagi modelu.
+	 *     Szczegóły dotyczące tego jak działają te opcje i jak je ustawić
+	 *     znajdują się w opisie klasy.
+	 */
+	public addEvents(): void
 	{
 		if( this._failed )
 			return;
@@ -110,6 +237,15 @@ export class TabControl
 		this._remove.addEventListener( "click", this._onRemoveLanguage );
 	}
 
+	/**
+	 * Zmienia zaznaczoną zakładkę w kontrolce.
+	 *
+	 * PARAMETERS:
+	 *     index: (number)
+	 *         Indeks zakładki która ma być zaznaczona.
+	 *     force: (boolean) = false
+	 *         Wymuszenie odświeżenia gdy indeks jest taki sam jak aktualny.
+	 */
 	public selectTab( index: number, force: boolean = false ): void
 	{
 		// sprawdź czy zakładka nie jest czasem już zaznaczona
@@ -129,7 +265,8 @@ export class TabControl
 		newli.classList.add( "selected" );
 
 		// pokaż pola przypisane do zakładki
-		for( let x = 0; x < this._variants.length; ++x ) {
+		for( let x = 0; x < this._variants.length; ++x )
+		{
 			const variant = this._variants[x];
 
 			if( variant.dataset.variant == newid )
@@ -139,23 +276,29 @@ export class TabControl
 		}
 
 		// razem ze zmianą zakładki zmienia się też tryb wyświetlania danych
-		if( this._message != null && this._flags.length > 0 ) {
+		if( this._message != null && this._flags.length > 0 )
+		{
 			// nazwa elementu do sprawdzenia
 			const fname = `flag:${newid}`;
 
 			// przeszukuj wszystkie flagi
-			for( let x = 0; x < this._flags.length; ++x ) {
+			for( let x = 0; x < this._flags.length; ++x )
+			{
 				const flag = this._flags[x];
 
-				if( flag.name == fname && this._remove && this._create ) {
+				if( flag.name == fname && this._remove && this._create )
+				{
 					// i jeżeli flaga jest dopuszczona do widoku, wyświetl dane
-					if( flag.value == "1" ) {
+					if( flag.value == "1" )
+					{
 						this._message.classList.add( "hidden" );
 						this._search.classList.remove( "hidden" );
 						this._remove.classList.remove( "hidden" );
 						this._create.classList.add( "hidden" );
+					}
 					// w przeciwnym wypadku wyświetl komunikat
-					} else {
+					else
+					{
 						this._message.classList.remove( "hidden" );
 						this._search.classList.add( "hidden" );
 						this._remove.classList.add( "hidden" );
@@ -168,6 +311,15 @@ export class TabControl
 		this._selected = index;
 	}
 
+// =============================================================================
+
+	/**
+	 * Akcja wywoływana podczas zmiany zakładki w kontrolce.
+	 *
+	 * PARAMETERS:
+	 *     ev: (MouseEvent)
+	 *         Argumenty zdarzenia.
+	 */
 	private _onTabChange = ( ev: MouseEvent ) =>
 	{
 		const newli = <HTMLElement>ev.target;
@@ -175,22 +327,34 @@ export class TabControl
 			return;
 
 		// wyszukaj indeks nowego elementu
-		const newidx = this._tabs.findIdxByFunc( (elem: HTMLElement) => {
-			return elem.dataset.id == newli.dataset.id;
-		} );
+		const newidx = this._tabs.findIdxByFunc( (elem: HTMLElement) =>
+			elem.dataset.id == newli.dataset.id
+		);
 
 		this.selectTab( newidx );
 	}
 
+	/**
+	 * Akcja wywoływana po kliknięciu w przycisk tworzenia języka.
+	 *
+	 * DESCRIPTION:
+	 *     Wyświetla kontrolki formularza dla zaznaczonego języka ukrywając
+	 *     wiadomość o braku tłumaczenia.
+	 *     Dodatkowo zmienia flagę modelu używaną przy zapisie danych.
+	 *
+	 * PARAMETERS:
+	 *     ev: (MouseEvent)
+	 *         Argumenty zdarzenia.
+	 */
 	private _onCreateLanguage = ( ev: MouseEvent ) =>
 	{
 		if( this._failed )
 			return;
 
 		const fname = `flag:${this._tabs[this._selected].dataset.id}`;
-		const index = this._flags.findIdxByFunc( (elem: HTMLInputElement) => {
-			return elem.name === fname;
-		} );
+		const index = this._flags.findIdxByFunc( (elem: HTMLInputElement) =>
+			elem.name === fname
+		);
 
 		if( index === -1 )
 			return;
@@ -202,19 +366,30 @@ export class TabControl
 		this.selectTab( this._selected, true );
 	}
 
+	/**
+	 * Akcja wywoływana po kliknięciu w przycisk usuwania języka.
+	 *
+	 * DESCRIPTION:
+	 *     Wyświetla wiadomość o braku tłumaczenia dla zaznaczonego języka
+	 *     ukrywając kontrolki formularza.
+	 *     Dodatkowo zmienia flagę modelu używaną przy zapisie danych.
+	 *
+	 * PARAMETERS:
+	 *     ev: (MouseEvent)
+	 *         Argumenty zdarzenia.
+	 */
 	private _onRemoveLanguage = ( ev: MouseEvent ) =>
 	{
 		if( this._failed )
 			return;
 
-		if( !window.confirm("Czy na pewno chcesz usunąć to tłumaczenie?") ) {
+		if( !window.confirm("Czy na pewno chcesz usunąć to tłumaczenie?") )
 			return;
-		}
 
 		const fname = `flag:${this._tabs[this._selected].dataset.id}`;
-		const index = this._flags.findIdxByFunc( (elem: HTMLInputElement) => {
-			return elem.name === fname;
-		} );
+		const index = this._flags.findIdxByFunc( (elem: HTMLInputElement) =>
+			elem.name === fname
+		);
 
 		if( index === -1 )
 			return;
