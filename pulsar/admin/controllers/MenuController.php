@@ -23,6 +23,8 @@ use Pulsar\Helper\{Utils, ControlElement};
 
 class MenuController extends Controller
 {
+	private $_editing = true;
+
 	public function indexAction(): void
 	{
 		// przełącznik pomiędzy elementami przetłumaczonymi a do tłumaczenia
@@ -97,62 +99,27 @@ class MenuController extends Controller
 		]);
 	}
 
-	public function newAction()
+	public function newAction( string $id = null )
 	{
-		if( $this->postRedirect('new') )
+		$this->_editing = false;
+
+		if( $id == null )
 		{
-			$response = new Response();
-			return $response->redirect( "admin/menu" );
+			if( $this->request->isPost() )
+				throw new Exception( 'Nieprawidłowe żądanie' );
+
+			$id = Utils::GenerateGUID();
 		}
 
-		Language::setLanguage( $this->config->cms->language );
-		
-		// pobierz listę języków
-		$all = Language::getFrontend();
-		$cur = Language::getCurrent();
-
-		// wygeneruj nowy identyfikator dla menu
-		$data = [];
-		$id   = Utils::GenerateBinGUID();
-
-		// utwórz puste menu dla każdego z dostępnych języków
-		foreach( $all as $lang )
-			$data[] = new Menu([
-				'id'          => $id,
-				'id_language' => $lang->id
-			]);
-
-		// ustaw zmienne dla widoku
-		$this->view->setVars([
-			'languages'  => $all,
-			'language'   => $cur,
-			'data'       => $data,
-			'title'      => 'Pulsar :: Nowe menu',
-			'breadcrumb' => [
-				[
-					'name' => 'Treść',
-					'url'  => '/admin/content'
-				], [
-					'name' => 'Menu',
-					'url'  => '/admin/menu'
-				], [
-					'name' => 'Nowe',
-					'url'  => '/admin/menu/new'
-				]
-			],
-			'hasSidebar' => false,
-			'topButtons' => [
-				[
-					'name'  => 'Powrót',
-					'url'   => '/admin/menu',
-					'id'    => 'menu-back-button',
-					'class' => 'fa fa-chevron-left'
-				]
+		$this->dispatcher->forward([
+			'action' => 'edit',
+			'params' => [
+				$id
 			]
 		]);
 	}
 
-	public function editAction( string $id = null )
+	public function editAction( string $id )
 	{
 		$bin = Utils::GUIDToBin( $id );
 
@@ -171,7 +138,7 @@ class MenuController extends Controller
 		]);
 
 		// menu o podanym indeksie nie istnieje!
-		if( count($menus) == 0 )
+		if( count($menus) == 0 && $this->_editing )
 			throw new \Exception( 'Podany rekord nie istnieje!' );
 
 		$data    = [];
@@ -203,6 +170,7 @@ class MenuController extends Controller
 		$this->view->setVars([
 			'languages' => $all,
 			'language'  => $cur,
+			'isEditing' => $this->_editing,
 
 			'title'      => 'Pulsar :: Edycja menu',
 			'breadcrumb' => [
@@ -213,8 +181,12 @@ class MenuController extends Controller
 					'name' => 'Menu',
 					'url'  => '/admin/menu'
 				], [
-					'name' => 'Edycja',
-					'url'  => '/admin/menu/edit/' . $id
+					'name' => $this->_editing
+						? 'Edycja'
+						: 'Nowe',
+					'url'  => $this->_editing
+						? '/admin/menu/edit/' . $id
+						: '/admin/menu/new'
 				]
 			],
 			'data'       => $data,
@@ -235,22 +207,16 @@ class MenuController extends Controller
 		$response = new Response();
 		$post     = $this->request->getPost();
 
+		// przechodź po wszystkich elementach menu
 		foreach( $data as $single )
 		{
 			$variant = $single->getVariant();
 			$flag    = (int)$post['flag:' . $variant] ?? 0;
 			$save    = [
-				'name'    =>  $post['name:'    . $variant] ?? '',
-				'private' => ($post['private:' . $variant] ?? '') != '',
-				'online'  => ($post['online:'  . $variant] ?? '') != ''
+				'name'    => $post['name:' . $variant] ?? '',
+				'private' => (int)(($post['private:' . $variant] ?? '') != ''),
+				'online'  => (int)(($post['online:' . $variant] ?? '') != '')
 			];
-
-			// pomiń jeżeli dane są takie same
-			if( $single->hasDifference($save) )
-				continue;
-			// pomiń również jeżeli model nie istnieje i nie będzie tworzony
-			if( $flag == ZMFLAG_NONE && $single->getFlag() == ZMFLAG_NONE )
-				continue;
 
 			// jeżeli flaga zapisu została usunięta, usuń
 			if( $flag == ZMFLAG_NONE && $single->getFlag() == ZMFLAG_SAVE )
@@ -259,27 +225,45 @@ class MenuController extends Controller
 				continue;
 			}
 
-			// w przeciwnym razie próbuj aktualizować lub tworzyć
+			// pomiń jeżeli dane są takie same
+			if( !$single->hasDifference($save) )
+				continue;
+
+			// pomiń również jeżeli model nie istnieje i nie będzie tworzony
+			if( $flag == ZMFLAG_NONE && $single->getFlag() == ZMFLAG_NONE )
+				continue;
+
 			$single->name    = $save['name'];
 			$single->private = $save['private'];
 			$single->online  = $save['online'];
 
-			// w przypadku gdy model nie istniał, umieść rekord na końcu
-			if( $single->getFlag() == 0 )
+			// utwórz nowy element gdy nie istniał
+			if( $single->getFlag() == ZMFLAG_NONE )
 			{
-				$order = Menu::count([
+				// pobierz rekord z największą wartością pola 'order'
+				$last = Menu::findFirst([
 					'conditions' => [[
 						'id_language = :lang:',
 						[ 'lang' => $single->id_language ],
 						[ 'lang' => \PDO::PARAM_STR ]
-					]]
+					]],
+					'for_update' => true,
+					'order'      => '[order] DESC'
 				]);
-				$single->order = $order + 1;
+
+				// jeżeli nie znaleziono żadnego, ustaw 1
+				if( $last == null )
+					$single->order = 1;
+				// jeżeli znaleziono, zwiększ go o 1
+				else
+					$single->order = $last->order + 1;
+
+				// zapisz
+				$single->create();
 			}
-
-			$single->save();
+			else
+				$single->update();
 		}
-
 		return $response->redirect( 'admin/menu' );
 	}
 
