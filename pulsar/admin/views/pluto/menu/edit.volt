@@ -1,21 +1,27 @@
 <div class="items-vertical lightgrey-back fill-free">
 
-	<!-- formularz edycji -->
-	{{ tag.form([
-		isEditing
-			? 'admin/menu/edit/' ~ data[0].getId()
-			: 'admin/menu/new/'  ~ data[0].getId(),
-		'id': 'P01_Form',
-		'source': data
+	<!-- formularz edycji i tworzenia nowego elementu -->
+	{{ tag.beginForm([
+		'id'    : 'P01_FormEdit',
+		'source': data,
+		'action': saveAction
 	]) }}
 
 		<div class="head-bar mb00">
-			<h2 class="mb5">{{ isEditing ? 'Edycja menu' : 'Nowe menu' }}</h2>
-			<p class="description">{{ isEditing
-				? '<span class="blue">GUID:</span> ' ~ data[0].getId()
-				: 'Utworzone menu będzie puste, dlatego warto od razu podpiąć '
-					~ 'do niego strony, artykuły lub przekierowania.'
-				}}
+			<h2 class="mb5">
+				{{ isEditing ? 'Edycja menu' : 'Nowe menu' }}
+			</h2>
+			<p class="description">
+
+			{% if isEditing %}
+				<!-- identyfikator elementu -->
+				<span class="blue">GUID:</span> {{ data[0].getId() }}
+			{% else %}
+				<!-- informacja o nowym elemencie -->
+				Utworzone menu będzie puste, dlatego warto od razu podpiąć
+				do niego strony, artykuły lub przekierowania.
+			{% endif %}
+
 			</p>
 		</div>
 
@@ -30,7 +36,7 @@
 				'message': '#P01_NotExistMsg',
 				'remove' : '#P01_RemoveLang',
 				'create' : '#P01_AddLang',
-				'form'   : '#P01_Form'
+				'form'   : '#P01_FormEdit'
 			]
 		]) }}
 

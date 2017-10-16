@@ -168,11 +168,16 @@ class MenuController extends Controller
 			return $this->editMenu( $id, $data );
 
 		$this->view->setVars([
-			'languages' => $all,
-			'language'  => $cur,
-			'isEditing' => $this->_editing,
+			'languages'  => $all,
+			'language'   => $cur,
+			'isEditing'  => $this->_editing,
+			'saveAction' => $this->_editing
+				? 'admin/menu/edit/' . $id
+				: 'admin/menu/new/'  . $id,
 
-			'title'      => 'Pulsar :: Edycja menu',
+			'title'      => $this->_editing
+				? 'Pulsar :: Edycja menu'
+				: 'Pulsar :: Nowe menu',
 			'breadcrumb' => [
 				[
 					'name' => 'Treść',
@@ -265,10 +270,5 @@ class MenuController extends Controller
 				$single->update();
 		}
 		return $response->redirect( 'admin/menu' );
-	}
-
-	private function addMenu(): void
-	{
-		$menu = new Menu();
 	}
 }

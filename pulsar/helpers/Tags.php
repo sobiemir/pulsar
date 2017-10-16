@@ -77,7 +77,6 @@ class Tags extends \Phalcon\Tag
 		if( !$selected )
 			self::$_selected = $selected = $source[0]->getVariant();
 
-
 		// generuj pojedyncze elementy
 		foreach( $source as $elem )
 		{
@@ -281,6 +280,87 @@ class Tags extends \Phalcon\Tag
 	}
 
 	/**
+	 * Tworzy element rozpoczynający formularz.
+	 *
+	 * PARAMETERS:
+	 *     $params: array
+	 *         Parametry przekazywane do formularza.
+	 *
+	 * RETURNS: string
+	 *     Utworzony element w HTML.
+	 */
+	public static function beginForm( array $parms ): string
+	{
+		self::$_source = $parms['source'] ?? null;
+		unset( $parms['source'] );
+
+		$retval = parent::form( $parms );
+
+		// ukryta kontrolka z nazwą formularza
+		$retval .= parent::hiddenField([
+			'form',
+			'id'    => null,
+			'value' => $params['name'] ?? $parms['id']
+		]);
+
+		return $retval;
+	}
+
+	/**
+	 * Tworzy element zamykający formularz.
+	 * 
+	 * RETURNS: string
+	 *     Utworzony element w HTML.
+	 */
+	public static function endForm(): string
+	{
+		self::$_source = [];
+		return parent::endForm();
+	}
+
+	/**
+	 * Tworzy element SVG z logo programu.
+	 *
+	 * PARAMETERS:
+	 *     $size: integer
+	 *         Rozmiar obrazu SVG w pikselach.
+	 *     $color1: string
+	 *         Kolor podstawowy loga w formacie HEX.
+	 *     $color2: string
+	 *         Kolor dodatkowy loga w formacie HEX.
+	 *
+	 * RETURNS: string
+	 *     Utworzony element SVG.
+	 */
+	public static function logo( int $size = 64, string $color1 = "#4a4a4a",
+		string $color2 = "#c83737" ): string
+	{
+		$scale = $size / 64;
+		return
+			'<svg width="' . $size . '" height="' . $size . '">
+				<g transform="scale(' . $scale . ')">
+					<path fill="' . $color1 . '" d="m 32,-1.3e-5
+						c -17.673124,-8e-12 -32.000016568553, 14.326906
+						-32,32.00003 0,17.673112 14.326888,32 32,32 17.673112,0
+						32,-14.326888 32,-32 C 64.000017,14.326893
+						49.673124,-1.3000008e-5 32,-1.3e-5 Z m 0,6 c 14.359415,0
+						26.000017,11.640615 26,26.00003 -0.117112,14.46527
+						-11.837624,25.595416 -26,26 -14.359403,0 -26,-11.640597
+						-26,-26 C 6.1172531,17.534909 17.837554,6.4044259
+						32,5.999987 Z" />
+					<path fill="' . $color1 . '" d="m32,17.999117a14,14 0 0 1
+						14,14l6,0a20,20 0 0 0 -20,-20l0,6z" />
+					<path fill="' . $color1 . '" d="m12,31.999117a20,20 0 0 0
+						20,20l0,-6a14,14 0 0 1 -14,-14l-6,0z" />
+					<circle fill="' . $color2 . '" r="8" cy="32.000017"
+						cx="31.999998" />
+				</g>
+			</svg>';
+	}
+
+// =============================================================================
+
+	/**
 	 * Konwertuje atrybuty na odpowiadającą im wartość.
 	 *
 	 * DESCRIPTION:
@@ -290,7 +370,8 @@ class Tags extends \Phalcon\Tag
 	 *     nie ma, ale przekazywane zawsze zawierają wartość TRUE lub FALSE.
 	 *
 	 * PARAMETERS:
-	 *     $attrs Lista atrybutów do konwersji.
+	 *     $attrs: array
+	 *         Lista atrybutów do konwersji.
 	 *
 	 * RETURNS:
 	 *     Przetworzoną listę atrybutów.
@@ -333,9 +414,12 @@ class Tags extends \Phalcon\Tag
 	 *     Element złożony: <p attr="pulsar">System zarządzania treścią.</p>.
 	 *
 	 * PARAMETERS:
-	 *     $name      Nazwa tworzonego elementu.
-	 *     $composite Czy element jest elementem prostym czy złożonym?
-	 *     $attrs     Lista atrybutów elementu.
+	 *     $name: string
+	 *         Nazwa tworzonego elementu.
+	 *     $composite: boolean = false
+	 *         Czy element jest elementem prostym czy złożonym?
+	 *     $attrs: array = []
+	 *         Lista atrybutów elementu.
 	 *
 	 * RETURNS:
 	 *     Utworzony element HTML.
@@ -377,7 +461,16 @@ class Tags extends \Phalcon\Tag
 		return "<{$name}{$retval} />";
 	}
 
-
+	/**
+	 * Generuje identyfikator dla kontrolki.
+	 *
+	 * RETURNS: string
+	 *     Wygenerowany identyfikator.
+	 */
+	private static function getNextId(): string
+	{
+		return 'pagv-' . self::$_index++;
+	}
 
 
 
@@ -467,18 +560,6 @@ class Tags extends \Phalcon\Tag
 		return '';
 	}
 
-	public static function logo( int $size = 64, string $color1 = "#4a4a4a", string $color2 = "#c83737" )
-	{
-		$scale = $size / 64;
-		return '<svg width="' . $size . '" height="' . $size . '"><g transform="scale(' . $scale . ')">
-			<path fill="' . $color1 . '"
-			   d="m 32,-1.3e-5 c -17.673124,-8e-12 -32.000016568553,14.326906 -32,32.00003 0,17.673112 14.326888,32 32,32 17.673112,0 32,-14.326888 32,-32 C 64.000017,14.326893 49.673124,-1.3000008e-5 32,-1.3e-5 Z m 0,6 c 14.359415,0 26.000017,11.640615 26,26.00003 -0.117112,14.46527 -11.837624,25.595416 -26,26 -14.359403,0 -26,-11.640597 -26,-26 C 6.1172531,17.534909 17.837554,6.4044259 32,5.999987 Z" />
-			<path fill="' . $color1 . '" d="m32,17.999117a14,14 0 0 1 14,14l6,0a20,20 0 0 0 -20,-20l0,6z" />
-			<path fill="' . $color1 . '" d="m12,31.999117a20,20 0 0 0 20,20l0,-6a14,14 0 0 1 -14,-14l-6,0z" />
-			<circle fill="' . $color2 . '" r="8" cy="32.000017" cx="31.999998" />
-		</g></svg>';
-	}
-
 	/**
 	 * Przestrzeń nazw dla kontrolek z której generowane jest ID.
 	 * @var string
@@ -491,62 +572,4 @@ class Tags extends \Phalcon\Tag
 	private static $_source = null;
 
 	private static $_selected = null;
-
-	/**
-	 * Tworzenie formularza dla kontrolek.
-	 * Dodany został nowy parametr do ułatwienia zarządzania kontrolkami.
-	 * 
-	 * > source: Źródło pobierania danych do kontrolek (tablica z wartościami którymi mają zostać uzupełnione).
-	 *           Wartości ustawiane są dla kontrolek względem ustawionej nazwy (name).
-	 * 
-	 * @param  array|string $params Tablica parametrów przekazywanych do funkcji.
-	 * @return string                   Zwraca tag początkowy formularza.
-	 */
-	public static function form( $parms ): string
-	{
-		$parms = is_array( $parms )
-			? $parms
-			: [ $parms ];
-
-		self::$_namespace = $parms['id']     ?? $parms[0];
-		self::$_source    = $parms['source'] ?? null;
-
-		unset( $parms['source'] );
-
-		$retval = parent::form( $parms );
-
-		// ukryta kontrolka z nazwą formularza
-		$retval .= parent::hiddenField([
-			'form',
-			'id'    => null,
-			'value' => $parms['id']
-		]);
-
-		return $retval;
-	}
-
-	/**
-	 * Resetowanie przestrzeni nazw i źródła danych dla kontrolek.
-	 * Zamykanie elementu formularza.
-	 * 
-	 * @return string Tag końcowy formularza.
-	 */
-	public static function endForm(): string
-	{
-		self::$_namespace = '';
-		self::$_source    = [];
-
-		return parent::endForm();
-	}
-
-	/**
-	 * Generuje identyfikator dla kontrolki.
-	 *
-	 * RETURNS:
-	 *     Wygenerowany identyfikator.
-	 */
-	private static function getNextId(): string
-	{
-		return 'pagv-' . self::$_index++;
-	}
 }
