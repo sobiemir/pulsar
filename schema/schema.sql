@@ -54,7 +54,7 @@ CREATE TABLE `language`
 	`id`           BINARY(16)   NOT NULL,
 	`frontend`     BOOLEAN      NOT NULL DEFAULT 0,
 	`backend`      BOOLEAN      NOT NULL DEFAULT 0,
-	`direction`    TINYINT(1)   NOT NULL DEFAULT 1,
+	`direction`    CHAR(1)      NOT NULL DEFAULT 'L',
 	`order`        INTEGER      NOT NULL DEFAULT 0,
 	`code`         VARCHAR(20)  NOT NULL DEFAULT "pl",
 	`default_name` VARCHAR(100) NOT NULL DEFAULT "polski",

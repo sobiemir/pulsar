@@ -45,13 +45,12 @@ class Language extends \Phalcon\Mvc\Model
 	 * Identyfikator języka przypisanego do menu.
 	 *
 	 * DESCRIPTION:
-	 *     Wartość 1 oznacza układ tekstu od lewej do prawej, zaś wartość
-	 *     2 układ tekstu do prawej do lewej strony.
-	 *     Dla wartości 0 przyjmowany jest układ domyślny (LTR).
+	 *     Wartość L oznacza układ tekstu od lewej do prawej, zaś wartość
+	 *     R układ tekstu do prawej do lewej strony.
 	 *
-	 * TYPE: integer
+	 * TYPE: string
 	 */
-	public $direction = 1;
+	public $direction = 'L';
 
 	/**
 	 * Indeks względem którego menu jest sortowane.
