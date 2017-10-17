@@ -31,12 +31,12 @@ module.exports = {
 			frontend: {
 				type: Sequelize.BOOLEAN,
 				allowNull: false,
-				defaultValue: 0
+				defaultValue: false
 			},
 			backend: {
 				type: Sequelize.BOOLEAN,
 				allowNull: false,
-				defaultValue: 0
+				defaultValue: false
 			},
 			direction: {
 				type: Sequelize.CHAR(1),
