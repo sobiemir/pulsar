@@ -4,7 +4,8 @@
     "codename": "genesis",
     "description": "Content Management System based on Phalcon",
     "scripts": {
-        "postinstall": "node prepare.js"
+        "postinstall": "node prepare.js",
+        "knex": "knex"
     },
     "repository": {
         "type": "git",
@@ -20,6 +21,11 @@
         "copyfiles": "^1.2.0",
         "font-awesome": "^4.7.0",
         "requirejs": "^2.3.5",
+        "sequelize": "^4.14.0",
         "uglify-js": "^3.1.3"
+    },
+    "devDependencies": {
+        "mysql2": "^1.4.2",
+        "pg": "^7.3.0"
     }
 }
