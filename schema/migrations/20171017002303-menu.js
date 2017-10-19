@@ -13,25 +13,18 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-/**
- * Tworzy tabelę dla menu.
- * 
- * Do menu przypisywane są strony, do których zaś przypinane są artykuły.
- * Menu można podpiąć do wybranego kontenera na stronie.
- * Istnieją również prywatne menu które nie mogą być wybrane i wyświetlane.
- * Domyślne utworzone prywatne menu systemowe, to menu ze stronami błędów.
- * Każde utworzone menu można wyłączyć przełączając pole "online".
- */
 module.exports = {
-	up: ( queryInterface, Sequelize ) => {
+	up: (queryInterface, Sequelize) =>
+	{
 		return queryInterface.createTable( "menu", {
 			id: {
-				type: Sequelize.CHAR(16).BINARY,
+				type: Sequelize.INTEGER,
+				autoIncrement: true,
 				primaryKey: true,
 				allowNull: false
 			},
 			id_language: {
-				type: Sequelize.CHAR(16).BINARY,
+				type: Sequelize.INTEGER,
 				primaryKey: true,
 				allowNull: false,
 				references: {
@@ -62,7 +55,8 @@ module.exports = {
 		} );
 	},
 
-	down: ( queryInterface, Sequelize ) => {
+	down: (queryInterface, Sequelize) =>
+	{
 		return queryInterface.dropTable( "menu" );
 	}
 };

@@ -21,9 +21,9 @@ use Pulsar\Helper\Utils;
 class Language extends \Phalcon\Mvc\Model
 {
 	/**
-	 * Identyfikator języka w postaci GUID.
+	 * Identyfikator języka.
 	 *
-	 * TYPE: string
+	 * TYPE: integer
 	 */
 	public $id = null;
 
@@ -106,15 +106,6 @@ class Language extends \Phalcon\Mvc\Model
 // =============================================================================
 
 	/**
-	 * Identyfikator języka w formacie GUID.
-	 *
-	 * TYPE: string
-	 */
-	private $_id = null;
-
-// =============================================================================
-
-	/**
 	 * Inicjalizuje dane dla modelu.
 	 */
 	public function initialize(): void
@@ -138,27 +129,14 @@ class Language extends \Phalcon\Mvc\Model
 	}
 
 	/**
-	 * Zwraca identyfikator języka w formacie binarnym.
+	 * Funkcja używana przy kontrolkach, zwraca identyfikator języka.
 	 *
 	 * RETURNS: string
-	 *     Identyfikator języka w formacie binarnym pobrany z tabeli.
+	 *     Identyfikator języka.
 	 */
-	public function getRawId(): string
+	public function getId(): int
 	{
 		return $this->id;
-	}
-
-	/**
-	 * Zwraca identyfikator języka w formacie GUID.
-	 *
-	 * RETURNS: string
-	 *     Identyfikator języka skonwertowany na typ GUID.
-	 */
-	public function getId(): string
-	{
-		if( !$this->_id )
-			$this->_id = Utils::BinToGUID( $this->id );
-		return $this->_id;
 	}
 
 	/**
@@ -308,7 +286,7 @@ class Language extends \Phalcon\Mvc\Model
 	 *     $id (string):
 	 *         Identyfikator języka który ma zostać ustawiony jako aktualny.
 	 */
-	private static function findAndStore( string $id = null ): void
+	private static function findAndStore( int $id = null ): void
 	{
 		// pobierz języki z bazy danych
 		$langs = Language::find([

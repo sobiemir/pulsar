@@ -13,17 +13,13 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-/**
- * Tworzy tabelę dla użytkowników.
- * 
- * Na chwilę obecną jest to prosta lista pól które są obowiązkowe dla każdego
- * użytkownika.
- */
 module.exports = {
-	up: ( queryInterface, Sequelize ) => {
+	up: (queryInterface, Sequelize) =>
+	{
 		return queryInterface.createTable( "user", {
 			id: {
-				type: Sequelize.CHAR(16).BINARY,
+				type: Sequelize.INTEGER,
+				autoIncrement: true,
 				primaryKey: true,
 				allowNull: false
 			},
@@ -59,7 +55,8 @@ module.exports = {
 		} );
 	},
 
-	down: ( queryInterface, Sequelize ) => {
+	down: (queryInterface, Sequelize) =>
+	{
 		return queryInterface.dropTable( "user" );
 	}
 };

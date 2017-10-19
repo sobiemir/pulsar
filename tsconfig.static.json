@@ -1,16 +1,16 @@
 {
-    "compilerOptions": {
-        "module": "AMD",
-        "target": "ES5",
-        "noImplicitAny": true,
-        "removeComments": true,
-        "preserveConstEnums": true,
-        "sourceMap": true,
-        "outDir": "public/themes/pluto/js",
-        "outFile": "public/themes/pluto/js/app.static.js"
-    },
-    "files": [
-        "public/themes/pluto/ts.static/Application.ts",
-        "public/themes/pluto/ts.static/Prototypes.ts"
-    ]
+	"compilerOptions": {
+		"module": "AMD",
+		"target": "ES5",
+		"noImplicitAny": true,
+		"removeComments": true,
+		"preserveConstEnums": true,
+		"sourceMap": true,
+		"outDir": "public/themes/pluto/js",
+		"outFile": "public/themes/pluto/js/app.static.js"
+	},
+	"files": [
+		"public/themes/pluto/ts.static/Application.ts",
+		"public/themes/pluto/ts.static/Prototypes.ts"
+	]
 }

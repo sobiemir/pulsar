@@ -13,18 +13,13 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-/**
- * Tworzy tabelę z językami strony.
- * 
- * Lista języków dostepnych na stronie i/lub dla panelu administratora.
- * Informacje o zasadach odnośnie zapisu kodu języka można znaleźć pod adresem:
- * https://www.w3.org/International/articles/language-tags/
- */
 module.exports = {
-	up: ( queryInterface, Sequelize ) => {
+	up: (queryInterface, Sequelize) =>
+	{
 		return queryInterface.createTable( "language", {
 			id: {
-				type: Sequelize.CHAR(16).BINARY,
+				type: Sequelize.INTEGER,
+				autoIncrement: true,
 				primaryKey: true,
 				allowNull: false
 			},
@@ -62,7 +57,8 @@ module.exports = {
 		} );
 	},
 
-	down: ( queryInterface, Sequelize ) => {
+	down: (queryInterface, Sequelize) =>
+	{
 		return queryInterface.dropTable( "language" );
 	}
 };

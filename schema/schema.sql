@@ -13,21 +13,6 @@
 --  this program. If not, see <http://www.licenses.aculo.pl/>.
 --
 
-DROP FUNCTION IF EXISTS UUID2BIN;
-
-CREATE FUNCTION UUID2BIN(s CHAR(36))
-	RETURNS binary(16)
-	DETERMINISTIC
-
-	RETURN UNHEX(CONCAT(
-		SUBSTRING(s,7,2),SUBSTRING(s,5,2),SUBSTRING(s,3,2),SUBSTRING(s,1,2),
-		SUBSTRING(s,12,2),SUBSTRING(s,10,2),
-		SUBSTRING(s,17,2),SUBSTRING(s,15,2),
-		SUBSTRING(s,20,4),
-		SUBSTRING(s,25,12)
-	)
-);
-
 DROP TABLE IF EXISTS `menu`;
 DROP TABLE IF EXISTS `language`;
 DROP TABLE IF EXISTS `user`;
@@ -51,9 +36,9 @@ DROP TABLE IF EXISTS `user`;
 -- =============================================================================
 CREATE TABLE `language`
 (
-	`id`           BINARY(16)   NOT NULL,
-	`frontend`     BOOLEAN      NOT NULL DEFAULT 0,
-	`backend`      BOOLEAN      NOT NULL DEFAULT 0,
+	`id`           INTEGER      NOT NULL AUTO_INCREMENT,
+	`frontend`     BOOLEAN      NOT NULL DEFAULT TRUE,
+	`backend`      BOOLEAN      NOT NULL DEFAULT TRUE,
 	`direction`    CHAR(1)      NOT NULL DEFAULT 'L',
 	`order`        INTEGER      NOT NULL DEFAULT 0,
 	`code`         VARCHAR(20)  NOT NULL DEFAULT "pl",
@@ -80,8 +65,8 @@ CREATE TABLE `language`
 -- =============================================================================
 CREATE TABLE `menu`
 (
-	`id`          BINARY(16)   NOT NULL,
-	`id_language` BINARY(16)   NOT NULL,
+	`id`          INTEGER      NOT NULL AUTO_INCREMENT,
+	`id_language` INTEGER      NOT NULL,
 	`private`     BOOLEAN      NOT NULL DEFAULT 1,
 	`online`      BOOLEAN      NOT NULL DEFAULT 1,
 	`order`       INTEGER      NOT NULL DEFAULT 0,
@@ -108,12 +93,12 @@ CREATE TABLE `menu`
 -- =============================================================================
 CREATE TABLE `user`
 (
-	`id`           BINARY(16)   NOT NULL,
+	`id`           INTEGER      NOT NULL AUTO_INCREMENT,
 	`username`     VARCHAR(50)  NOT NULL,
 	`screen_name`  VARCHAR(70)  NOT NULL,
 	`email`        VARCHAR(100) NOT NULL,
 	`password`     VARCHAR(255) NOT NULL,
-	`join_date`    DATETIME     NOT NULL DEFAULT NOW(),
+	`join_date`    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	`status`       INTEGER      NOT NULL DEFAULT 0,
 
 	PRIMARY KEY (`id`),
@@ -121,4 +106,3 @@ CREATE TABLE `user`
 	UNIQUE  KEY (`screen_name`),
 	UNIQUE  KEY (`email`)
 );
-
