@@ -13,11 +13,11 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-const path = require( 'path' );
+const path = require( "path" );
 
 module.exports = {
-	'config': path.resolve('schema', 'config.js'),
-	'models-path': path.resolve('schema', 'models'),
-	'seeders-path': path.resolve('schema', 'sample'),
-	'migrations-path': path.resolve('schema', 'migrations')
+	config: path.resolve( "schema", "config.js" ),
+	models-path: path.resolve( "schema", "models" ),
+	seeders-path: path.resolve( "schema", "sample" ),
+	migrations-path: path.resolve( "schema", "migrations" )
 }
