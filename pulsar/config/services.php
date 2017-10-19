@@ -59,21 +59,7 @@ $di->set(
 		return $access;
 	}
 );
-// konfiguracja
-$di->set(
-	'config',
-	function()
-	{
-		$config = require APP_PATH . 'config/config.php';
 
-		// zamień czytelny identyfikator na binarny ciąg
-		$config['cms']['language'] = Utils::GUIDToBin(
-			$config['cms']['language']
-		);
-
-		return new Config( $config );
-	}
-);
 // tagi HTML
 $di->set(
 	'tag',
@@ -147,21 +133,47 @@ $di->set('request', function()
 	return new Request();
 });
 
+// pliki konfiguracyjne
+// =============================================================================
+$di->set( 'config', function()
+{
+	$config = require APP_PATH . 'config/config.php';
+	$custom = file_get_contents( APP_PATH . 'config/config.json' );
+
+	if( $custom !== false )
+	{
+		$custom = json_decode( $custom, true );
+
+		// jeżeli konfiguracja jest niepoprawna, wyświetl błąd
+		if( $custom == null )
+			throw new Exception( '500' );
+
+		// podmień parametry z tymi przekazanymi przez użytkownika
+		foreach( $config as $k => $v )
+			$config[$k] = isset( $config[$k] )
+				? array_merge( $config[$k], $config[$k] )
+				: $config[$k];
+	}
+	return new Config( $config );
+} );
+
+// baza danych
+// =============================================================================
 $di->set('db', function()
 {
 	$config = $this->getConfig();
 
 	// sqlite3
-	if( $config->database->adapter == 'SQLite' ) {
+	if( $config->database->dialect == 'sqlite' ) {
 		return new Phalcon\Db\Adapter\Pdo\Sqlite([
 			'dbname' => $config->database->database
 		]);
 	}
 	// mysql
-	else if( $config->database->adapter == 'MySQL' ) {
+	else if( $config->database->dialect == 'mysql' ) {
 		return new Phalcon\Db\Adapter\Pdo\Mysql([
 			'host'     => $config->database->host,
-			'dbname'   => $config->database->dbname,
+			'dbname'   => $config->database->database,
 			'port'     => $config->database->port,
 			'username' => $config->database->username,
 			'password' => $config->database->password,
@@ -171,11 +183,10 @@ $di->set('db', function()
 	// postgresql
 	return new Phalcon\Db\Adapter\Pdo\Postgresql([
 		'host'     => $config->database->host,
-		'dbname'   => $config->database->dbname,
+		'dbname'   => $config->database->database,
 		'port'     => $config->database->port,
 		'username' => $config->database->username,
-		'password' => $config->database->password,
-		'charset'  => $config->database->charset
+		'password' => $config->database->password
 	]);
 });
 

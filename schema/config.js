@@ -13,11 +13,20 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-const path = require( 'path' );
+const config = require( "../pulsar/config/config.json" );
+
+// sprawdź czy istnieje wpis bazy danych w konfiguracji
+if( !config )
+	config = {};
+// jeżeli nie, utwórz bazę na sqlite
+if( !("database" in config) )
+	config.database = {
+		"dialect": "sqlite",
+		"database": "pleiad.sqlite"
+	};
 
 module.exports = {
-	'config': path.resolve('schema', 'config.js'),
-	'models-path': path.resolve('schema', 'models'),
-	'seeders-path': path.resolve('schema', 'sample'),
-	'migrations-path': path.resolve('schema', 'migrations')
-}
+	development: config.database,
+	test: config.database,
+	production: config.database
+};

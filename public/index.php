@@ -27,9 +27,24 @@ define( 'APP_PATH', BASE_PATH . 'pulsar/' );
 try
 {
 	$di = require_once APP_PATH . 'config/services.php';
+
 	$application = new Application($di);
 
-	require_once APP_PATH . 'config/loader.php';
+	$application->registerModules([
+		'admin' => [
+			'className' => '\\Pulsar\\Admin\\Module',
+			'path'      => APP_PATH . 'admin/Module.php'
+		],
+		'install' => [
+			'className' => '\\Pulsar\\Install\\Module',
+			'path'      => APP_PATH . 'install/Module.php'
+		],
+		'website' => [
+			'className' => '\\Pulsar\\Website\\Module',
+			'path'      => APP_PATH . 'website/Module.php'
+		]
+	]);
+
 	$response = $application->handle();
 	$response->send();
 }

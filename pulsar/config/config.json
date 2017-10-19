@@ -1,0 +1,40 @@
+{
+	"dbvariants": {
+		"postgres": {
+			"dialect": "postgres",
+			"host": "127.0.0.1",
+			"username": "root",
+			"password": "",
+			"database": "pulsar",
+			"port": 5432,
+			"persistent": 1
+		},
+		"sqlite": {
+			"dialect": "sqlite",
+			"database": "quasar.sqlite"
+		},
+		"mysql": {
+			"dialect": "mysql",
+			"host": "127.0.0.1",
+			"username": "root",
+			"password": "",
+			"database": "pluto",
+			"port": 3306,
+			"persistent": 1
+		}
+	},
+	"database": {
+		"dialect": "mysql",
+		"host": "127.0.0.1",
+		"username": "root",
+		"password": "",
+		"database": "pluto",
+		"port": 3306,
+		"migrationStorage": "sequelize",
+		"migrationStorageTableName": "sequelize_meta",
+		"seederStorage": "sequelize",
+		"seederStorageTableName": "sequelize_seed",
+		"logging": false,
+		"benchmark": false
+	}
+}

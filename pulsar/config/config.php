@@ -14,33 +14,41 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-return
-[
-	'system' =>
-	[
+/*
+ *  This is standard configuration file.
+ *  Changes here are permitted (may be overwritten by new version of system).
+ *  All options placed here are overwritten by data from "config.php" file.
+ *  This is only template for configuration file, that fullfill missing options.
+ *  Configuration for change is placed in "config.json" file.
+ */
+return [
+	'system' => [
 		'maintenance' => 0,
 		'work_factor' => 10
 	],
-	'database' =>
-	[
-		'adapter'    => 'MySQL',
-		'host'       => 'localhost',
-		'username'   => 'root',
-		'password'   => '',
-		'dbname'     => 'pluto',
-		'port'       => 3306,
+	'database' => [
+		'dialect' => 'mysql',
+		'host' => '127.0.0.1',
+		'username' => 'root',
+		'password' => '',
+		'database' => 'pluto',
+		'port' => 3306,
 		'persistent' => 1,
-		'charset'    => 'utf8',
-		'prefix'     => ''
+		'charset' => 'utf8',
+		'prefix' => '',
+		'migrationStorage' => 'sequelize',
+		'migrationStorageTableName' => 'sequelize_meta',
+		'seederStorage' => 'sequelize',
+		'seederStorageTableName' => 'sequelize_seed',
+		'logging' => false,
+		'benchmark' => false
 	],
-	'admin' =>
-	[
+	'admin' => [
 		'theme'    => 'pluto',
-		'language' => '9e76c39b-fb16-474d-b4aa-cf4c1ff7d441'
+		'language' => 1
 	],
-	'cms' =>
-	[
+	'cms' => [
 		'dynamic_version' => false,
-		'language'        => '9e76c39b-fb16-474d-b4aa-cf4c1ff7d441'
+		'language'        => 1
 	]
 ];
