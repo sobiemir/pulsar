@@ -154,8 +154,8 @@ $di->set( 'config', function()
 
 		// podmień parametry z tymi przekazanymi przez użytkownika
 		foreach( $config as $k => $v )
-			$config[$k] = isset( $config[$k] )
-				? array_merge( $config[$k], $config[$k] )
+			$config[$k] = isset( $custom[$k] )
+				? array_merge( $config[$k], $custom[$k] )
 				: $config[$k];
 	}
 	return new Config( $config );
