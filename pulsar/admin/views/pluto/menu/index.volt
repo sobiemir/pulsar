@@ -1,10 +1,6 @@
 <div class="items-vertical fill-free">
 	<div class="head-bar mb00">
-		<h2 class="mb5">Menu</h2>
-		<p class="description">
-			Lista wszystkich utworzonych menu które można przypisać do
-			odpowiednio skonfigurowanej sekcji na stronie.
-		</p>
+		<h2 class="mb5 mt5">Lista menu</h2>
 	</div>
 
 	<!-- przełącznik przetłumaczone / nieprzetłumaczone -->

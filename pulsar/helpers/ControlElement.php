@@ -60,30 +60,11 @@ class ControlElement
 
 	/**
 	 * Zwraca identyfikator elementu.
-	 * 
-	 * DESCRIPTION:
-	 *     Ta funkcja wykonuje to samo co getRawId.
-	 *     Utworzona została w celu zachowania zgodności z elementami które
-	 *     posiadają identyfikatory GUID.
-	 *     W celu przyspieszenia wyszukiwania do porównania pobierana jest
-	 *     binarna wersja GUID, zaś do kodu HTML przekazywana jest jego czytelna
-	 *     wersja.
 	 *
 	 * RETURNS: integer
 	 *     Identyfikator elementu.
 	 */
-	public function getRawId(): string
-	{
-		return $this->id;
-	}
-
-	/**
-	 * Zwraca identyfikator elementu.
-	 *
-	 * RETURNS: integer
-	 *     Identyfikator elementu.
-	 */
-	public function getId(): string
+	public function getId(): int
 	{
 		return $this->id;
 	}

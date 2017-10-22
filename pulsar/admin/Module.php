@@ -63,7 +63,7 @@ class Module implements \Phalcon\Mvc\ModuleDefinitionInterface
 			$volt->setOptions([
 				// rozszerzenie przekompilowanego szablonu
 				'compiledExtension' => '.php',
-				// ścieżka do przechowywania przekompilowanych szablonów
+				// ścieżka do przechowywania szablonów w php
 				'compiledPath' => APP_PATH . 'cache/',
 				// sprawdza czy istnieją różnice pomiędzy szablonami
 				'stat' => true,
@@ -72,11 +72,6 @@ class Module implements \Phalcon\Mvc\ModuleDefinitionInterface
 				// separator zastępujący / w oddzielaniu folderów
 				'compiledSeparator' => '_',
 			]);
-			$volt->getCompiler()->addFunction(
-				'bin2guid', function($guid) {
-					return "\\Pulsar\\Helper\\Utils::BinToGUID({$guid})";
-				}
-			);
 			$view->registerEngines([
 				'.volt' => $volt,
 				'.phtm' => \Phalcon\Mvc\View\Engine\Php::class

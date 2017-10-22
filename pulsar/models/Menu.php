@@ -1,5 +1,4 @@
 <?php
-namespace Pulsar\Model;
 /*
  *  This file is part of Pulsar CMS
  *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
@@ -15,6 +14,8 @@ namespace Pulsar\Model;
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
+namespace Pulsar\Model;
+
 use Pulsar\Helper\Utils;
 use Phalcon\Mvc\Model\Resultset;
 use Phalcon\Di;
@@ -25,16 +26,16 @@ define( 'ZMFLAG_SAVE',   1 );
 class Menu extends \Phalcon\Mvc\Model
 {
 	/**
-	 * Identyfikator menu w postaci GUID.
+	 * Identyfikator menu.
 	 *
-	 * TYPE: string
+	 * TYPE: integer
 	 */
 	public $id = null;
 
 	/**
-	 * Identyfikator języka przypisanego do menu w postaci GUID.
+	 * Identyfikator języka przypisanego do menu.
 	 *
-	 * TYPE: string
+	 * TYPE: integer
 	 */
 	public $id_language = null;
 
@@ -71,20 +72,6 @@ class Menu extends \Phalcon\Mvc\Model
 	public $name = '';
 
 // =============================================================================
-
-	/**
-	 * Identyfikator menu w formacie GUID.
-	 *
-	 * TYPE: string
-	 */
-	private $_id = null;
-
-	/**
-	 * Identyfikator języka menu w formacie GUID.
-	 *
-	 * TYPE: string
-	 */
-	private $_id_language = null;
 
 	/**
 	 * Flaga stanu dla modelu.
@@ -163,7 +150,7 @@ class Menu extends \Phalcon\Mvc\Model
 				'lang'  => $language,
 				'limit' => $limit
 			], [
-				'lang'  => \PDO::PARAM_STR,
+				'lang'  => \PDO::PARAM_INT,
 				'limit' => \PDO::PARAM_INT
 			]
 		)->setHydrateMode( Resultset::HYDRATE_ARRAYS );
@@ -237,51 +224,25 @@ class Menu extends \Phalcon\Mvc\Model
 	}
 
 	/**
-	 * Zwraca identyfikator menu w formacie binarnym.
+	 * Zwraca identyfikator menu.
 	 *
 	 * RETURNS: string
-	 *     Identyfikator menu w formacie binarnym pobrany z tabeli.
+	 *     Identyfikator menu.
 	 */
-	public function getRawId(): string
+	public function getId(): string
 	{
 		return $this->id;
 	}
 
 	/**
-	 * Zwraca identyfikator języka w formacie binarnym.
+	 * Zwraca identyfikator języka.
 	 *
 	 * RETURNS: string
-	 *     Identyfikator języka w formacie binarnym pobrany z tabeli.
-	 */
-	public function getRawVariant(): string
-	{
-		return $this->id_language;
-	}
-
-	/**
-	 * Zwraca identyfikator menu w formacie GUID.
-	 *
-	 * RETURNS: string
-	 *     Identyfikator menu skonwertowany na typ GUID.
-	 */
-	public function getId(): string
-	{
-		if( !$this->_id )
-			$this->_id = Utils::BinToGUID( $this->id );
-		return $this->_id;
-	}
-
-	/**
-	 * Zwraca identyfikator języka w formacie GUID.
-	 *
-	 * RETURNS: string
-	 *     Identyfikator języka skonwertowany na typ GUID.
+	 *     Identyfikator języka.
 	 */
 	public function getVariant(): string
 	{
-		if( !$this->_id_language )
-			$this->_id_language = Utils::BinToGUID( $this->id_language );
-		return $this->_id_language;
+		return $this->id_language;
 	}
 
 	/**

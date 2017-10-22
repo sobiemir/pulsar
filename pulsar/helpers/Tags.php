@@ -19,7 +19,7 @@ use Phalcon\Mvc\Model\Resultset;
 
 class Tags extends \Phalcon\Tag
 {
-	public static $_index = 1;
+	private static $_index = 1;
 
 	public static function hiddenModelFlags( array $attrs = [] ): string
 	{
@@ -80,17 +80,19 @@ class Tags extends \Phalcon\Tag
 		// generuj pojedyncze elementy
 		foreach( $source as $elem )
 		{
+			$variant = $elem->getVariant();
+
 			$attrs['id']    = $elemid . '-' . $index++;
-			$attrs['name']  = $name   . ':' . $elem->getVariant();
+			$attrs['name']  = $name   . ':' . $variant;
 			$attrs['value'] = $elem->{$name};
 
 			// ukryj element gdy nie jest aktywny
-			if( $selected != $elem->getRawVariant() )
+			if( $selected != $variant )
 				$attrs['class'] = $class . ' hidden';
 			else
 				$attrs['class'] = $class;
 
-			$attrs['data']['variant'] = $elem->getVariant();
+			$attrs['data']['variant'] = $variant;
 
 			// utwórz pole tekstowe
 			$retval .= self::textBox( $attrs );
@@ -126,17 +128,19 @@ class Tags extends \Phalcon\Tag
 		// generuj pojedyncze elementy
 		foreach( $source as $elem )
 		{
+			$variant = $elem->getVariant();
+
 			$attrs['id']      = $elemid . '-' . $index++;
-			$attrs['name']    = $name   . ':' . $elem->getVariant();
+			$attrs['name']    = $name   . ':' . $variant;
 			$attrs['checked'] = $elem->{$name};
 
 			// ukryj element gdy nie jest aktywny
-			if( $selected != $elem->getRawVariant() )
+			if( $selected != $variant )
 				$attrs['class'] = $class . ' hidden';
 			else
 				$attrs['class'] = $class;
 
-			$attrs['data']['variant'] = $elem->getVariant();
+			$attrs['data']['variant'] = $variant;
 
 			// utwórz pole tekstowe
 			$retval .= self::checkBox( $attrs );
@@ -250,16 +254,16 @@ class Tags extends \Phalcon\Tag
 
 		// aktywuj zaznaczony element lub pierwszy lepszy gdy go brak
 		if( !$selected )
-			$selected = self::$_selected = $source[0]->getRawId();
+			$selected = self::$_selected = $source[0]->getId();
 		else
-			$selected = self::$_selected = $selected->getRawId();
+			$selected = self::$_selected = $selected->getId();
 
 		// twórz pojedyncze elementy kontrolki
 		$retval = '';
 		foreach( $source as $value )
 		{
 			$class = '';
-			if( $selected && $selected == $value->getRawId() )
+			if( $selected && $selected == $value->getId() )
 				$class .= 'selected ';
 			if( $value->isDisabled() )
 				$class .= 'disabled ';

@@ -138,7 +138,11 @@ $di->set('request', function()
 $di->set( 'config', function()
 {
 	$config = require APP_PATH . 'config/config.php';
-	$custom = file_get_contents( APP_PATH . 'config/config.json' );
+	$custom = false;
+
+	// konfiguracja użytkownika
+	if( file_exists(APP_PATH . 'config/config.json') )
+		$custom = file_get_contents( APP_PATH . 'config/config.json' );
 
 	if( $custom !== false )
 	{

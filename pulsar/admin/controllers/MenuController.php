@@ -42,7 +42,7 @@ class MenuController extends Controller
 				'conditions' => [[
 					'id_language = :lang:',
 					[ 'lang' => $this->config->cms->language ],
-					[ 'lang' => \PDO::PARAM_STR ]
+					[ 'lang' => \PDO::PARAM_INT ]
 				]],
 				'order' => '[order]',
 				'limit' => 30
@@ -99,47 +99,22 @@ class MenuController extends Controller
 		]);
 	}
 
-	public function newAction( string $id = null )
+	public function newAction()
 	{
 		$this->_editing = false;
 
-		if( $id == null )
-		{
-			if( $this->request->isPost() )
-				throw new Exception( 'Nieprawidłowe żądanie' );
-
-			$id = Utils::GenerateGUID();
-		}
-
 		$this->dispatcher->forward([
 			'action' => 'edit',
-			'params' => [
-				$id
-			]
+			'params' => [ null ]
 		]);
 	}
 
-	public function editAction( string $id )
+	public function editAction( string $id = null )
 	{
-		$bin = Utils::GUIDToBin( $id );
-
 		Language::setLanguage( $this->config->cms->language );
 
 		$all = Language::getFrontend();
 		$cur = Language::getCurrent();
-
-		// wyszukaj menu do edycji (wszystkie języki)
-		$menus = Menu::find([
-			'conditions' => [[
-				'id = :id:',
-				[ 'id' => $bin ],
-				[ 'id' => \PDO::PARAM_STR ]
-			]]
-		]);
-
-		// menu o podanym indeksie nie istnieje!
-		if( count($menus) == 0 && $this->_editing )
-			throw new \Exception( 'Podany rekord nie istnieje!' );
 
 		$data    = [];
 		$avlangs = [];
@@ -148,22 +123,36 @@ class MenuController extends Controller
 		foreach( $all as $lang )
 			$avlangs[$lang->id] = $lang->id;
 
-		// odrzuć nieużywane języki
-		foreach( $menus as $menu )
-			if( isset($avlangs[$menu->id_language]) )
-			{
-				$data[] = $menu;
-				unset( $avlangs[$menu->id_language] );
-			}
+		// wyszukaj menu do edycji (wszystkie języki)
+		if( $this->_editing )
+		{
+			$menus = Menu::find([
+				'conditions' => [[
+					'id = :id:',
+					[ 'id' => $id ],
+					[ 'id' => \PDO::PARAM_INT ]
+				]]
+			]);
+			if( count($menus) == 0 )
+				throw new \Exception( 'Podany rekord nie istnieje!' );
+
+			// odrzuć nieużywane języki
+			foreach( $menus as $menu )
+				if( isset($avlangs[$menu->id_language]) )
+				{
+					$data[] = $menu;
+					unset( $avlangs[$menu->id_language] );
+				}
+		}
 
 		// uzupełnij pustymi danymi brakujące języki
 		foreach( $avlangs as $langid )
 			$data[] = (new Menu([
-				'id'          => $bin,
+				'id'          => $id,
 				'id_language' => $langid
 			]))->setFlag( ZMFLAG_NONE );
 
-		// edycja 
+		// edycja lub dodawanie nowego elementu
 		if( $this->request->isPost() )
 			return $this->editMenu( $id, $data );
 
@@ -173,7 +162,7 @@ class MenuController extends Controller
 			'isEditing'  => $this->_editing,
 			'saveAction' => $this->_editing
 				? 'admin/menu/edit/' . $id
-				: 'admin/menu/new/'  . $id,
+				: 'admin/menu/new/',
 
 			'title'      => $this->_editing
 				? 'Pulsar :: Edycja menu'
@@ -250,7 +239,7 @@ class MenuController extends Controller
 					'conditions' => [[
 						'id_language = :lang:',
 						[ 'lang' => $single->id_language ],
-						[ 'lang' => \PDO::PARAM_STR ]
+						[ 'lang' => \PDO::PARAM_INT ]
 					]],
 					'for_update' => true,
 					'order'      => '[order] DESC'

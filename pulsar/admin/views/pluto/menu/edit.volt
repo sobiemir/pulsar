@@ -8,21 +8,9 @@
 	]) }}
 
 		<div class="head-bar mb00">
-			<h2 class="mb5">
+			<h2 class="mb5 mt5">
 				{{ isEditing ? 'Edycja menu' : 'Nowe menu' }}
 			</h2>
-			<p class="description">
-
-			{% if isEditing %}
-				<!-- identyfikator elementu -->
-				<span class="blue">GUID:</span> {{ data[0].getId() }}
-			{% else %}
-				<!-- informacja o nowym elemencie -->
-				Utworzone menu będzie puste, dlatego warto od razu podpiąć
-				do niego strony, artykuły lub przekierowania.
-			{% endif %}
-
-			</p>
 		</div>
 
 		<!-- kontrolka przełączająca pomiędzy językami -->

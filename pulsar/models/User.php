@@ -1,5 +1,4 @@
 <?php
-namespace Pulsar\Model;
 /*
  *  This file is part of Pulsar CMS
  *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
@@ -15,6 +14,8 @@ namespace Pulsar\Model;
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
+namespace Pulsar\Model;
+
 use Phalcon\Mvc\Model\Validator\Email as Email;
 use Phalcon\Mvc\Model\Resultset;
 
@@ -23,7 +24,7 @@ class User extends \Phalcon\Mvc\Model
 	/**
 	 * Identyfikator użytkownika w postaci GUID.
 	 *
-	 * TYPE: string
+	 * TYPE: integer
 	 */
 	public $id = null;
 
@@ -77,7 +78,7 @@ class User extends \Phalcon\Mvc\Model
 	 *         - 0x0: Konto nieaktywne
 	 *         - 0x1: Użytkownik aktywny
 	 *         - 0x2: Użytkownik wyłączony (konto dezaktywowane)
-	 *         - 0x3: Użytkownik zbanowany
+	 *         - 0x3: Użytkownik zbanowany (zablokowany)
 	 *     Na statusy systemowe zarezerwowane są wartości od 0x00 do 0xFF.
 	 *     Pozostałe wartości są do dyspozycji pluginów, z czego wartości
 	 *     te przydzielane są automatycznie przez system podczas instalacji
@@ -85,7 +86,7 @@ class User extends \Phalcon\Mvc\Model
 	 *
 	 * TYPE: integer
 	 */
-	public $status = '';
+	public $status = 0;
 
 // =============================================================================
 
@@ -98,17 +99,14 @@ class User extends \Phalcon\Mvc\Model
 	public function validation(): bool
 	{
 		$this->validate(
-			new Email(
-				[
-					'field'    => 'email',
-					'required' => true,
-				]
-			)
+			new Email( [
+				'field'    => 'email',
+				'required' => true,
+			] )
 		);
 
-		if( $this->validationHasFailed() == true ) {
+		if( $this->validationHasFailed() == true )
 			return false;
-		}
 
 		return true;
 	}

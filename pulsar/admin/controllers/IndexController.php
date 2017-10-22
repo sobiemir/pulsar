@@ -24,7 +24,12 @@ class IndexController extends Controller
 		$this->view->setVars([
 			'title'      => 'Pulsar :: Kokpit',
 			'hasSidebar' => false,
-			'breadcrumb' => 'Kokpit'
+			'breadcrumb' => [
+				[
+					'name' => 'Kokpit',
+					'url'  => '/admin'
+				]
+			]
 		]);
 	}
 
