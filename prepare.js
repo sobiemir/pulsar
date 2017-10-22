@@ -70,3 +70,6 @@ copyfiles([
 ], true, () => {
 	console.log("Skopiowano skrytpy.");
 });
+
+// zakończ skrypt
+process.exit();
