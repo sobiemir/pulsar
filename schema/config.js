@@ -25,6 +25,11 @@ if( !("database" in config) )
 		"database": "pleiad.sqlite"
 	};
 
+config.database.migrationStorage = "sequelize";
+config.database.seederStorage = "sequelize";
+config.database.migrationStorageTableName = "sequelize_meta";
+config.database.seederStorageTableName = "sequelize_seed";
+
 module.exports = {
 	development: config.database,
 	test: config.database,

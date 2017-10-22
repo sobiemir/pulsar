@@ -30,10 +30,6 @@
 		"password": "",
 		"database": "pluto",
 		"port": 3306,
-		"migrationStorage": "sequelize",
-		"migrationStorageTableName": "sequelize_meta",
-		"seederStorage": "sequelize",
-		"seederStorageTableName": "sequelize_seed",
 		"logging": false,
 		"benchmark": false
 	}
