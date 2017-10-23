@@ -13,32 +13,48 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-let copyfiles = require("copyfiles");
-let uglifyjs  = require("uglify-js");
-let fs        = require("fs");
+let uglifyjs = require( "uglify-js" );
+let fs       = require( "fs" );
+let path     = require( "path" );
 
-// kopiowanie plików css
-copyfiles([
+// lista plików do kopiowania
+let css_files = [
 	"node_modules/font-awesome/css/font-awesome.css",
 	"node_modules/font-awesome/css/font-awesome.css.map",
-	"node_modules/font-awesome/css/font-awesome.min.css",
-	"public/themes/pluto/vendors/css"
-], true, () => {
-	console.log("Skopiowano arkusze stylów.");
-});
-
-// kopiowanie czcionek
-copyfiles([
+	"node_modules/font-awesome/css/font-awesome.min.css"
+];
+let font_files = [
 	"node_modules/font-awesome/fonts/FontAwesome.otf",
 	"node_modules/font-awesome/fonts/fontawesome-webfont.eot",
 	"node_modules/font-awesome/fonts/fontawesome-webfont.svg",
 	"node_modules/font-awesome/fonts/fontawesome-webfont.ttf",
 	"node_modules/font-awesome/fonts/fontawesome-webfont.woff",
-	"node_modules/font-awesome/fonts/fontawesome-webfont.woff2",
-	"public/themes/pluto/vendors/fonts"
-], true, () => {
-	console.log("Skopiowano czcionki.");
-});
+	"node_modules/font-awesome/fonts/fontawesome-webfont.woff2"
+];
+let js_files = [
+	"node_modules/requirejs/require.js",
+	"node_modules/requirejs/require.min.js"
+];
+
+// pliki css
+for( const file of css_files )
+{
+	let fname = path.posix.basename( file );
+
+	console.log( `[css] Kopiowanie pliku: ${fname}` );
+	fs.copyFileSync( file, `public/themes/pluto/vendors/css/${fname}` );
+}
+console.log( "Skopiowano pliki CSS" );
+
+// czcionki
+for( const file of font_files )
+{
+	let fname = path.posix.basename( file );
+
+	console.log( `[font] Kopiowanie pliku: ${fname}` );
+	fs.copyFileSync( file, `public/themes/pluto/vendors/fonts/${fname}` );
+}
+console.log( "Skopiowano czcionki." );
 
 // minimalizacja rozmiaru requirejs
 let options = {
@@ -54,6 +70,8 @@ let options = {
 			" */"
 	}
 };
+
+console.log( "Minimalizacja rozmiaru biblioteki RequireJS..." );
 fs.writeFileSync( "node_modules/requirejs/require.min.js",
 	uglifyjs.minify(
 		fs.readFileSync( "node_modules/requirejs/require.js", "utf8" ),
@@ -62,14 +80,12 @@ fs.writeFileSync( "node_modules/requirejs/require.min.js",
 	"utf8"
 );
 
-// kopiowanie plików js
-copyfiles([
-	"node_modules/requirejs/require.js",
-	"node_modules/requirejs/require.min.js",
-	"public/themes/pluto/vendors/js"
-], true, () => {
-	console.log("Skopiowano skrytpy.");
-});
+// czcionki
+for( const file of js_files )
+{
+	let fname = path.posix.basename( file );
 
-// zakończ skrypt
-process.exit();
+	console.log( `[font] Kopiowanie pliku: ${fname}` );
+	fs.copyFileSync( file, `public/themes/pluto/vendors/js/${fname}` );
+}
+console.log( "Skopiowano pliki javascript." );
