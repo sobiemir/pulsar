@@ -320,8 +320,11 @@ export class TabControl
 	 *     ev: (MouseEvent)
 	 *         Argumenty zdarzenia.
 	 */
-	private _onTabChange = ( ev: MouseEvent ) =>
+	private _onTabChange = ( ev: MouseEvent ): void =>
 	{
+		if( this._failed )
+			return;
+
 		const newli = <HTMLElement>ev.target;
 		if( newli.tagName != "LI" )
 			return;
@@ -346,7 +349,7 @@ export class TabControl
 	 *     ev: (MouseEvent)
 	 *         Argumenty zdarzenia.
 	 */
-	private _onCreateLanguage = ( ev: MouseEvent ) =>
+	private _onCreateLanguage = ( ev: MouseEvent ): void =>
 	{
 		if( this._failed )
 			return;
@@ -378,7 +381,7 @@ export class TabControl
 	 *     ev: (MouseEvent)
 	 *         Argumenty zdarzenia.
 	 */
-	private _onRemoveLanguage = ( ev: MouseEvent ) =>
+	private _onRemoveLanguage = ( ev: MouseEvent ): void =>
 	{
 		if( this._failed )
 			return;
