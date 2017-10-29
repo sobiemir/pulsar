@@ -27,6 +27,14 @@ import {CheckBox}   from "controls/CheckBox";
  */
 export default class Application
 {
+	/**
+	 * Podpina akcje pod znalezione kontrolki zakładek.
+	 *
+	 * DESCRIPTION:
+	 *     Akcja podpinana jest pod wszystkie elementy o klasie 'tab-control'.
+	 *     Szczegóły dotyczące tego jak powinna wyglądać zawartość kontrolki dla
+	 *     zakładek znajdują się w klasie TabControl.
+	 */
 	public initTabControls(): void
 	{
 		// pobierz listę dostępnych przełączników
@@ -50,6 +58,14 @@ export default class Application
 		}
 	}
 
+	/**
+	 * Podpina akcje pod znalezione przyciski wyboru.
+	 *
+	 * DESCRIPTION:
+	 *     Akcja podpinana jest pod wszystkie elementy o klasie 'checkbox'.
+	 *     Szczegóły dotyczące tego jak powinna wyglądać zawartość kontrolki dla
+	 *     przycisku wyboru znajdują się w klasie CheckBox.
+	 */
 	public initCheckBoxes(): void
 	{
 		const checks = <NodeListOf<HTMLElement>>
@@ -58,8 +74,40 @@ export default class Application
 		for( let x = 0; x < checks.length; ++x )
 		{
 			const check = new CheckBox( checks[x] );
-
 			check.addEvents();
+		}
+	}
+
+	/**
+	 * Podpina pod elementy akcję wyświetlającą pytanie użytkownikowi.
+	 *
+	 * DESCRIPTION:
+	 *     Wyszukuje wszystkie elementy z klasą 'show-confirm' i podpina pod nie
+	 *     funkcję uruchamianą po kliknięciu myszą w wybrany element.
+	 *     Kliknięcie myszą powoduje wyświetlenie pytania z treścią zapisaną
+	 *     w atrybucie 'data-confirm'.
+	 *     W przypadku gdy użytkownik odpowie zaznaczy negatywną odpowiedź,
+	 *     dalsze działanie elementów przycisku jest przerywane.
+	 */
+	public initConfirmMessages(): void
+	{
+		const confirms = <NodeListOf<HTMLElement>>
+			document.querySelectorAll( ".show-confirm" );
+
+		for( let x = 0; x < confirms.length; ++x )
+		{
+			if( !("confirm" in confirms[x].dataset) )
+				continue;
+
+			confirms[x].addEventListener( "click", (ev: MouseEvent) => {
+
+				if( confirm(confirms[x].dataset.confirm) )
+					return true;
+
+				ev.stopPropagation();
+				ev.preventDefault();
+				return false;
+			} );
 		}
 	}
 }

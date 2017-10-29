@@ -1,5 +1,4 @@
 <?php
-namespace Pulsar\Helper;
 /*
  *  This file is part of Pulsar CMS
  *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
@@ -14,6 +13,8 @@ namespace Pulsar\Helper;
  *  You should have received a copy of the New BSD License along with
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
+
+namespace Pulsar\Helper;
 
 use Phalcon\Mvc\Model\Resultset;
 
@@ -227,6 +228,25 @@ class Tags extends \Phalcon\Tag
 		return self::_buildTag( 'div', true, $attrs );
 	}
 
+	/**
+	 * Tworzy kontrolkę z zakładkami do przełączania.
+	 *
+	 * DESCRIPTION:
+	 *     Do utworzenia kontrolki z zakładkami wymagane jest podanie źródła.
+	 *     Można go ustawić podczas tworzenia formularza lub przekazać
+	 *     bezpośrednio do kontrolki w parametrze pod kluczem 'source'.
+	 *     Źródło musi zawierać tablicę klas implementujących interfejs ITab
+	 *     lub zawierających funkcje zdefiniowane w interfejsie.
+	 *     Do funkcji można podać aktualnie zaznaczoną zakładkę podając do
+	 *     klucza zaznaczony element (cały element a nie tylko identyfikator).
+	 * 
+	 * PARAMETERS:
+	 *     $attrs: array
+	 *         Parametry przekazywane do formularza.
+	 *
+	 * RETURNS: string
+	 *     Utworzony element w HTML.
+	 */
 	public static function tabControl( array $attrs = [] ): string
 	{
 		$attrs['id']    = $attrs['id']    ?? self::getNextId();
@@ -234,12 +254,10 @@ class Tags extends \Phalcon\Tag
 
 		$source   = $attrs['source']   ?? null;
 		$selected = $attrs['selected'] ?? self::$_selected ?? null;
-		$index    = $attrs['index']    ?? null;
 
 		// usuń nieużywane pola z głównej tablicy
 		unset( $attrs['source'] );
 		unset( $attrs['selected'] );
-		unset( $attrs['index'] );
 
 		$attrs['class'] .= ' tab-control items-horizontal';
 
@@ -249,7 +267,7 @@ class Tags extends \Phalcon\Tag
 				$source = self::$_source[$attrs['id']];
 
 		// nie twórz gdy brak źródła danych
-		if( $source == null || $index == null )
+		if( $source == null )
 			return '';
 
 		// aktywuj zaznaczony element lub pierwszy lepszy gdy go brak
@@ -273,7 +291,7 @@ class Tags extends \Phalcon\Tag
 					'id' => $value->getId()
 				],
 				'class' => $class,
-				'value' => $value->{$index}
+				'value' => $value->getName()
 			];
 			$retval .= self::_buildTag( 'li', true, $elemattrs );
 		}

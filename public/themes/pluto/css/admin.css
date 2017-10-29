@@ -705,19 +705,17 @@ form .button-container {
 	margin-right: 0.1rem;
 }
 
-a.delete, a.edit, a.clone {
-	color: #111;
-}
 .delete, .edit, .clone {
 	cursor: pointer;
+	color: #111;
 }
-a.delete:hover, span.delete:hover {
+.delete:hover {
 	color: #c83737;
 }
-a.edit:hover, span.edit:hover {
+.edit:hover {
 	color: #127899;
 }
-a.clone:hover, span.clone:hover {
+.clone:hover {
 	color: #7e1c71;
 }
 

@@ -15,7 +15,6 @@
 
 		<!-- kontrolka przełączająca pomiędzy językami -->
 		{{ tag.tabControl([
-			'index'   : 'default_name',
 			'source'  : languages,
 			'selected': language,
 			'class'   : 'white-back head-bar',
@@ -89,16 +88,22 @@
 
 		<!-- kontener z przyciskami -->
 		<div class="button-container">
-			<button class="blue">Zapisz zmiany</button>
+			<button class="blue">
+				{{ isEditing ? 'Zapisz zmiany' : 'Dodaj menu' }}
+			</button>
 			<button id="P01_AddLang" type="button" class="ml-a black hidden">
 				Dodaj język
 			</button>
-			<button id="P01_RemoveLang" type="button" class="ml-a black hidden">
+			<button id="P01_RemoveLang" class="ml-a black hidden" type="button"
+				data-confirm="Czy na pewno chcesz usunąć to tłumaczenie?">
 				Usuń język
 			</button>
-			<button id="P01_Remove" type="button" class="red">
-				Usuń menu
-			</button>
+			{% if isEditing %}
+				<a href="{{ removeAction }}" class="red button show-confirm"
+					data-confirm="Czy na pewno chcesz usunąć to menu?">
+					Usuń menu
+				</a>
+			{% endif %}
 		</div>
 
 	{{ tag.endForm() }}

@@ -16,8 +16,6 @@
 
 use Phalcon\Config;
 
-
-
 use Phalcon\Mvc\Model\MetaData\Memory as MemoryMetaData;
 use Phalcon\Mvc\Url                   as UrlProvider;
 use Phalcon\Flash\Session             as FlashSession;
@@ -33,7 +31,7 @@ use Phalcon\Escaper;
 
 use Pulsar\Library\Authorization;
 use Pulsar\Library\AccessControl;
-use Pulsar\Helper\{Tags, Utils};
+use Pulsar\Helper\Tags;
 
 $di = new DependencyInjector();
 

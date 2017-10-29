@@ -1,5 +1,4 @@
 <?php
-namespace Pulsar\Model;
 /*
  *  This file is part of Pulsar CMS
  *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
@@ -15,10 +14,13 @@ namespace Pulsar\Model;
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
+namespace Pulsar\Model;
+
 use Phalcon\Mvc\Model\Resultset;
 use Pulsar\Helper\Utils;
+use Pulsar\Interfaces\ITab;
 
-class Language extends \Phalcon\Mvc\Model
+class Language extends \Phalcon\Mvc\Model implements ITab
 {
 	/**
 	 * Identyfikator języka.
@@ -131,12 +133,23 @@ class Language extends \Phalcon\Mvc\Model
 	/**
 	 * Funkcja używana przy kontrolkach, zwraca identyfikator języka.
 	 *
-	 * RETURNS: string
+	 * RETURNS: int
 	 *     Identyfikator języka.
 	 */
 	public function getId(): int
 	{
 		return $this->id;
+	}
+
+	/**
+	 * Funkcja używana przy kontrolkach, zwraca wyświetlaną nazwę języka.
+	 *
+	 * RETURNS: string
+	 *     Nazwę języka do wyświetlenia.
+	 */
+	public function getName(): string
+	{
+		return $this->default_name;
 	}
 
 	/**

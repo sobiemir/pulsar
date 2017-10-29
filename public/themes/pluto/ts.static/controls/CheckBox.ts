@@ -127,18 +127,24 @@ export class CheckBox
 
 		this._input.focus();
 
-		if( this._input.checked )
+		// jeżeli wciśnięta została spacja, odwróć wartość
+		const selectme = ev.detail === 0
+			? !this._input.checked
+			: this._input.checked;
+
+		if( selectme )
 		{
-			this._input.checked = false;
+			this._input.checked = !selectme;
 			this._control.classList.remove( "checked" );
 		}
 		else
 		{
-			this._input.checked = true;
+			this._input.checked = !selectme;
 			this._control.classList.add( "checked" );
 		}
 
-		ev.preventDefault();
+		if( ev.detail !== 0 )
+			ev.preventDefault();
 		CheckBox._current = null;
 	}
 

@@ -383,10 +383,10 @@ export class TabControl
 	 */
 	private _onRemoveLanguage = ( ev: MouseEvent ): void =>
 	{
-		if( this._failed )
+		if( this._failed || !("confirm" in this._remove.dataset) )
 			return;
 
-		if( !window.confirm("Czy na pewno chcesz usunąć to tłumaczenie?") )
+		if( !window.confirm( this._remove.dataset.confirm ) )
 			return;
 
 		const fname = `flag:${this._tabs[this._selected].dataset.id}`;

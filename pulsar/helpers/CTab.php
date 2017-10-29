@@ -1,5 +1,4 @@
 <?php
-namespace Pulsar\Helper;
 /*
  *  This file is part of Pulsar CMS
  *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
@@ -15,28 +14,41 @@ namespace Pulsar\Helper;
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-class ControlElement
+namespace Pulsar\Helper;
+
+use Pulsar\Interfaces\ITab;
+
+/**
+ * Klasa tworząca zakładkę dla kontrolki z zakładkami.
+ *
+ * DESCRIPTION:
+ *     Jest to podstawowa klasa używana przy tworzeniu kontrolki z zakładkami.
+ *     Definiuje tylko funkcje które wymaga interfejs ITab.
+ *     Same wartości można podać bezpośrednio w konstruktorze, ułatwiając przy
+ *     tym proces tworzenia zakładek.
+ */
+class CTab implements ITab
 {
 	/**
 	 * Identyfikator wyświetlanego elementu.
 	 *
 	 * TYPE: integer
 	 */
-	public $id = null;
+	private $id = null;
 
 	/**
 	 * Czy element jest wyłączony (niemożliwy do zaznaczenia)?
 	 *
 	 * TYPE: boolean
 	 */
-	public $disabled = null;
+	private $disabled = null;
 
 	/**
 	 * Nazwa wyświetlanego elementu w kontrolce.
 	 *
 	 * TYPE: string
 	 */
-	public $name = '';
+	private $name = '';
 
 // =============================================================================
 
@@ -67,6 +79,17 @@ class ControlElement
 	public function getId(): int
 	{
 		return $this->id;
+	}
+
+	/**
+	 * Zwraca nazwę wyświetlaną na zakładce.
+	 *
+	 * RETURNS: string
+	 *     Nazwa wyświetlana na elemencie.
+	 */
+	public function getName(): string
+	{
+		return $this->name;
 	}
 
 	/**

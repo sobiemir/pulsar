@@ -17,16 +17,31 @@ namespace Pulsar\Admin;
 
 use Phalcon\DiInterface;
 
+/**
+ * Flaga braku akcji używana w modelach.
+ *
+ * TYPE: integer
+ */
+define( 'ZMFLAG_NONE', 0 );
+
+/**
+ * Flaga zapisu używana w modelach.
+ *
+ * TYPE: integer
+ */
+define( 'ZMFLAG_SAVE', 1 );
+
 class Module implements \Phalcon\Mvc\ModuleDefinitionInterface
 {
 	public function registerAutoloaders( DiInterface $di = null )
 	{
 		$loader = new \Phalcon\Loader();
 		$loader->registerNamespaces([
-			'Pulsar\\Admin'   => APP_PATH . 'admin/controllers/',
-			'Pulsar\\Model'   => APP_PATH . 'models/',
-			'Pulsar\\Library' => APP_PATH . 'libraries/',
-			'Pulsar\\Helper'  => APP_PATH . 'helpers/'
+			'Pulsar\\Admin'      => APP_PATH . 'admin/controllers/',
+			'Pulsar\\Model'      => APP_PATH . 'models/',
+			'Pulsar\\Library'    => APP_PATH . 'libraries/',
+			'Pulsar\\Helper'     => APP_PATH . 'helpers/',
+			'Pulsar\\Interfaces' => APP_PATH . 'interfaces/'
 		]);
 		$loader->register();
 	}

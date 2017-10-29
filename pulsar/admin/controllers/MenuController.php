@@ -1,5 +1,4 @@
 <?php
-namespace Pulsar\Admin;
 /*
  *  This file is part of Pulsar CMS
  *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
@@ -15,22 +14,46 @@ namespace Pulsar\Admin;
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-use Phalcon\Db\Column;
-use Phalcon\Mvc\{Controller, Model\Resultset};
+namespace Pulsar\Admin;
+
+use Phalcon\Mvc\Controller;
 use Phalcon\Http\Response;
 use Pulsar\Model\{Menu, Language};
-use Pulsar\Helper\{Utils, ControlElement};
+use Pulsar\Helper\CTab;
 
+/**
+ * Klasa kontrolera dla menu aplikacji.
+ *
+ * DESCRIPTION:
+ *     Klasa zawiera akcje do których można dostać się przez przeglądarkę.
+ *     Pozwala na tworzenie, edycję, wyświetlanie i usuwanie menu.
+ *     Operacje dodawania i edycji i po części usuwania realizowane są przy
+ *     użyciu jednej funkcji.
+ */
 class MenuController extends Controller
 {
+	/**
+	 * Flaga edycji menu.
+	 *
+	 * DESCRIPTION:
+	 *     W przypadku gdy użytkownik tworzy nowe menu, flaga ustawiona jest
+	 *     na wartość FALSE.
+	 *     Proces edycji i dodawania menu korzysta z tej samej funkcji, dlatego
+	 *     ta flaga pozwala zadecydować o tym co wyświetlić lub jaką akcję
+	 *     wykonać podczas zapisywania danych.
+	 * 
+	 * TYPE: boolean
+	 */
 	private $_editing = true;
+
+// =============================================================================
 
 	public function indexAction(): void
 	{
 		// przełącznik pomiędzy elementami przetłumaczonymi a do tłumaczenia
 		$switch = [
-			new ControlElement( 1, 'Przetłumaczone' ),
-			new ControlElement( 2, 'Do tłumaczenia' )
+			new CTab( 1, 'Przetłumaczone' ),
+			new CTab( 2, 'Do tłumaczenia' )
 		];
 
 		// pobierz wszystkie dostępne języki
@@ -109,7 +132,7 @@ class MenuController extends Controller
 		]);
 	}
 
-	public function editAction( string $id = null )
+	public function editAction( int $id = null )
 	{
 		Language::setLanguage( $this->config->cms->language );
 
@@ -154,17 +177,19 @@ class MenuController extends Controller
 
 		// edycja lub dodawanie nowego elementu
 		if( $this->request->isPost() )
-			return $this->editMenu( $id, $data );
+			return $this->editMenu( $data );
 
 		$this->view->setVars([
-			'languages'  => $all,
-			'language'   => $cur,
-			'isEditing'  => $this->_editing,
-			'saveAction' => $this->_editing
-				? 'admin/menu/edit/' . $id
-				: 'admin/menu/new/',
-
-			'title'      => $this->_editing
+			'languages'    => $all,
+			'language'     => $cur,
+			'isEditing'    => $this->_editing,
+			'data'         => $data,
+			'hasSidebar'   => false,
+			'removeAction' => '/admin/menu/remove/' . $id,
+			'saveAction'   => $this->_editing
+				? '/admin/menu/edit/' . $id
+				: '/admin/menu/new/',
+			'title' => $this->_editing
 				? 'Pulsar :: Edycja menu'
 				: 'Pulsar :: Nowe menu',
 			'breadcrumb' => [
@@ -183,9 +208,7 @@ class MenuController extends Controller
 						: '/admin/menu/new'
 				]
 			],
-			'data'       => $data,
-			'hasSidebar' => false,
-			'topButtons' => [
+			'topButtons'   => [
 				[
 					'name'  => 'Powrót',
 					'url'   => '/admin/menu',
@@ -196,10 +219,32 @@ class MenuController extends Controller
 		]);
 	}
 
-	private function editMenu( $id, $data ): ?Response
+	public function removeAction( int $id ): ?Response
 	{
-		$response = new Response();
-		$post     = $this->request->getPost();
+		$menus = Menu::find([
+			'conditions' => [[
+				'id = :id:',
+				[ 'id' => $id ],
+				[ 'id' => \PDO::PARAM_INT ]
+			]]
+		]);
+
+		foreach( $menus as $menu )
+			$menu->delete();
+
+		return $this->response->redirect( 'admin/menu' );
+	}
+
+// =============================================================================
+
+	private function editMenu( array $data ): ?Response
+	{
+		$groupid = null;
+		$post    = $this->request->getPost();
+
+		// pobierz identyfikator z pierwszego elementu
+		if( count($data) > 0 )
+			$groupid = reset($data)->id;
 
 		// przechodź po wszystkich elementach menu
 		foreach( $data as $single )
@@ -231,6 +276,10 @@ class MenuController extends Controller
 			$single->private = $save['private'];
 			$single->online  = $save['online'];
 
+			// korekta identyfikatora
+			if( !$this->_editing )
+				$single->id = $groupid;
+
 			// utwórz nowy element gdy nie istniał
 			if( $single->getFlag() == ZMFLAG_NONE )
 			{
@@ -257,7 +306,11 @@ class MenuController extends Controller
 			}
 			else
 				$single->update();
+
+			// pobierz identyfikator grupy po zapisaniu pierwszego elementu
+			if( !$this->_editing && $groupid == null )
+				$groupid = $single->id;
 		}
-		return $response->redirect( 'admin/menu' );
+		return $this->response->redirect( 'admin/menu' );
 	}
 }

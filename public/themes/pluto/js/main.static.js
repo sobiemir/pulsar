@@ -31,4 +31,5 @@ require( ["Application"], (Application) => {
 
 	app.initCheckBoxes();
 	app.initTabControls();
+	app.initConfirmMessages();
 } );

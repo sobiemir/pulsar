@@ -5,7 +5,6 @@
 
 	<!-- przełącznik przetłumaczone / nieprzetłumaczone -->
 	{{ tag.tabControl([
-		'index' : 'name',
 		'source': switch,
 		'class' : 'white-back head-bar',
 		'data'  : [
@@ -45,14 +44,15 @@
 				<td>{{out.private ? 'Tak' : 'Nie'}}</td>
 				<td>{{out.online  ? 'Tak' : 'Nie'}}</td>
 				<td class="text-right w1p">
-					<div class="f0">
-						<!-- klonowanie -->
-						<a href="#" class="fa fa-clone clone"></a>
+					<div class="f0 action-container">
 						<!-- edycja -->
 						<a href="/admin/menu/edit/{{out.getId()}}"
 							class="fa fa-pencil edit"></a>
 						<!-- usuwanie -->
-						<a href="#" class="fa fa-trash delete"></a>
+						<a href="/admin/menu/remove/{{out.getId()}}"
+							class="fa fa-trash delete show-confirm"
+							data-confirm="Czy na pewno chcesz usunąć to menu?">
+						</a>
 					</div>
 				</td>
 			</tr>
@@ -102,8 +102,6 @@
 
 				<td class="text-right w1p">
 					<div class="f0">
-						<!-- klonowanie -->
-						<a href="#" class="fa fa-clone clone"></a>
 						<!-- edycja -->
 						<a href="/admin/menu/edit/{{out[0].getId()}}"
 							class="fa fa-pencil edit"></a>

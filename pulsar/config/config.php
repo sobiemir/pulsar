@@ -14,13 +14,6 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-/*
- *  This is standard configuration file.
- *  Changes here are permitted (may be overwritten by new version of system).
- *  All options placed here are overwritten by data from "config.php" file.
- *  This is only template for configuration file, that fullfill missing options.
- *  Configuration for change is placed in "config.json" file.
- */
 return [
 	'system' => [
 		'maintenance' => 0,

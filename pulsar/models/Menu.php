@@ -20,9 +20,19 @@ use Pulsar\Helper\Utils;
 use Phalcon\Mvc\Model\Resultset;
 use Phalcon\Di;
 
-define( 'ZMFLAG_NONE',   0 );
-define( 'ZMFLAG_SAVE',   1 );
-
+/**
+ * Klasa pozwalająca na modyfikacje danych menu.
+ *
+ * DESCRIPTION:
+ *     Klasa udostępnia takie funkcje jak odczyt, zapis, atkualizację oraz
+ *     usuwanie menu.
+ *     Sam odczyt może odbyć się na dwa sposoby - pobranie wszystkich elementów
+ *     z bazy zgodnie z podanymi kryteriami lub pobranie elementów które nie
+ *     zostały przetłumaczone na dany język.
+ *     Dodatkową zmienną w klasie jest zmienna flag, odpowiadająca za aktualny
+ *     stan modelu w aplikacji względem bazy danych.
+ *     Lista flag opisana została w pliku zawierającym konfigurację modułu.
+ */
 class Menu extends \Phalcon\Mvc\Model
 {
 	/**
