@@ -8,7 +8,7 @@
 			</li>
 			<li class="items-horizontal">
 				<span class="menu-icon fa fa-commenting-o"></span>
-				<a class="menu-caption" href="{{ url('/admin/translations') }}">Tłumaczenia...</a>
+				<a class="menu-caption" href="#">Tłumaczenia...</a>
 			</li>
 			<li class="separator">
 				<span class="menu-icon"></span>
@@ -16,19 +16,19 @@
 			</li>
 			<li class="items-horizontal">
 				<span class="menu-icon fa fa-folder"></span>
-				<a class="menu-caption" href="{{ url('/admin/pages') }}">Strony</a>
+				<a class="menu-caption" href="#">Strony</a>
 			</li>
 			<li class="items-horizontal">
 				<span class="menu-icon fa fa-file-o"></span>
-				<a class="menu-caption" href="{{ url('/admin/articles') }}">Artykuły</a>
+				<a class="menu-caption" href="#">Artykuły</a>
 			</li>
 			<li class="items-horizontal">
 				<span class="menu-icon fa fa-book"></span>
-				<a class="menu-caption" href="{{ url('/admin/categories') }}">Kategorie</a>
+				<a class="menu-caption" href="#">Kategorie</a>
 			</li>
 			<li class="items-horizontal">
 				<span class="menu-icon fa fa-tags"></span>
-				<a class="menu-caption" href="{{ url('/admin/tags') }}">Tagi</a>
+				<a class="menu-caption" href="#">Tagi</a>
 			</li>
 			<li class="separator">
 				<span class="menu-icon"></span>
@@ -36,7 +36,7 @@
 			</li>
 			<li class="items-horizontal">
 				<span class="menu-icon">&raquo;</span>
-				<a class="menu-caption" href="{{ url('/admin/media') }}">Lista plików</a>
+				<a class="menu-caption" href="#">Lista plików</a>
 			</li>
 		</ul>
 	</span>

@@ -10,19 +10,6 @@
 				<h5><i class="fa fa-caret-down"></i> Wyświetlane kolumny</h5>
 			</header>
 			<section>
-				{{ tag.form([ 'admin/menu', 'id': 'display-columns', 'source': showColumn ]) }}
-					{{ tag.checkField([ 'order',  'label': 'Zmiana kolejności elementów' ]) }}
-					{{ tag.checkField([ 'id',     'label': 'Identyfikator' ]) }}
-					{{ tag.checkField([ 'name',   'label': 'Nazwa' ]) }}
-					{{ tag.checkField([ 'online', 'label': 'Dostępność' ]) }}
-
-					<h6 class="bold">Dostępne akcje</h6>
-					<ul>
-						{{ tag.checkField([ 'action-clone',  'tag': 'li', 'label': 'Klonowanie' ]) }}
-						{{ tag.checkField([ 'action-edit',   'tag': 'li', 'label': 'Edycja' ]) }}
-						{{ tag.checkField([ 'action-remove', 'tag': 'li', 'label': 'Usuwanie' ]) }}
-					</ul>
-				{{ tag.endForm() }}
 			</section>
 		</div>
 		<div class="items-vertical">
@@ -30,12 +17,6 @@
 				<h5><i class="fa fa-caret-down"></i> Dostęp do strony</h5>
 			</header>
 			<section>
-				{{ tag.form([ 'admin/menu', 'id': 'page-access', 'source': pageAccess ]) }}
-					{{ tag.checkField([ 'admin',     'label': 'Administrator' ]) }}
-					{{ tag.checkField([ 'moderator', 'label': 'Moderator' ]) }}
-					{{ tag.checkField([ 'editor',    'label': 'Recenzent' ]) }}
-					{{ tag.checkField([ 'user',      'label': 'Użytkownik' ]) }}
-				{{ tag.endForm() }}
 			</section>
 		</div>
 	</div>

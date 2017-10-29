@@ -14,7 +14,7 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-namespace Pulsar\Admin;
+namespace Pulsar\Website;
 
 use Phalcon\DiInterface;
 
@@ -38,7 +38,7 @@ class Module implements \Phalcon\Mvc\ModuleDefinitionInterface
 	{
 		$loader = new \Phalcon\Loader();
 		$loader->registerNamespaces([
-			'Pulsar\\Admin'      => APP_PATH . 'admin/controllers/',
+			'Pulsar\\Website'    => APP_PATH . 'website/controllers/',
 			'Pulsar\\Model'      => APP_PATH . 'models/',
 			'Pulsar\\Library'    => APP_PATH . 'libraries/',
 			'Pulsar\\Helper'     => APP_PATH . 'helpers/',
@@ -52,46 +52,13 @@ class Module implements \Phalcon\Mvc\ModuleDefinitionInterface
 		$di->set( "dispatcher",
 			function() {
 				$dispatcher = new \Phalcon\Mvc\Dispatcher();
-				$dispatcher->setDefaultNamespace( 'Pulsar\\Admin' );
+				$dispatcher->setDefaultNamespace( 'Pulsar\\Website' );
 				return $dispatcher;
 			}
 		);
 
 		$di->set( "view", function() use ($di) {
-			$config = $this->getConfig();
-			$view   = new \Phalcon\Mvc\View();
-			$theme  = $config->admin->theme;
-
-			$view->setViewsDir( APP_PATH . 'admin/views/' . $theme . '/' );
-
-			// wersja dynamiczna lub statyczna
-			if( $config->cms->dynamic_version )
-				$view->setMainView(
-					APP_PATH . 'admin/views/' . $theme . '/dynamic'
-				);
-			else
-				$view->setMainView(
-					APP_PATH . 'admin/views/' . $theme . '/main'
-				);
-
-			// silniki renderowania - vhtm i phtm
-			$volt = new \Phalcon\Mvc\View\Engine\Volt( $view, $di );
-			$volt->setOptions([
-				// rozszerzenie przekompilowanego szablonu
-				'compiledExtension' => '.php',
-				// ścieżka do przechowywania szablonów w php
-				'compiledPath' => APP_PATH . 'cache/',
-				// sprawdza czy istnieją różnice pomiędzy szablonami
-				'stat' => true,
-				// czy szablony mają być kompilowane za każdym razem?
-				'compileAlways' => true,
-				// separator zastępujący / w oddzielaniu folderów
-				'compiledSeparator' => '_',
-			]);
-			$view->registerEngines([
-				'.volt' => $volt,
-				'.phtm' => \Phalcon\Mvc\View\Engine\Php::class
-			]);
+			$view = new \Phalcon\Mvc\View();
 			return $view;
 		} );
 	}
