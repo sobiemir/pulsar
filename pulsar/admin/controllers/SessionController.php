@@ -1,5 +1,4 @@
 <?php
-namespace Pulsar\Admin;
 /*
  *  This file is part of Pulsar CMS
  *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
@@ -14,6 +13,8 @@ namespace Pulsar\Admin;
  *  You should have received a copy of the New BSD License along with
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
+
+namespace Pulsar\Admin;
 
 use Phalcon\Mvc\Controller;
 use Pulsar\Models\Users;

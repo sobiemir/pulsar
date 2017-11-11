@@ -52,7 +52,7 @@
 		<ul class="submenu">
 			<li class="items-horizontal">
 				<span class="menu-icon">&raquo;</span>
-				<span class="menu-caption">Menedżer plików</span>
+				<a class="menu-caption" href="{{ url('/admin/filemanager') }}">Menedżer plików</a>
 			</li>
 			<li class="separator">
 				<span class="menu-icon"></span>

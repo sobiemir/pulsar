@@ -138,6 +138,59 @@ table tr.noborder td {
 /*
 ======================================================================================================================
 ------------------------------------------------------------------------------------------------------------------
+	NAWIGACJA OKRUSZKOWA
+------------------------------------------------------------------------------------------------------------------
+======================================================================================================================
+*/
+
+.breadcrumb * {
+	color: #333;
+}
+.breadcrumb {
+	border-bottom: 1px #bbb solid;
+	background: #eee;
+	padding: 0 0 0 1.2rem;
+	font-size: 0;
+	line-height: 0;
+	cursor: default;
+}
+.breadcrumb.bottom {
+	border-top: 1px #b4b4b4 solid;
+	border-bottom: 0;
+}
+.breadcrumb p,
+.breadcrumb i,
+.breadcrumb a {
+	line-height: 3rem;
+}
+.breadcrumb .fa:hover:not(.icononly) {
+	background: #d4d4d4;
+}
+.breadcrumb .fa {
+	font-size: 1.4rem;
+	line-height: 3rem;
+	padding: 0 1.0rem;
+	margin: 0;
+}
+.breadcrumb .fa:not(.icononly) {
+	cursor: pointer;
+}
+.breadcrumb p.title {
+	font-weight: bold !important;
+}
+.breadcrumb.bottom .flag-switcher {
+	padding: 0 1rem;
+}
+.breadcrumb p.title a:hover {
+	color: #127899;
+}
+.breadcrumb p.title .raquo:last-child {
+	display: none;
+}
+
+/*
+======================================================================================================================
+------------------------------------------------------------------------------------------------------------------
 	POLA TEKSTOWE
 ------------------------------------------------------------------------------------------------------------------
 ======================================================================================================================
@@ -249,7 +302,6 @@ input[type=button], input[type=submit], input[type=reset], .button, button {
 .button .fa, button .fa {
 	font-size: 1.4rem;
 	color: inherit;
-	border-right: 0.1rem #fff solid;
 	margin-top: -0.2rem;
 	border-color: inherit;
 	padding-right: 0.8rem;
@@ -301,8 +353,15 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, .bu
 	background-color: transparent;
 	border: none;
 	padding: 0 1rem;
-	text-transform: none;
+	color: inherit;
+	text-transform: uppercase;
 	font-size: 1.1rem;
+	line-height: inherit;
+}
+.button.simple .fa, button.simple .fa {
+	line-height: inherit;
+	margin-top: 0;
+	padding-left: 0;
 }
 .button.simple:hover, button.simple:hover 
 .button.simple:focus, button.simple:focus {
@@ -504,57 +563,6 @@ form .button-container {
 	border-left: 1px #bbb solid;
 	border-right: 1px #bbb solid;
 	background: #dadada;
-}
-
-/*
-======================================================================================================================
-------------------------------------------------------------------------------------------------------------------
-	NAWIGACJA OKRUSZKOWA
-------------------------------------------------------------------------------------------------------------------
-======================================================================================================================
-*/
-
-.breadcrumb * {
-	color: #333;
-}
-.breadcrumb {
-	border-bottom: 1px #bbb solid;
-	background: #eee;
-	padding: 0 0 0 1.2rem;
-	font-size: 0;
-	line-height: 0;
-	cursor: default;
-}
-.breadcrumb.bottom {
-	border-top: 1px #b4b4b4 solid;
-	border-bottom: 0;
-}
-.breadcrumb p,
-.breadcrumb i,
-.breadcrumb a {
-	line-height: 3rem;
-}
-.breadcrumb .fa:hover {
-	background: #d4d4d4;
-}
-.breadcrumb .fa {
-	font-size: 1.4rem;
-	line-height: 3rem;
-	padding: 0 1.0rem;
-	margin: 0;
-	cursor: pointer;
-}
-.breadcrumb p.title {
-	font-weight: bold !important;
-}
-.breadcrumb.bottom .flag-switcher {
-	padding: 0 1rem;
-}
-.breadcrumb p.title a:hover {
-	color: #127899;
-}
-.breadcrumb p.title .raquo:last-child {
-	display: none;
 }
 
 /*
@@ -955,4 +963,21 @@ form .button-container {
 }
 .w70p {
 	width: 70% !important;
+}
+
+.filemanager.sidebar {
+	width: 30%;
+	max-width: 350px;
+	min-width: 200px;
+	border-right: 1px #ccc solid;
+}
+.filemanager.breadcrumb {
+	border-bottom: 1px #ccc solid;
+	padding: 0;
+}
+.filemanager.breadcrumb .title {
+	margin-left: 1.2rem;
+}
+.filemanager.breadcrumb .title.root {
+	color: #c83737;
 }
