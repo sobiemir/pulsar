@@ -24,7 +24,7 @@
  *     oryginalny przycisk wyboru (input o typie checkbox).
  *     Cała reszta dzieje się automatycznie.
  */
-export class CheckBox
+class CheckBox
 {
 	/**
 	 * Kontrolka nad którą ustawione jest skupienie po wciśnieciu myszy.

@@ -12,8 +12,6 @@
  *  You should have received a copy of the New BSD License along with
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
-import {TabControl} from "controls/TabControl";
-import {CheckBox}   from "controls/CheckBox";
 
 /**
  * Wymagania przeglądarkowe dla statycznej wersji strony:
@@ -25,15 +23,20 @@ import {CheckBox}   from "controls/CheckBox";
  * SAFARI: 5.1
  * OPERA:  11.5
  */
-export default class Application
+class Application
 {
 	/**
+	 * Konstruktor klasy.
+	 */
+	public constructor()
+	{
+		this.initCheckBoxes();
+		this.initTabControls();
+		this.initConfirmMessages();
+	}
+
+	/**
 	 * Podpina akcje pod znalezione kontrolki zakładek.
-	 *
-	 * DESCRIPTION:
-	 *     Akcja podpinana jest pod wszystkie elementy o klasie 'tab-control'.
-	 *     Szczegóły dotyczące tego jak powinna wyglądać zawartość kontrolki dla
-	 *     zakładek znajdują się w klasie TabControl.
 	 */
 	public initTabControls(): void
 	{
@@ -60,11 +63,6 @@ export default class Application
 
 	/**
 	 * Podpina akcje pod znalezione przyciski wyboru.
-	 *
-	 * DESCRIPTION:
-	 *     Akcja podpinana jest pod wszystkie elementy o klasie 'checkbox'.
-	 *     Szczegóły dotyczące tego jak powinna wyglądać zawartość kontrolki dla
-	 *     przycisku wyboru znajdują się w klasie CheckBox.
 	 */
 	public initCheckBoxes(): void
 	{
@@ -76,6 +74,20 @@ export default class Application
 			const check = new CheckBox( checks[x] );
 			check.addEvents();
 		}
+	}
+
+	/**
+	 * Podpina akcje pod znaleziony element menedżera plików.
+	 */
+	public initFileManager(): void
+	{
+		// const fmgrdiv = <HTMLElement>document.querySelector( ".filemanager" );
+
+		// if( fmgrdiv == null )
+		// 	return;
+
+		// const filemanager = new FileManager( fmgrdiv );
+		// filemanager.addEvents();
 	}
 
 	/**
@@ -111,3 +123,8 @@ export default class Application
 		}
 	}
 }
+
+// Uruchom klasę po załadowaniu dokumentu
+document.addEventListener( "DOMContentLoaded", () => {
+	new Application();
+} );

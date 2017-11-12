@@ -42,7 +42,7 @@
  *     Wartość takiego elementu to "0" lub "1", gdzie "0" wyświetla wiadomość
  *     a wartość "1" pozwala na wyświetlanie podpiętych kontrolek.
  */
-export class TabControl
+class TabControl
 {
 	/**
 	 * Formularz względem którego wyszukiwane będą kolejne elementy.

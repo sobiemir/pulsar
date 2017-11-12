@@ -14,8 +14,8 @@ tslint.json
 app/installer/languages/*
 app/admin/languages/*
 
-public/themes/pluto/js/app.static.js
-public/themes/pluto/js/app.static.js.map
+public/themes/pluto/js/static.js
+public/themes/pluto/js/static.js.map
 
 package-lock.json
 pulsar/config/config.json

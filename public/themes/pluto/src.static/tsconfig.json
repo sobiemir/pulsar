@@ -1,15 +1,17 @@
 {
     "compilerOptions": {
-        "module": "AMD",
+        "module": "None",
         "target": "ES5",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
         "sourceMap": true,
         "outDir": "../js",
-        "outFile": "../js/app.static.js"
+        "outFile": "../js/static.js"
     },
     "files": [
+        "controls/CheckBox.ts",
+        "controls/TabControl.ts",
         "Application.ts",
         "Prototypes.ts"
     ]

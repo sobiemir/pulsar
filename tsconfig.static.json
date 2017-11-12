@@ -1,16 +1,18 @@
 {
 	"compilerOptions": {
-		"module": "AMD",
+		"module": "None",
 		"target": "ES5",
 		"noImplicitAny": true,
 		"removeComments": true,
 		"preserveConstEnums": true,
 		"sourceMap": true,
 		"outDir": "public/themes/pluto/js",
-		"outFile": "public/themes/pluto/js/app.static.js"
+		"outFile": "public/themes/pluto/js/static.js"
 	},
 	"files": [
-		"public/themes/pluto/ts.static/Application.ts",
-		"public/themes/pluto/ts.static/Prototypes.ts"
+		"public/themes/pluto/src.static/controls/CheckBox.ts",
+		"public/themes/pluto/src.static/controls/TabControl.ts",
+		"public/themes/pluto/src.static/Application.ts",
+		"public/themes/pluto/src.static/Prototypes.ts"
 	]
 }
