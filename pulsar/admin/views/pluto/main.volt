@@ -41,44 +41,14 @@
 	</header>
 
 	<div id="main" class="items-horizontal fill-free">
-		<aside id="pagebar" class="items-vertical" style="width:300px;">
-			<div class="breadcrumb no-padding items-horizontal">
-				<span class="text-right fill-free"><i class="fa fa-bars"></i></span>
-				<span class="text-right"><i class="fa fa-arrow-circle-o-left"></i></span>
-			</div>
-			<div class="pagemenu fill-free">
-			</div>
-		</aside>
 
-		<div class="menu-slider"></div>
+		<!-- pasek boczny z listą menu, stron i artykułów -->
+		{{ partial("partial/pages") }}
 
 		<main class="w100p items-vertical fill-free">
 
-			<!-- nawigacja na samej górze strony z przyciskami -->
-			<div class="breadcrumb items-horizontal">
-
-				<!-- informacja o aktualnym położeniu - nawigacja okruszkowa -->
-				{% if breadcrumb is defined %}
-					<p class="title">
-						{% for bc in breadcrumb %}
-							<a href="{{ bc['url'] }}">{{ bc['name'] }}</a>
-							<span class="raquo">&raquo;</span>
-						{% endfor %}
-					</p>
-				{% endif %}
-
-				<!-- przyciski dla strony -->
-				{% if topButtons is defined %}
-					<div class="button-container items-horizontal fill-free text-right">
-						<span class="fill-free"></span>
-						{% for button in topButtons %}
-							<a id="{{ button['id'] }}" class="button simple {{ button['class'] }}"
-								title="{{ button['name'] }}" href="{{ button['url'] }}">
-							</a>
-						{% endfor %}
-					</div>
-				{% endif %}
-			</div>
+			<!-- nawigacja okruszkowa -->
+			{{ partial("partial/breadcrumbs") }}
 
 			<!-- treść -->
 			{{ get_content() }}

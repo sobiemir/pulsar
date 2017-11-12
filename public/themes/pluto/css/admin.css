@@ -163,15 +163,6 @@ table tr.noborder td {
 .breadcrumb a {
 	line-height: 3rem;
 }
-.breadcrumb .fa:hover:not(.icononly) {
-	background: #d4d4d4;
-}
-.breadcrumb .fa {
-	font-size: 1.4rem;
-	line-height: 3rem;
-	padding: 0 1.0rem;
-	margin: 0;
-}
 .breadcrumb .fa:not(.icononly) {
 	cursor: pointer;
 }
@@ -965,19 +956,86 @@ form .button-container {
 	width: 70% !important;
 }
 
-.filemanager.sidebar {
+.filemanager .sidebar {
 	width: 30%;
 	max-width: 350px;
 	min-width: 200px;
 	border-right: 1px #ccc solid;
 }
-.filemanager.breadcrumb {
+.filemanager .breadcrumb {
 	border-bottom: 1px #ccc solid;
 	padding: 0;
 }
-.filemanager.breadcrumb .title {
+.filemanager .breadcrumb .title {
 	margin-left: 1.2rem;
 }
-.filemanager.breadcrumb .title.root {
+.filemanager .breadcrumb .title.root {
 	color: #c83737;
+}
+
+.filemanager .caret {
+	width: 2.0rbem;
+	text-align: center;
+	font-size: 1.3rem;
+	line-height: 2rem;
+	cursor: default;
+}
+
+.filemanager .dir-entry span {
+	line-height: 2rem;
+	font-size: 1.2rem;
+}
+.filemanager .dir-entry {
+	list-style: none;
+	margin-left: 0;
+	user-select: none;
+}
+.dir-entry li {
+	padding-left: 2rem;
+}
+.dir-entry p:hover {
+	background: #ddd;
+	cursor: pointer;
+}
+.dir-entry p:hover i {
+	color: #127899;
+}
+
+
+.breadcrumb .fa:hover:not(.icononly) {
+	background: #d4d4d4;
+}
+.breadcrumb .fa {
+	font-size: 1.4rem;
+	line-height: 3rem;
+	padding: 0 1.0rem;
+	margin: 0;
+}
+
+.pagemenu {
+	padding: 0 1rem;
+}
+.menu-entry {
+	font-weight: bold;
+	text-transform: uppercase;
+	list-style: none;
+	cursor: default;
+	margin-left: 0;
+	padding: 0 0.5rem;
+	margin-top: 1rem;
+	line-height: 2.4rem;
+}
+.menu-entry span {
+	line-height: inherit;
+}
+.menu-entry:hover {
+	background: #ddd;
+}
+.pagemenu .action-container a {
+	line-height: 2.4rem;
+	font-size: 1.4rem;
+	padding: 0 0.3rem;
+}
+.menu-entry:hover .action-container {
+	display: block !important;
 }

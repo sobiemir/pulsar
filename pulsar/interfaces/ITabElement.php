@@ -25,7 +25,7 @@ namespace Pulsar\Interfaces;
  *     Zakładka do wyświetlenia potrzebuje informacji o jej identyfikatorze,
  *     nazwie oraz o tym czy jest aktywna (dostępna do przełączenia).
  */
-interface ITab
+interface ITabElement
 {
 	/**
 	 * Pobiera identyfikator zakładki.

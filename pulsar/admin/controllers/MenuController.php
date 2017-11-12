@@ -16,10 +16,9 @@
 
 namespace Pulsar\Admin;
 
-use Phalcon\Mvc\Controller;
 use Phalcon\Http\Response;
 use Pulsar\Model\{Menu, Language};
-use Pulsar\Helper\CTab;
+use Pulsar\Helper\{TabElement, BaseController};
 
 /**
  * Klasa kontrolera dla menu aplikacji.
@@ -30,7 +29,7 @@ use Pulsar\Helper\CTab;
  *     Operacje dodawania i edycji i po części usuwania realizowane są przy
  *     użyciu jednej funkcji.
  */
-class MenuController extends Controller
+class MenuController extends BaseController
 {
 	/**
 	 * Flaga edycji menu.
@@ -52,8 +51,8 @@ class MenuController extends Controller
 	{
 		// przełącznik pomiędzy elementami przetłumaczonymi a do tłumaczenia
 		$switch = [
-			new CTab( 1, 'Przetłumaczone' ),
-			new CTab( 2, 'Do tłumaczenia' )
+			new TabElement( 1, 'Przetłumaczone' ),
+			new TabElement( 2, 'Do tłumaczenia' )
 		];
 
 		// pobierz wszystkie dostępne języki
@@ -77,7 +76,7 @@ class MenuController extends Controller
 			])
 		];
 
-		$this->view->setVars([
+		$this->view->setVars( array_merge($this->_vars, [
 			'data'       => $data,
 			'languages'  => $all,
 			'switch'     => $switch,
@@ -119,7 +118,7 @@ class MenuController extends Controller
 				'edit'   => true,
 				'remove' => true
 			]
-		]);
+		]) );
 	}
 
 	public function newAction()
@@ -179,7 +178,7 @@ class MenuController extends Controller
 		if( $this->request->isPost() )
 			return $this->editMenu( $data );
 
-		$this->view->setVars([
+		$this->view->setVars( array_merge($this->_vars, [
 			'languages'    => $all,
 			'language'     => $cur,
 			'isEditing'    => $this->_editing,
@@ -216,7 +215,7 @@ class MenuController extends Controller
 					'class' => 'fa fa-chevron-left'
 				]
 			]
-		]);
+		]) );
 	}
 
 	public function removeAction( int $id ): ?Response

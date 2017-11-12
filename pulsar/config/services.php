@@ -31,7 +31,7 @@ use Phalcon\Escaper;
 
 use Pulsar\Library\Authorization;
 use Pulsar\Library\AccessControl;
-use Pulsar\Helper\Tags;
+use Pulsar\Helper\PulsarTags;
 
 $di = new DependencyInjector();
 
@@ -63,7 +63,7 @@ $di->set(
 	'tag',
 	function()
 	{
-		$tags = new Tags();
+		$tags = new PulsarTags();
 		return $tags;
 	}
 );

@@ -16,7 +16,7 @@
 
 namespace Pulsar\Helper;
 
-use Pulsar\Interfaces\ITab;
+use Pulsar\Interfaces\ITabElement;
 
 /**
  * Klasa tworząca zakładkę dla kontrolki z zakładkami.
@@ -27,7 +27,7 @@ use Pulsar\Interfaces\ITab;
  *     Same wartości można podać bezpośrednio w konstruktorze, ułatwiając przy
  *     tym proces tworzenia zakładek.
  */
-class CTab implements ITab
+class TabElement implements ITabElement
 {
 	/**
 	 * Identyfikator wyświetlanego elementu.

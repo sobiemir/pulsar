@@ -18,7 +18,7 @@ namespace Pulsar\Helper;
 
 use Phalcon\Mvc\Model\Resultset;
 
-class Tags extends \Phalcon\Tag
+class PulsarTags extends \Phalcon\Tag
 {
 	private static $_index = 1;
 

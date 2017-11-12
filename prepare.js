@@ -57,28 +57,28 @@ for( const file of font_files )
 console.log( "Skopiowano czcionki." );
 
 // minimalizacja rozmiaru requirejs
-let options = {
-	mangle  : true,
-	compress: true,
-	output  : {
-		beautify: false,
-		preamble:
-			"/* @license RequireJS 2.3.5 " +
-				"Copyright jQuery Foundation and other contributors.\n" +
-			" * Released under MIT license, https://github.com/" +
-				"requirejs/requirejs/blob/master/LICENSE\n" +
-			" */"
-	}
-};
+// let options = {
+// 	mangle  : true,
+// 	compress: true,
+// 	output  : {
+// 		beautify: false,
+// 		preamble:
+// 			"/* @license RequireJS 2.3.5 " +
+// 				"Copyright jQuery Foundation and other contributors.\n" +
+// 			" * Released under MIT license, https://github.com/" +
+// 				"requirejs/requirejs/blob/master/LICENSE\n" +
+// 			" */"
+// 	}
+// };
 
-console.log( "Minimalizacja rozmiaru biblioteki RequireJS..." );
-fs.writeFileSync( "node_modules/requirejs/require.min.js",
-	uglifyjs.minify(
-		fs.readFileSync( "node_modules/requirejs/require.js", "utf8" ),
-		options
-	).code,
-	"utf8"
-);
+// console.log( "Minimalizacja rozmiaru biblioteki RequireJS..." );
+// fs.writeFileSync( "node_modules/requirejs/require.min.js",
+// 	uglifyjs.minify(
+// 		fs.readFileSync( "node_modules/requirejs/require.js", "utf8" ),
+// 		options
+// 	).code,
+// 	"utf8"
+// );
 
 // czcionki
 for( const file of js_files )

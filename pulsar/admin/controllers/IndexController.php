@@ -15,13 +15,13 @@ namespace Pulsar\Admin;
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-use Phalcon\Mvc\Controller;
+use Pulsar\Helper\BaseController;
 
-class IndexController extends Controller
+class IndexController extends BaseController
 {
 	public function indexAction()
 	{
-		$this->view->setVars([
+		$this->view->setVars( array_merge($this->_vars, [
 			'title'      => 'Pulsar :: Kokpit',
 			'hasSidebar' => false,
 			'breadcrumb' => [
@@ -30,7 +30,7 @@ class IndexController extends Controller
 					'url'  => '/admin'
 				]
 			]
-		]);
+		]) );
 	}
 
 	public function loginAction()
