@@ -18,9 +18,9 @@ namespace Pulsar\Model;
 
 use Phalcon\Mvc\Model\Resultset;
 use Pulsar\Helper\Utils;
-use Pulsar\Interfaces\ITab;
+use Pulsar\Interfaces\ITabElement;
 
-class Language extends \Phalcon\Mvc\Model implements ITab
+class Language extends \Phalcon\Mvc\Model implements ITabElement
 {
 	/**
 	 * Identyfikator języka.
@@ -308,6 +308,10 @@ class Language extends \Phalcon\Mvc\Model implements ITab
 
 		if( count($langs) == 0 )
 			throw new \Exception( "No language available in database!" );
+
+		// jeżeli wartość nie została podana, ustaw pierwszy lepszy język
+		if( !$id )
+			$id = $langs[0]->id;
 
 		// uzupełnij tablice w oparciu o pobrane języki
 		foreach( $langs as $lang )

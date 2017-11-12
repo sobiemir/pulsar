@@ -32,8 +32,8 @@ let font_files = [
 	"node_modules/font-awesome/fonts/fontawesome-webfont.woff2"
 ];
 let js_files = [
-	"node_modules/requirejs/require.js",
-	"node_modules/requirejs/require.min.js"
+	// "node_modules/requirejs/require.js",
+	// "node_modules/requirejs/require.min.js"
 ];
 
 // pliki css
