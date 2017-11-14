@@ -15,9 +15,7 @@ namespace Pulsar\Admin;
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-use Pulsar\Helper\BaseController;
-
-class IndexController extends BaseController
+class IndexController extends Base
 {
 	public function indexAction()
 	{

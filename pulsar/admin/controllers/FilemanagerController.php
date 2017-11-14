@@ -16,15 +16,15 @@
 
 namespace Pulsar\Admin;
 
-use Phalcon\Mvc\Controller;
 use Phalcon\Http\Response;
+use Pulsar\Service\Filemanager;
 
-class FilemanagerController extends Controller
+class FilemanagerController extends Base
 {
 	public function indexAction(): void
 	{
-		$this->view->setVars([
-			'data'       => $data,
+		$this->view->setVars( array_merge($this->_vars, [
+			'data'       => [],
 			'languages'  => $all,
 			'switch'     => $switch,
 			'title'      => 'Pulsar :: Menedżer plików',
@@ -42,6 +42,6 @@ class FilemanagerController extends Controller
 			'pageAccess' => [],
 			'showColumn' => [],
 			'showAction' => []
-		]);
+		]) );
 	}
 }

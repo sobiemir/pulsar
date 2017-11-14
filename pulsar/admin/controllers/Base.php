@@ -14,13 +14,13 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
-namespace Pulsar\Helper;
+namespace Pulsar\Admin;
 
 use Phalcon\Mvc\Controller;
 use Phalcon\Mvc\Model\Resultset;
 use Pulsar\Model\{Menu, Language};
 
-class BaseController extends Controller
+abstract class Base extends Controller
 {
 	protected $_menus = [];
 	protected $_vars  = [];

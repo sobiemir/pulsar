@@ -42,7 +42,8 @@ class Module implements \Phalcon\Mvc\ModuleDefinitionInterface
 			'Pulsar\\Model'      => APP_PATH . 'models/',
 			'Pulsar\\Library'    => APP_PATH . 'libraries/',
 			'Pulsar\\Helper'     => APP_PATH . 'helpers/',
-			'Pulsar\\Interfaces' => APP_PATH . 'interfaces/'
+			'Pulsar\\Interface'  => APP_PATH . 'interfaces/',
+			'Pulsar\\Service'    => APP_PATH . 'services/'
 		]);
 		$loader->register();
 	}

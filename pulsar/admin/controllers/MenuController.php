@@ -18,7 +18,7 @@ namespace Pulsar\Admin;
 
 use Phalcon\Http\Response;
 use Pulsar\Model\{Menu, Language};
-use Pulsar\Helper\{TabElement, BaseController};
+use Pulsar\Helper\TabElement;
 
 /**
  * Klasa kontrolera dla menu aplikacji.
@@ -29,7 +29,7 @@ use Pulsar\Helper\{TabElement, BaseController};
  *     Operacje dodawania i edycji i po części usuwania realizowane są przy
  *     użyciu jednej funkcji.
  */
-class MenuController extends BaseController
+class MenuController extends Base
 {
 	/**
 	 * Flaga edycji menu.
