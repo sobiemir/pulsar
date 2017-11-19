@@ -13,15 +13,25 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
+const doTRegex = [
+	/\<\%([\s\S]+?)\%\>/g,
+	/\<\%=([\s\S]+?)\%\>/g,
+	/\<\%!([\s\S]+?)\%\>/g,
+	/\<\%#([\s\S]+?)\%\>/g,
+	/\<\%##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\%\>/g,
+	/\<\%\?(\?)?\s*([\s\S]*?)\s*\%\>/g,
+	/\<\%~\s*(?:\%\>|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\%\>)/g
+];
+
 /**
  * Wymagania przeglądarkowe dla statycznej wersji strony:
  *
- * IE:     11
+ * IE:     11 (partial)
  * EDGE:   12
- * FF:     6
- * CHROME: 8
- * SAFARI: 5.1
- * OPERA:  11.5
+ * FF:     12 (6 partial)
+ * CHROME: 31 (8 partial)
+ * SAFARI: 8 (5.1 partial)
+ * OPERA:  18 (blink), 12.1 (presto)
  */
 class Application
 {
@@ -33,6 +43,23 @@ class Application
 		this.initCheckBoxes();
 		this.initTabControls();
 		this.initConfirmMessages();
+
+		// biblioteka doT jest wczytywana tylko gdy istnieje menedżer plików
+		try
+		{
+			doT.templateSettings.evaluate    = doTRegex[0];
+			doT.templateSettings.interpolate = doTRegex[1];
+			doT.templateSettings.encode      = doTRegex[2];
+			doT.templateSettings.use         = doTRegex[3];
+			doT.templateSettings.define      = doTRegex[4];
+			doT.templateSettings.conditional = doTRegex[5];
+			doT.templateSettings.iterate     = doTRegex[6];
+
+			this.initFileManager();
+		}
+		catch( ex ) {
+			// w każdym razie brak zmiennej doT nie jest błędem
+		}
 	}
 
 	/**
@@ -81,13 +108,13 @@ class Application
 	 */
 	public initFileManager(): void
 	{
-		// const fmgrdiv = <HTMLElement>document.querySelector( ".filemanager" );
+		const fmgrdiv = <HTMLElement>document.querySelector( ".filemanager" );
 
-		// if( fmgrdiv == null )
-		// 	return;
+		if( fmgrdiv == null )
+			return;
 
-		// const filemanager = new FileManager( fmgrdiv );
-		// filemanager.addEvents();
+		const filemanager = new FileManager( fmgrdiv );
+		filemanager.addEvents();
 	}
 
 	/**

@@ -32,6 +32,10 @@ let font_files = [
 	"node_modules/font-awesome/fonts/fontawesome-webfont.woff2"
 ];
 let js_files = [
+	"node_modules/dot/doT.js",
+	"node_modules/dot/doT.min.js",
+	"node_modules/qwest/src/qwest.js",
+	"node_modules/qwest/qwest.min.js"
 	// "node_modules/requirejs/require.js",
 	// "node_modules/requirejs/require.min.js"
 ];

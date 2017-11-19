@@ -18,81 +18,60 @@ namespace Pulsar\Micro;
 
 use Phalcon\Http\Response;
 use Phalcon\DI\Injectable;
+use Pulsar\Service\FilemanagerService;
 
 class FilemanagerController extends Injectable
 {
-	public function directoriesAction( int $recursive = 0, string $path = '/' )
+	/**
+	 * Klasa główna menedżera plików.
+	 *
+	 * TYPE: FilemanagerService
+	 */
+	private $sfmgr = null;
+
+	/**
+	 * Konstruktor klasy FilemanagerController.
+	 */
+	public function __construct()
+	{
+		$this->sfmgr = new FilemanagerService();
+	}
+
+	/**
+	 * Akcja wywoływana podczas dostępu do listy katalogów w folderze.
+	 *
+	 * PARAMETERS:
+	 *     $rec: integer
+	 *         Czy program ma szukać również podfolderów?
+	 *     $path: string
+	 *         Ścieżka do folderu z którego pobierane będą katalogi.
+	 * RETURNS: string
+	 *     Zakodowaną do formatu JSON listę folderów w podanym katalogu.
+	 */
+	public function directoriesAction( bool $rec = false, string $path = '/' )
 		: string
 	{
-		$path = $this->_getRealPath( $path );
+		$path = $this->sfmgr->getRealPath( $path );
 		return json_encode(
-			$this->_listDirectories( $path, $recursive != 0 )
+			$this->sfmgr->listDirectories( $path, $rec != 0 )
 		);
 	}
 
+	/**
+	 * Akcja wywoływana podczas dostępu do listy obiektów w folderze.
+	 *
+	 * PARAMETERS:
+	 *     $path: string
+	 *         Ścieżka do folderu z którego pobierane będą obiekty.
+	 * RETURNS: string
+	 *     Zakodowaną do formatu JSON listę obiektów w podanym folderze.
+	 */
 	public function entitiesAction( string $path = '/' )
 		: string
 	{
-		$path = $this->_getRealPath( $path );
+		$path = $this->sfmgr->getRealPath( $path );
 		return json_encode(
-			$this->_listEntities( $path )
+			$this->sfmgr->listEntities( $path, $recursive != 0 )
 		);
-	}
-
-	private function _getRealPath( string $path ): string
-	{
-		$path = realpath( BASE_PATH . 'files/' . $path );
-
-		// sprawdź czy ścieżka zawiera nazwę bazową - nie pozwól cofnąć się
-		// poza folder w którym użytkownik może wykonywać akcje
-		if( strpos( $path, BASE_PATH . 'files' ) !== 0 )
-			throw new \Exception("Not found");
-
-		return $path;
-	}
-
-	private function _listDirectories( string $path, bool $sub ): array
-	{
-		$directories = [];
-		$iterator    = new \DirectoryIterator( $path );
-
-		// szukaj katalogów w katalogu
-		foreach( $iterator as $entity )
-		{
-			if( !$entity->isDir() || $entity->isDot() )
-				continue;
-
-			// twórz listę katalogów gdy funkcja na to zezwala
-			$directories[$entity->getFilename()] = $sub
-				? $this->_listDirectories( $entity->getRealPath(), true )
-				: [];
-		}
-		return $directories;
-	}
-
-	private function _listEntities( string $path ): array
-	{
-		$entities = [];
-		$iterator = new \DirectoryIterator( $path );
-
-		// szukaj elementów w katalogu
-		foreach( $iterator as $entity )
-		{
-			// nie uwzględniaj linków
-			if( $entity->isLink() || $entity->isDot() )
-				continue;
-
-			// uzupełnij informacje dla każdego elementu
-			$entities[$entity->getFilename()] = [
-				'size'   => $entity->getSize(),
-				'modify' => $entity->getMTime(),
-				'access' => $entity->getATime(),
-				'type'   => $entity->getType(),
-				'mime'   => $entity->isDir()
-					? ''
-					: mime_content_type( $entity->getPathname() )
-			];
-		}
-		return $entities;
 	}
 }

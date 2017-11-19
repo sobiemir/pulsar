@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "module": "None",
-        "target": "ES5",
+        "target": "es2015",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
@@ -10,8 +10,15 @@
         "outFile": "../js/static.js"
     },
     "files": [
+        "interfaces/IEntity.ts",
+        "interfaces/IObservable.ts",
+        "interfaces/IRender.ts",
+        "extra/ObservableArray.ts",
+        "extra/RenderArray.ts",
+        "extra/RenderArrayTree.ts",
         "controls/CheckBox.ts",
         "controls/TabControl.ts",
+        "controls/FileManager.ts",
         "Application.ts",
         "Prototypes.ts"
     ]

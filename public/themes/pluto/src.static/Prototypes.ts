@@ -18,10 +18,10 @@ interface NodeList
 	findIdxByFunc( func: (elem: any) => boolean ): number;
 }
 
-NodeList.prototype.findIdxByFunc = function( f: (e: any) => boolean): number
+NodeList.prototype.findIdxByFunc = function( func: (e: any) => boolean): number
 {
 	for( let x = 0; x < this.length; ++x )
-		if( f(this[x]) )
+		if( func(this[x]) )
 			return x;
 	return -1;
 };

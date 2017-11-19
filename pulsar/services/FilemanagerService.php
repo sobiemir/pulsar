@@ -16,12 +16,9 @@
 
 namespace Pulsar\Service;
 
-use Phalcon\Http\Response;
-use Phalcon\DI\Injectable;
-
-abstract class Filemanager
+class FilemanagerService
 {
-	public function GetRealPath( string $path ): string
+	public function getRealPath( string $path ): string
 	{
 		$path = realpath( BASE_PATH . 'files/' . $path );
 
@@ -33,7 +30,7 @@ abstract class Filemanager
 		return $path;
 	}
 
-	public function ListDirectories( string $path, bool $sub ): array
+	public function listDirectories( string $path, bool $sub ): array
 	{
 		$directories = [];
 		$iterator    = new \DirectoryIterator( $path );
@@ -45,14 +42,19 @@ abstract class Filemanager
 				continue;
 
 			// twórz listę katalogów gdy funkcja na to zezwala
-			$directories[$entity->getFilename()] = $sub
-				? self::ListDirectories( $entity->getRealPath(), true )
-				: [];
+			$directories[] = [
+				'name'     => $entity->getFilename(),
+				'modify'   => $entity->getMTime(),
+				'access'   => $entity->getATime(),
+				'children' => $sub
+					? $this->listDirectories( $entity->getRealPath(), true )
+					: []
+			];
 		}
 		return $directories;
 	}
 
-	public function ListEntities( string $path ): array
+	public function listEntities( string $path ): array
 	{
 		$entities = [];
 		$iterator = new \DirectoryIterator( $path );

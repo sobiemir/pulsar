@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"module": "None",
-		"target": "ES5",
+		"target": "es2015",
 		"noImplicitAny": true,
 		"removeComments": true,
 		"preserveConstEnums": true,
@@ -10,8 +10,15 @@
 		"outFile": "public/themes/pluto/js/static.js"
 	},
 	"files": [
+		"public/themes/pluto/src.static/interfaces/IEntity.ts",
+		"public/themes/pluto/src.static/interfaces/IObservable.ts",
+		"public/themes/pluto/src.static/interfaces/IRender.ts",
+		"public/themes/pluto/src.static/extra/ObservableArray.ts",
+		"public/themes/pluto/src.static/extra/RenderArray.ts",
+		"public/themes/pluto/src.static/extra/RenderArrayTree.ts",
 		"public/themes/pluto/src.static/controls/CheckBox.ts",
 		"public/themes/pluto/src.static/controls/TabControl.ts",
+		"public/themes/pluto/src.static/controls/FileManager.ts",
 		"public/themes/pluto/src.static/Application.ts",
 		"public/themes/pluto/src.static/Prototypes.ts"
 	]
