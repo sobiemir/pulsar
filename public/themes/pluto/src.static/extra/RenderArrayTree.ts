@@ -153,7 +153,7 @@ class RenderArrayTree<TYPE> extends ObservableArray<TYPE>
 
 			// zapisz miejsce generowania elementów do obserwowanej tablicy
 			extra.child.options( {
-				place: <HTMLElement>value.element.querySelector( this._tree )
+				place: value.element.$<HTMLElement>( this._tree )
 			} );
 
 			extra.child.runSubscribers();

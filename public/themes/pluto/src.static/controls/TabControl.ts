@@ -133,11 +133,11 @@ class TabControl
 	public constructor( tab: HTMLElement )
 	{
 		this._selected = -1;
-		this._control  = tab;
+		this._control = tab;
 
 		// element główny z którego bedą pobierane dane
-		this._form = tab.dataset.form !== undefined
-			? document.querySelector( tab.dataset.form ) as HTMLElement
+		this._form = tab.dataset.form
+			? $<HTMLElement>( tab.dataset.form )
 			: document;
 
 		if( !this._form )
@@ -147,31 +147,27 @@ class TabControl
 		}
 
 		// wiadomość w przypadku gdy model jest oznaczony jako nieistniejący
-		if( tab.dataset.message !== undefined )
+		if( tab.dataset.message )
 		{
-			this._message = <HTMLElement>
-				this._form.querySelector( tab.dataset.message );
-			this._flags = <NodeListOf<HTMLInputElement>>
-				this._form.querySelectorAll( "input[data-mflag" );
+			this._message = this._form.$<HTMLElement>( tab.dataset.message );
+			this._flags = this._form.$$<HTMLInputElement>( "input[data-mflag" );
 		}
 		else
 		{
 			this._message = null;
-			this._flags   = null;
+			this._flags = null;
 		}
 
 		// przycisk usuwania danych z zakładki
-		if( tab.dataset.remove !== undefined )
-			this._remove = <HTMLElement>
-				this._form.querySelector( tab.dataset.remove );
+		if( tab.dataset.remove )
+			this._remove = this._form.$<HTMLElement>( tab.dataset.remove );
+
 		// przycisk dodawania danych do zakładki
-		if( tab.dataset.create !== undefined )
-			this._create = <HTMLElement>
-				this._form.querySelector( tab.dataset.create );
+		if( tab.dataset.create )
+			this._create = this._form.$<HTMLElement>( tab.dataset.create );
 
 		// element w którym wyszukiwane są warianty
-		this._search = <HTMLElement>
-			this._form.querySelector( tab.dataset.search );
+		this._search = this._form.$<HTMLElement>( tab.dataset.search );
 
 		if( !this._search )
 		{
@@ -180,14 +176,13 @@ class TabControl
 		}
 
 		// lista wariantów
-		this._variants = <NodeListOf<HTMLElement>>
-			this._search.querySelectorAll( "[data-variant]" );
+		this._variants = this._search.$$<HTMLElement>( "[data-variant]" );
 
 		if( !this._variants || this._variants.length === 0 )
 			this._failed = true;
 
 		// lista zakładek w kontrolce
-		this._tabs = <NodeListOf<HTMLLIElement>>tab.querySelectorAll( "li" );
+		this._tabs = tab.$$<HTMLLIElement>( "li" );
 
 		if( !this._tabs || this._tabs.length === 0 )
 			this._failed = true;
@@ -330,7 +325,7 @@ class TabControl
 			return;
 
 		// wyszukaj indeks nowego elementu
-		const newidx = this._tabs.findIdxByFunc( (elem: HTMLElement) =>
+		const newidx = this._tabs.findIndex( (elem: HTMLElement) =>
 			elem.dataset.id == newli.dataset.id
 		);
 
@@ -355,7 +350,7 @@ class TabControl
 			return;
 
 		const fname = `flag:${this._tabs[this._selected].dataset.id}`;
-		const index = this._flags.findIdxByFunc( (elem: HTMLInputElement) =>
+		const index = this._flags.findIndex( (elem: HTMLInputElement) =>
 			elem.name === fname
 		);
 
@@ -390,7 +385,7 @@ class TabControl
 			return;
 
 		const fname = `flag:${this._tabs[this._selected].dataset.id}`;
-		const index = this._flags.findIdxByFunc( (elem: HTMLInputElement) =>
+		const index = this._flags.findIndex( (elem: HTMLInputElement) =>
 			elem.name === fname
 		);
 

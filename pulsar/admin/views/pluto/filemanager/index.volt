@@ -17,7 +17,7 @@
 				</ul>
 			</div>
 		</aside>
-		<div class="fill-free">
+		<div class="fill-free items-vertical">
 			<div class="breadcrumb items-horizontal">
 				<p class="title root">Pulsar</p>
 				<span class="fill-free"></span>
@@ -26,23 +26,35 @@
 				<i class="fa fa-search"></i>
 			</div>
 			<div class="entity-panel fill-free p05">
+				<ul class="entities-list">
+				</ul>
 			</div>
 		</div>
 
 		<script type="text/template" id="tpl-entity-item">
-			<ul>
-				<%~ it :value %>
-					<li>
-						<%= value.name %>
-					</li>
-				<%~%>
-			</ul>
+			<li class="entity-entry">
+				<i class="fa 
+					<%? it.type == 'dir' %>
+						fa-folder
+					<%??%>
+						fa-file-o
+					<%?%> folder-icon">
+				</i>
+				<span><%= it.name %></span>
+				<span><%= it.size %></span>
+				<span><%? it.mime == '' %>---<%?%><%? it.mime != '' %><%= it.mime %><%?%></span>
+				<span><%= it.modify %></span>
+			</li>
 		</script>
 		<script type="text/template" id="tpl-directory-item">
 			<li class="dir-entry">
 				<div>
-					<p data-click="browse">
-						<i class="fa fa-angle-right caret <%? !it.children.length %>invisible<%?%>" data-click="toggle"></i>
+					<p data-click="browse" class="items-horizontal">
+						<i class="fa fa-angle-right caret 
+							<%? !it.children.length %>
+								invisible
+							<%?%>" data-click="toggle">
+						</i>
 						<i class="fa fa-folder folder-icon"></i>
 						<span><%= it.name %></span>
 					</p>

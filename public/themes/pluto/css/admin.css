@@ -976,14 +976,13 @@ form .button-container {
 .filemanager .caret {
 	width: 2.0rem;
 	text-align: center;
-	font-size: 1.3rem;
+	font-size: 1.4rem;
 	line-height: 2rem;
 	cursor: default;
 }
 
 .filemanager .dir-entry span {
 	line-height: 2rem;
-	font-size: 1.2rem;
 }
 .filemanager .dir-entry {
 	list-style: none;
@@ -996,6 +995,9 @@ form .button-container {
 .dir-entry p:hover {
 	background: #ddd;
 	cursor: default;
+}
+.dir-entry p .folder-icon {
+	font-size: 1.4rem;
 }
 .dir-entry p:hover .folder-icon {
 	color: #127899;
@@ -1051,12 +1053,31 @@ form .button-container {
 	visibility: hidden;
 }
 
-.directory-panel {
+.directory-panel, .entity-panel {
 	flex: 1;
 	overflow: auto;
 }
 .folder-icon {
-	width: 1.8rem;
+	width: 2.0rem;
 	padding: 0 !important;
 	color: #333;
+}
+.entity-entry {
+	display: table-row;
+}
+.entity-entry span, .entity-entry i {
+	display: table-cell;
+}
+.entity-entry i.fa {
+	font-size: 1.4rem;
+}
+.dir-entry .selected {
+	background: #eaeaea;
+}
+.dir-entry .selected .fa-folder:before {
+	content: "\f114";
+}
+
+.dir-entry .selected .fa-folder-open:before {
+	content: "\f115";
 }

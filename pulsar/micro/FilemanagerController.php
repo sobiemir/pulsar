@@ -37,41 +37,25 @@ class FilemanagerController extends Injectable
 		$this->sfmgr = new FilemanagerService();
 	}
 
-	/**
-	 * Akcja wywoływana podczas dostępu do listy katalogów w folderze.
-	 *
-	 * PARAMETERS:
-	 *     $rec: integer
-	 *         Czy program ma szukać również podfolderów?
-	 *     $path: string
-	 *         Ścieżka do folderu z którego pobierane będą katalogi.
-	 * RETURNS: string
-	 *     Zakodowaną do formatu JSON listę folderów w podanym katalogu.
-	 */
-	public function directoriesAction( bool $rec = false, string $path = '/' )
-		: string
+	public function directoriesAction(): string
 	{
-		$path = $this->sfmgr->getRealPath( $path );
+		$rec = (int)$this->request->getPost( 'recursive', null, 0 );
+
+		$path = $this->sfmgr->getRealPath(
+			$this->request->getPost( 'path', null, '/' )
+		);
 		return json_encode(
 			$this->sfmgr->listDirectories( $path, $rec != 0 )
 		);
 	}
 
-	/**
-	 * Akcja wywoływana podczas dostępu do listy obiektów w folderze.
-	 *
-	 * PARAMETERS:
-	 *     $path: string
-	 *         Ścieżka do folderu z którego pobierane będą obiekty.
-	 * RETURNS: string
-	 *     Zakodowaną do formatu JSON listę obiektów w podanym folderze.
-	 */
-	public function entitiesAction( string $path = '/' )
-		: string
+	public function entitiesAction(): string
 	{
-		$path = $this->sfmgr->getRealPath( $path );
+		$path = $this->sfmgr->getRealPath(
+			$this->request->getPost( 'path', null, '/' )
+		);
 		return json_encode(
-			$this->sfmgr->listEntities( $path, $recursive != 0 )
+			$this->sfmgr->listEntities( $path )
 		);
 	}
 }

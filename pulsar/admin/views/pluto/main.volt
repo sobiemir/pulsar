@@ -13,6 +13,7 @@
 	{{ stylesheet_link("vendors/css/font-awesome") }}
 
 	<!-- skrypty JS -->
+	{{ javascript_include("vendors/js/grindstone.min") }}
 	{{ javascript_include("js/static") }}
 </head>
 <body class="items-vertical">

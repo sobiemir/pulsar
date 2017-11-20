@@ -23,16 +23,6 @@ const doTRegex = [
 	/\<\%~\s*(?:\%\>|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\%\>)/g
 ];
 
-/**
- * Wymagania przeglądarkowe dla statycznej wersji strony:
- *
- * IE:     11 (partial)
- * EDGE:   12
- * FF:     12 (6 partial)
- * CHROME: 31 (8 partial)
- * SAFARI: 8 (5.1 partial)
- * OPERA:  18 (blink), 12.1 (presto)
- */
 class Application
 {
 	/**
@@ -40,10 +30,6 @@ class Application
 	 */
 	public constructor()
 	{
-		this.initCheckBoxes();
-		this.initTabControls();
-		this.initConfirmMessages();
-
 		// biblioteka doT jest wczytywana tylko gdy istnieje menedżer plików
 		try
 		{
@@ -54,12 +40,9 @@ class Application
 			doT.templateSettings.define      = doTRegex[4];
 			doT.templateSettings.conditional = doTRegex[5];
 			doT.templateSettings.iterate     = doTRegex[6];
-
-			this.initFileManager();
 		}
-		catch( ex ) {
-			// w każdym razie brak zmiennej doT nie jest błędem
-		}
+		// w każdym razie brak zmiennej doT nie jest błędem
+		catch( ex ) {}
 	}
 
 	/**
@@ -67,25 +50,21 @@ class Application
 	 */
 	public initTabControls(): void
 	{
-		// pobierz listę dostępnych przełączników
-		const tabs = <NodeListOf<HTMLElement>>
-			document.querySelectorAll( ".tab-control" );
-
-		for( let x = 0; x < tabs.length; ++x )
+		$$<HTMLElement>( ".tab-control" ).forEach( elem =>
 		{
-			if( tabs[x].dataset.search === undefined )
+			if( !elem.dataset.search )
 				return;
 
-			const tab = new TabControl( tabs[x] );
+			const tab = new TabControl( elem );
 
 			// sprawdź która zakładka jest zaznaczona
-			const selected = tab.get("tabs").findIdxByFunc( (elem: any) => {
+			const selected = tab.get("tabs").findIndex( (elem: any) => {
 				return elem.classList.contains( "selected" );
 			} );
 
 			tab.addEvents();
 			tab.selectTab( selected, true );
-		}
+		} );
 	}
 
 	/**
@@ -93,14 +72,11 @@ class Application
 	 */
 	public initCheckBoxes(): void
 	{
-		const checks = <NodeListOf<HTMLElement>>
-			document.querySelectorAll( ".checkbox" );
-
-		for( let x = 0; x < checks.length; ++x )
+		$$<HTMLElement>( ".checkbox" ).forEach( elem =>
 		{
-			const check = new CheckBox( checks[x] );
+			const check = new CheckBox( elem );
 			check.addEvents();
-		}
+		} );
 	}
 
 	/**
@@ -108,9 +84,9 @@ class Application
 	 */
 	public initFileManager(): void
 	{
-		const fmgrdiv = <HTMLElement>document.querySelector( ".filemanager" );
+		const fmgrdiv = $<HTMLElement>( ".filemanager" );
 
-		if( fmgrdiv == null )
+		if( !fmgrdiv )
 			return;
 
 		const filemanager = new FileManager( fmgrdiv );
@@ -130,28 +106,32 @@ class Application
 	 */
 	public initConfirmMessages(): void
 	{
-		const confirms = <NodeListOf<HTMLElement>>
-			document.querySelectorAll( ".show-confirm" );
-
-		for( let x = 0; x < confirms.length; ++x )
+		$$<HTMLElement>( ".show-confirm" ).forEach( elem =>
 		{
-			if( !("confirm" in confirms[x].dataset) )
-				continue;
+			if( !("confirm" in elem.dataset) )
+				return;
 
-			confirms[x].addEventListener( "click", (ev: MouseEvent) => {
-
-				if( confirm(confirms[x].dataset.confirm) )
+			elem.addEventListener( "click", (ev: MouseEvent) =>
+			{
+				if( confirm(elem.dataset.confirm) )
 					return true;
 
 				ev.stopPropagation();
 				ev.preventDefault();
 				return false;
 			} );
-		}
+		} );
 	}
 }
 
-// Uruchom klasę po załadowaniu dokumentu
-document.addEventListener( "DOMContentLoaded", () => {
-	new Application();
+// =============================================================================
+
+document.addEventListener( "DOMContentLoaded", () =>
+{
+	const app = new Application();
+
+	app.initCheckBoxes();
+	app.initConfirmMessages();
+	app.initTabControls();
+	app.initFileManager();
 } );

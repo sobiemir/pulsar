@@ -16,4 +16,5 @@ interface IFolder
 	access: string;
 	children: IFolder[];
 	rolled: boolean;
+	checked: boolean;
 }

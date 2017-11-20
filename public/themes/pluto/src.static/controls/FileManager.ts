@@ -28,6 +28,7 @@ class FileManager
 	private _entityTemplate: string = '';
 	private _directoryTemplate: string = '';
 
+	private _currentElement: HTMLElement = null;
 
 // =============================================================================
 
@@ -44,16 +45,16 @@ class FileManager
 		this._entities    = new RenderArray();
 		this._fileManager = div;
 
-		this._directoryPanel = <HTMLElement>
-			this._fileManager.querySelector( ".directory-tree" );
-		this._entityPanel    = <HTMLElement>
-			this._fileManager.querySelector( ".entity-panel" );
+		this._directoryPanel = 
+			this._fileManager.$<HTMLElement>( ".directory-tree" );
+		this._entityPanel =
+			this._fileManager.$<HTMLElement>( ".entities-list" );
 
-		const etpl = this._fileManager.querySelector( "#tpl-entity-item" );
+		const etpl = this._fileManager.$( "#tpl-entity-item" );
 		this._entityTemplate = etpl
 			? etpl.innerHTML
 			: '';
-		const dtpl = this._fileManager.querySelector( "#tpl-directory-item" );
+		const dtpl = this._fileManager.$( "#tpl-directory-item" );
 		this._directoryTemplate = dtpl
 			? dtpl.innerHTML
 			: '';
@@ -65,6 +66,7 @@ class FileManager
 			place: this._directoryPanel
 		});
 
+
 		this._directories.subscribe( obs =>
 		{
 			const observables = obs.getObservables();
@@ -74,40 +76,19 @@ class FileManager
 				if( !observable.wasUpdated )
 					continue;
 
-				const first    = <HTMLElement>observable.element.firstChild;
-				const elements = <NodeListOf<HTMLElement>>
-					first.querySelectorAll( "[data-click]" );
+				const first = <HTMLElement>observable.element.firstChild;
 
-				elements.forEach( val => {
+				first.$$<HTMLElement>( "[data-click]" ).forEach( val => {
 					if( val.dataset.click == "toggle" )
-					val.addEventListener( "click", () => {
-						const last = <HTMLElement>observable.element.lastChild;
-						const i2 = val.parentNode.childNodes[1] as HTMLElement;
-
-						console.log( i2 );
-
-						if( observable.value.rolled )
-						{
-							last.classList.remove( "hidden" );
-							val.classList.remove( "fa-angle-right" );
-							val.classList.add( "fa-angle-down" );
-							i2.classList.remove( "fa-folder" );
-							i2.classList.add( "fa-folder-open" );
-						}
-						else
-						{
-							last.classList.add( "hidden" );
-							val.classList.remove( "fa-angle-down" );
-							val.classList.add( "fa-angle-right" );
-							i2.classList.remove( "fa-folder-open" );
-							i2.classList.add( "fa-folder" );
-						}
-
-						observable.value.rolled = !observable.value.rolled;
-					} );
+						val.addEventListener( "click", (ev: MouseEvent) => {
+							this._toggleFolderTree( val, observable, ev );
+						} );
+					else if( val.dataset.click == "browse" )
+						val.addEventListener( "click", (ev: MouseEvent) => {
+							this._browseFolder( val, observable, ev );
+						} );
 				} );
 			}
-
 		}, "click" );
 
 		this._entities.options({
@@ -120,28 +101,108 @@ class FileManager
 		this.getEntities();
 	}
 
+	private _browseFolder(
+		element:    HTMLElement,
+		observable: IObservableValue<IFolder>,
+		ev:         MouseEvent
+	): void
+	{
+		const first = <HTMLElement>observable.element.firstChild;
+
+		if( this._currentElement )
+			this._currentElement.classList.remove( "selected" );
+
+		this._currentElement = first;
+		this._currentElement.classList.add( "selected" );
+
+		console.log( this.getPath(observable) );
+		this.getEntities( this.getPath(observable) );
+	}
+
+	private _toggleFolderTree(
+		element:    HTMLElement,
+		observable: IObservableValue<IFolder>,
+		ev:         MouseEvent
+	): void
+	{
+		const last   = <HTMLElement>observable.element.lastChild;
+		const folder = <HTMLElement>element.parentNode.childNodes[1];
+
+		// zmień na odpowiednią klasę
+		if( observable.value.rolled )
+		{
+			last.classList.remove( "hidden" );
+			element.classList.remove( "fa-angle-right" );
+			element.classList.add( "fa-angle-down" );
+			folder.classList.remove( "fa-folder" );
+			folder.classList.add( "fa-folder-open" );
+		}
+		else
+		{
+			last.classList.add( "hidden" );
+			element.classList.remove( "fa-angle-down" );
+			element.classList.add( "fa-angle-right" );
+			folder.classList.remove( "fa-folder-open" );
+			folder.classList.add( "fa-folder" );
+		}
+		observable.value.rolled = !observable.value.rolled;
+
+		// nie otwieraj folderu po rozwinięciu
+		ev.stopPropagation();
+	}
+
+	public getPath( elem: IObservableValue<IFolder>, path: string = "" ): string
+	{
+		if( elem.extra.owner.getUpper() )
+			return this.getPath(
+				elem.extra.owner.getUpper(),
+				`${elem.value.name}/${path}`
+			);
+		return `${elem.value.name}/${path}`;
+	}
+
 	public getFolders(): Qwest.Promise
 	{
-		return qwest.get( "/micro/filemanager/directories/1" )
-			.then( (xhr: XMLHttpRequest, response?: IFolder[]): any => {
-				const noroll = (val: IFolder): void =>
-				{
-					val.rolled = true;
-					if( val.children && val.children.length )
-						val.children.forEach( noroll );
-				};
-				response.forEach( noroll );
+		return qwest.post( "/micro/filemanager/directories", {
+			path: '/',
+			recursive: 1
+		} ).then( (xhr: XMLHttpRequest, response?: IFolder[]): any => {
+			const noroll = (val: IFolder): void =>
+			{
+				val.rolled = true;
+				if( val.children && val.children.length )
+					val.children.forEach( noroll );
+			};
+			response.forEach( noroll );
 
-				this._directories.set( response );
-			} ).catch( (error: Error, xhr?: XMLHttpRequest): any => {
-				this._onLoadError( error, xhr );
-			} );
+			response.deepSort( (a, b) => {
+				return a.name.localeCompare( b.name );
+			}, "children" );
+
+			this._directories.set( response );
+		} ).catch( (error: Error, xhr?: XMLHttpRequest): any => {
+			this._onLoadError( error, xhr );
+		} );
 	}
 
 	public getEntities( folder: string = '/' ): Qwest.Promise
 	{
-		return qwest.get( "/micro/filemanager/entities" + folder )
-			.then( (xhr: XMLHttpRequest, response?: IEntity[]): any => {
+		return qwest.post( "/micro/filemanager/entities", {
+			path: folder
+		} ).then( (xhr: XMLHttpRequest, response?: IEntity[]): any => {
+				response.sort( (a, b) => {
+					const ret = a.name.localeCompare( b.name );
+
+					if( a.type === b.type )
+						return ret;
+					else if( a.type === "dir" )
+						return -1;
+					else if( b.type === "dir" )
+						return 1;
+
+					return ret;
+				} );
+
 				this._entities.set( response );
 			} ).catch( (error: Error, xhr?: XMLHttpRequest): any => {
 				this._onLoadError( error, xhr );
@@ -196,6 +257,6 @@ class FileManager
 
 	private _onLoadError = ( error: Error, xml: XMLHttpRequest ): void =>
 	{
-
+		console.log( error );
 	}
 }

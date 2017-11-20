@@ -67,7 +67,8 @@ class FilemanagerService
 				continue;
 
 			// uzupełnij informacje dla każdego elementu
-			$entities[$entity->getFilename()] = [
+			$entities[] = [
+				'name'   => $entity->getFilename(),
 				'size'   => $entity->getSize(),
 				'modify' => $entity->getMTime(),
 				'access' => $entity->getATime(),

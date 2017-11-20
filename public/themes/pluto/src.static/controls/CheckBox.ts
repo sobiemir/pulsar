@@ -68,7 +68,7 @@ class CheckBox
 	public constructor( check: HTMLElement )
 	{
 		this._control = check;
-		this._input   = <HTMLInputElement>check.querySelector( "input" );
+		this._input   = check.$<HTMLInputElement>( "input" );
 
 		// sprawdź czy oryginalny przycisk wyboru został znaleziony
 		if( this._input == null )
@@ -212,7 +212,7 @@ class CheckBox
 		// sprawdź czy kontrolka nie traci skupienia przez rodzica
 		if( CheckBox._current != null )
 		{
-			const input = CheckBox._current.querySelector( "input" );
+			const input = CheckBox._current.$( "input" );
 			// jeżeli tak, zaniechaj dalszych czynności
 			if( input == ev.currentTarget )
 			{
