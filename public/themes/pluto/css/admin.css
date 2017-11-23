@@ -493,6 +493,7 @@ form .button-container {
 	margin-left: -1px;
 	min-width: 18rem;
 	padding: 0;
+	z-index: 999;
 }
 #navigation nav .menu-position:hover .submenu {
 	display: block;
@@ -622,6 +623,18 @@ form .button-container {
 }
 .fill-free {
 	flex: 1;
+}
+.fill-free-2 {
+	flex: 2;
+}
+.fill-free-3 {
+	flex: 3;
+}
+.fill-free-4 {
+	flex: 4;
+}
+.fill-free-5 {
+	flex: 5;
 }
 .box-center {
 	width: 100%;
@@ -880,6 +893,8 @@ form .button-container {
 .m30 { margin: 3.0rem; }
 
 .ml-a { margin-left: auto; }
+.ml-05 { margin-left: 0.5rem; }
+.mr-05 { margin-right: 0.5rem; }
 
 .mb00 { margin-bottom: 0.0rem; }
 .mt00 { margin-top: 0.0rem; }
@@ -934,11 +949,20 @@ form .button-container {
 	width: 1% !important;
 	white-space: nowrap;
 }
+.w5p {
+	width: 5% !important;
+}
 .w10p {
 	width: 10% !important;
 }
+.w15p {
+	width: 15% !important;
+}
 .w20p {
 	width: 20% !important;
+}
+.w25p {
+	width: 25% !important;
 }
 .w30p {
 	width: 30% !important;
@@ -967,7 +991,8 @@ form .button-container {
 	padding: 0;
 }
 .filemanager .breadcrumb .title {
-	margin-left: 1.2rem;
+	margin-left: 1rem;
+	color: #127889;
 }
 .filemanager .breadcrumb .title.root {
 	color: #c83737;
@@ -979,32 +1004,6 @@ form .button-container {
 	font-size: 1.4rem;
 	line-height: 2rem;
 	cursor: default;
-}
-
-.filemanager .dir-entry span {
-	line-height: 2rem;
-}
-.filemanager .dir-entry {
-	list-style: none;
-	margin-left: 0;
-	user-select: none;
-}
-.dir-entry li {
-	padding-left: 2rem;
-}
-.dir-entry p:hover {
-	background: #ddd;
-	cursor: default;
-}
-.dir-entry p .folder-icon {
-	font-size: 1.4rem;
-}
-.dir-entry p:hover .folder-icon {
-	color: #127899;
-}
-.dir-entry p i.caret:hover {
-	color: #127899;
-	cursor: pointer;
 }
 
 
@@ -1046,7 +1045,7 @@ form .button-container {
 	display: block !important;
 }
 
-.dir-entry p i {
+.dir-entry p i, .entity-entry i {
 	line-height: 2rem;
 }
 .dir-entry p i.invisible {
@@ -1056,11 +1055,32 @@ form .button-container {
 .directory-panel, .entity-panel {
 	flex: 1;
 	overflow: auto;
+	position: relative;
+}
+.loader {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-image: url('../img/loading.gif');
+	background-repeat: no-repeat;
+	background-position: center;
+}
+.entity-panel .loader {
+	background-color: #fff;
+}
+.directory-panel .loader {
+	background-color: #f4f4f4;
 }
 .folder-icon {
 	width: 2.0rem;
 	padding: 0 !important;
 	color: #333;
+}
+.entities-list {
+	display: table;
+	width: 100%;
 }
 .entity-entry {
 	display: table-row;
@@ -1080,4 +1100,30 @@ form .button-container {
 
 .dir-entry .selected .fa-folder-open:before {
 	content: "\f115";
+}
+
+.filemanager .dir-entry span, .filemanager .entity-entry span {
+	line-height: 2rem;
+}
+.filemanager .dir-entry, .filemanager .entity-entry {
+	list-style: none;
+	margin-left: 0;
+	user-select: none;
+}
+.dir-entry li {
+	padding-left: 2rem;
+}
+.dir-entry p:hover, li.entity-entry:hover {
+	background: #ddd;
+	cursor: default;
+}
+.dir-entry p .folder-icon, li.entity-entry .fa {
+	font-size: 1.4rem;
+}
+.dir-entry p:hover .folder-icon, li.entity-entry:hover .fa {
+	color: #127899;
+}
+.dir-entry p i.caret:hover {
+	color: #127899;
+	cursor: pointer;
 }

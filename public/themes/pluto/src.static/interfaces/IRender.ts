@@ -10,6 +10,7 @@ interface IRenderArrayOptions
 	single?: boolean;
 	template?: string | doT.RenderFunction;
 	place?: HTMLElement;
+	callObject?: any;
 }
 
 interface IRenderArrayTreeOptions
@@ -18,4 +19,5 @@ interface IRenderArrayTreeOptions
 	template?: string | doT.RenderFunction;
 	place?: HTMLElement;
 	childIndex?: string;
+	callObject?: any;
 }

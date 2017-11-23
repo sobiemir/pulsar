@@ -62,7 +62,6 @@ class Application
 				return elem.classList.contains( "selected" );
 			} );
 
-			tab.addEvents();
 			tab.selectTab( selected, true );
 		} );
 	}
@@ -72,11 +71,7 @@ class Application
 	 */
 	public initCheckBoxes(): void
 	{
-		$$<HTMLElement>( ".checkbox" ).forEach( elem =>
-		{
-			const check = new CheckBox( elem );
-			check.addEvents();
-		} );
+		$$<HTMLElement>( ".checkbox" ).forEach( elem => new CheckBox(elem) );
 	}
 
 	/**
@@ -89,8 +84,7 @@ class Application
 		if( !fmgrdiv )
 			return;
 
-		const filemanager = new FileManager( fmgrdiv );
-		filemanager.addEvents();
+		new FileManager( fmgrdiv );
 	}
 
 	/**

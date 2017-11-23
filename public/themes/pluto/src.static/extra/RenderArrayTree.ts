@@ -43,6 +43,8 @@ class RenderArrayTree<TYPE> extends ObservableArray<TYPE>
 	 */
 	protected _upper: IObservableValue<TYPE>;
 
+	protected _callObject: any;
+
 // =============================================================================
 
 	/**
@@ -74,6 +76,9 @@ class RenderArrayTree<TYPE> extends ObservableArray<TYPE>
 			this._template = typeof options.template == "function"
 				? options.template
 				: doT.template( options.template );
+		this._callObject = options.callObject || this;
+
+		this.runSubscribers();
 	}
 
 	public getParent(): RenderArrayTree<TYPE>
@@ -137,7 +142,10 @@ class RenderArrayTree<TYPE> extends ObservableArray<TYPE>
 			if( value.needUpdate )
 			{
 				const div = document.createElement( "div" );
-				div.innerHTML = this._template( value.value );
+				div.innerHTML = this._template.call(
+					this._callObject,
+					value.value
+				);
 				value.element = div.firstChild as HTMLElement;
 
 				value.needUpdate = false;

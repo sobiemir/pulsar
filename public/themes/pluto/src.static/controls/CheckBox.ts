@@ -80,7 +80,11 @@ class CheckBox
 		// dodaj klasę do zaznaczonej kontrolki
 		if( this._input.checked )
 			this._control.classList.add( "checked" );
+
+		this._addEvents();
 	}
+
+// =============================================================================
 
 	/**
 	 * Dodaje zdarzenia do kontrolki.
@@ -91,7 +95,7 @@ class CheckBox
 	 *     Dodatkowo przechwytuje zdarzenia przechwycenia i utraty skupienia
 	 *     generowane przez główny przycisk wyboru przypisany do kontrolki.
 	 */
-	public addEvents(): void
+	private _addEvents(): void
 	{
 		if( this._failed )
 			return;
@@ -104,8 +108,6 @@ class CheckBox
 		this._input.addEventListener( "focus", this._onInputFocus );
 		this._input.addEventListener( "blur",  this._onInputBlur  );
 	}
-
-// =============================================================================
 
 	/**
 	 * Akcja wywoływana po kliknięciu w przycisk wyboru.
