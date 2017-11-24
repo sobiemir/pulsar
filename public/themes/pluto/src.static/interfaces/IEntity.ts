@@ -3,17 +3,19 @@ interface IEntity
 {
 	name: string;
 	size: number;
-	modify: string;
-	access: string;
+	modify: number;
+	access: number;
 	type: string;
 	mime: string;
+	modifyDate: string;
+	accessDate: string;
 }
 
 interface IFolder
 {
 	name: string;
-	modify: string;
-	access: string;
+	modify: number;
+	access: number;
 	children: IFolder[];
 	rolled: boolean;
 	checked: boolean;

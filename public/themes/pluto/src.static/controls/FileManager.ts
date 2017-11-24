@@ -304,6 +304,7 @@ class FileManager
 			path: folder
 		} ).then( (xhr: XMLHttpRequest, response?: IEntity[]): any =>
 		{
+			// sortuj elementy po nazwie i typie (katalog / plik)
 			response.sort( (a, b) =>
 			{
 				const ret = a.name.localeCompare( b.name );
@@ -318,6 +319,12 @@ class FileManager
 				return ret;
 			} );
 
+			// formatuj daty
+			response.forEach( (val) => {
+				val.accessDate = this._formatDate( val.access );
+				val.modifyDate = this._formatDate( val.modify );
+			} );
+
 			this._entities.set( response );
 
 			this._entityLoader.classList.add( "hidden" );
@@ -328,6 +335,26 @@ class FileManager
 	}
 
 // =============================================================================
+
+	/**
+	 * Formatowanie daty
+	 * @param {number} timestamp [description]
+	 */
+	private _formatDate( timestamp: number )
+	{
+		const date = new Date( timestamp * 1000 );
+
+		const year    = date.getFullYear();
+		const month   = date.getMonth() + 1;
+		const day     = date.getDate();
+		const hours   = date.getHours();
+		const minutes = date.getMinutes();
+
+		return (hours > 9 ? hours : "0" + hours) + ":" +
+			(minutes > 9 ? minutes : "0" + minutes) + " - " +
+			(day > 9 ? day : "0" + day) + "/" +
+			(month > 9 ? month  : "0" + month) + "/" + year;
+	}
 
 	/**
 	 * Akcja wywoływana po kliknięciu w folder z lewego panelu.

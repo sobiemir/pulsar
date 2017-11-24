@@ -1113,8 +1113,12 @@ form .button-container {
 .dir-entry li {
 	padding-left: 2rem;
 }
-.dir-entry p:hover, li.entity-entry:hover {
+.dir-entry p:hover {
 	background: #ddd;
+	cursor: default;
+}
+li.entity-entry:hover {
+	background: #e8e8e8;
 	cursor: default;
 }
 .dir-entry p .folder-icon, li.entity-entry .fa {

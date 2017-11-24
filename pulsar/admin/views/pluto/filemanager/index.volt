@@ -44,7 +44,7 @@
 							fa-file-o
 						<%?%> folder-icon">
 					</i>
-					<span class="fill-free-3"><%= it.name %></span>
+					<span class="fill-free-4"><%= it.name %></span>
 					<span class="fill-free text-right">
 						<%? it.type == 'dir' %>
 							---
@@ -52,8 +52,8 @@
 							<%= this.humanReadableSize( it.size ) %>
 						<%?%>
 					</span>
-					<span class="fill-free text-right"><%? it.mime == '' %>---<%?%><%? it.mime != '' %><%= it.mime %><%?%></span>
-					<span class="mr-05 fill-free text-right"><%= it.modify %></span>
+					<span class="fill-free-2 text-right"><%? it.mime == '' %>---<%?%><%? it.mime != '' %><%= it.mime %><%?%></span>
+					<span class="mr-05 fill-free-2 text-right"><%= it.modifyDate %></span>
 				</div>
 			</li>
 		</script>
