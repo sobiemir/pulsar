@@ -7,8 +7,6 @@ interface IEntity
 	access: number;
 	type: string;
 	mime: string;
-	modifyDate: string;
-	accessDate: string;
 }
 
 interface IFolder

@@ -13,6 +13,7 @@
         "interfaces/IEntity.ts",
         "interfaces/IObservable.ts",
         "interfaces/IRender.ts",
+        "interfaces/IFileManager.ts",
         "extra/ObservableArray.ts",
         "extra/RenderArray.ts",
         "extra/RenderArrayTree.ts",

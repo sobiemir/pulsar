@@ -186,6 +186,8 @@ class TabControl
 
 		if( !this._tabs || this._tabs.length === 0 )
 			this._failed = true;
+
+		this.addEvents();
 	}
 
 	/**

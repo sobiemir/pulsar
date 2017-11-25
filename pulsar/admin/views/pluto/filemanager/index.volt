@@ -5,36 +5,62 @@
 	<div class="head-bar mb00">
 		<h2 class="mb5 mt5">Menedżer plików</h2>
 	</div>
+	<!-- menedżer plików -->
 	<section class="filemanager white-back fill-free items-horizontal">
-		<aside class="sidebar lightgrey-back items-vertical">
+
+		<!-- panel z drzewem folderów -->
+		<aside id="FM_Sidebar" class="sidebar lightgrey-back items-vertical">
 			<div class="breadcrumb items-horizontal">
-				<i id="FM_Home" class="fa fa-home"></i>
+				<!-- przycisk przejścia do głównego katalogu -->
+				<i id="FM_B-Home" class="fa fa-home"></i>
 				<span class="fill-free"></span>
-				<i id="FM_Refresh" class="fa fa-refresh"></i>
+				<!-- przycisk odświeżania -->
+				<i id="FM_B-Refresh" class="fa fa-refresh"></i>
 			</div>
+			<!-- drzewo katalogów -->
 			<div class="directory-panel fill-free p05">
-				<div id="FM_DirectoryLoad" class="loader"></div>
+				<div id="FM_L-Directory" class="loader"></div>
 				<ul class="directory-tree">
 				</ul>
 			</div>
 		</aside>
+
+		<!-- panel z listą elementów w katalogu -->
 		<div class="fill-free items-vertical">
 			<div class="breadcrumb items-horizontal">
-				<i class="fa fa-level-up" id="FM_GoUp"></i>
-				<p class="title root">Pulsar</p>
-				<span class="fill-free"></span>
-				<i class="fa fa-upload"></i>
-				<i class="fa fa-folder"></i>
-				<!-- <i class="fa fa-search"></i> -->
+				<!-- przełączanie paska z drzewem katalogów -->
+				<i id="FM_B-ToggleTree" class="fa fa-arrow-circle-o-left"></i>
+				<!-- przejście do góry w drzewie katalogów -->
+				<i id="FM_B-Up" class="fa fa-level-up"></i>
+				<p class="title root fill-free">Pulsar</p>
+				<!-- dodawanie nowego pliku -->
+				<i id="FM_B-Upload" class="fa fa-upload"></i>
+				<!-- tworzenie nowego folderu -->
+				<i id="FM_B-NewFolder" class="fa fa-folder"></i>
 			</div>
+			<!-- lista elementów -->
 			<div class="entity-panel fill-free p05">
-				<div id="FM_EntityLoad" class="loader"></div>
+				<div id="FM_L-Entity" class="loader"></div>
 				<ul class="entities-list">
 				</ul>
 			</div>
+			<!-- pasek sterowania katalogami -->
+			<div class="breadcrumb bottom items-horizontal">
+				<p id="FM_B-Download" class="button simple disabled">
+					<i class="fa fa-download blue"></i>Pobierz
+				</p>
+				<span class="fill-free"></span>
+				<p id="FM_B-Rename" class="button simple disabled">
+					<i class="fa fa-pencil green"></i>Zmień nazwę
+				</p>
+				<p id="FM_B-Remove" class="button simple disabled">
+					<i class="fa fa-trash red"></i>Usuń
+				</p>
+			</div>
 		</div>
 
-		<script type="text/template" id="tpl-entity-item">
+		<!-- szablon dla pojedynczego elementu w liście plików -->
+		<script type="text/template" id="FM_T-EntityItem">
 			<li class="entity-entry">
 				<div class="ml-05 items-horizontal">
 					<i class="fa 
@@ -52,12 +78,22 @@
 							<%= this.humanReadableSize( it.size ) %>
 						<%?%>
 					</span>
-					<span class="fill-free-2 text-right"><%? it.mime == '' %>---<%?%><%? it.mime != '' %><%= it.mime %><%?%></span>
-					<span class="mr-05 fill-free-2 text-right"><%= it.modifyDate %></span>
+					<span class="fill-free-2 text-right">
+						<%? it.mime == '' %>
+							---
+						<%??%>
+							<%= it.mime %>
+						<%?%>
+					</span>
+					<span class="mr-05 fill-free-2 text-right">
+						<%= this.formatDate( it.modify ) %>
+					</span>
 				</div>
 			</li>
 		</script>
-		<script type="text/template" id="tpl-directory-item">
+
+		<!-- szablon dla elementu w drzewie katalogów -->
+		<script type="text/template" id="FM_T-DirectoryItem">
 			<li class="dir-entry">
 				<div>
 					<p data-click="browse" class="items-horizontal">

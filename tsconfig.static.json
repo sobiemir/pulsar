@@ -13,6 +13,7 @@
 		"public/themes/pluto/src.static/interfaces/IEntity.ts",
 		"public/themes/pluto/src.static/interfaces/IObservable.ts",
 		"public/themes/pluto/src.static/interfaces/IRender.ts",
+		"public/themes/pluto/src.static/interfaces/IFileManager.ts",
 		"public/themes/pluto/src.static/extra/ObservableArray.ts",
 		"public/themes/pluto/src.static/extra/RenderArray.ts",
 		"public/themes/pluto/src.static/extra/RenderArrayTree.ts",
