@@ -30,6 +30,20 @@ class FileManager
 	private _fileManager: HTMLElement;
 
 	/**
+	 * Szczegóły o pliku otwierane po dwukrotnym kliknięciu na niego.
+	 *
+	 * TYPE: HTMLElement
+	 */
+	private _detailsPanel: HTMLElement;
+
+	/**
+	 * Panel zawierający akcję dla plików i folderów.
+	 *
+	 * TYPE: HTMLElement
+	 */
+	private _footerPanel: HTMLElement;
+
+	/**
 	 * Panel zawierający listę folderów.
 	 *
 	 * TYPE: HTMLElement
@@ -112,6 +126,13 @@ class FileManager
 	 * TYPE: HTMLElement
 	 */
 	private _currentEntity: HTMLElement;
+
+	/**
+	 * Aktualnie otwarty plik.
+	 *
+	 * TYPE: IObservableValue<IEntity>
+	 */
+	private _openedFile: IObservableValue<IEntity>;
 
 	/**
 	 * Panel boczny menedżera plików zawierający listę folderów.
@@ -494,6 +515,10 @@ class FileManager
 		this._buttons.toggleTree.addEventListener( "click", ev => {
 			this._toggleTreePanel();
 		} );
+		// wyświetlanie szczegółów pliku
+		this._buttons.closeInfo.addEventListener( "click", ev => {
+			this._toggleInfoView( false );
+		} );
 	}
 
 	/**
@@ -621,7 +646,63 @@ class FileManager
 					}
 					return;
 				}
+				// jeżeli jest to plik, otwórz szczegóły
+				else
+				{
+					this._openedFile = observable;
+					this._toggleInfoView( true, observable.value.name );
+				}
 			} );
+		}
+	}
+
+	/**
+	 * Przełącza widok informacji o aktualnym pliku.
+	 *
+	 * PARAMETERS:
+	 *     visible: Czy informacje o pliku mają być widoczne?
+	 */
+	private _toggleInfoView( visible: boolean, title: string = "" ): void
+	{
+		if( visible )
+		{
+			this._entityPanel.classList.add( "hidden" );
+			this._footerPanel.classList.add( "hidden" );
+			this._detailsPanel.classList.remove( "hidden" );
+
+			this._buttons.newFolder.classList.add( "hidden" );
+			this._buttons.upload.classList.add( "hidden" );
+			this._buttons.up.classList.add( "hidden" );
+			this._buttons.closeInfo.classList.remove( "hidden" );
+
+			if( title && title != "" )
+			{
+				this._title.classList.remove( "root" );
+				this._title.innerHTML = title;
+			}
+		}
+		else
+		{
+			this._entityPanel.classList.remove( "hidden" );
+			this._footerPanel.classList.remove( "hidden" );
+			this._detailsPanel.classList.add( "hidden" );
+
+			this._buttons.newFolder.classList.remove( "hidden" );
+			this._buttons.upload.classList.remove( "hidden" );
+			this._buttons.up.classList.remove( "hidden" );
+			this._buttons.closeInfo.classList.add( "hidden" );
+
+			if( !this._currentObservable )
+			{
+				this._title.classList.add( "root" );
+				this._title.innerHTML = "Pulsar";
+			}
+			else
+			{
+				const path = this.getPath( this._currentObservable );
+				this._title.classList.remove( "root" );
+				this._title.innerHTML = `/${path}`;
+			}
 		}
 	}
 
@@ -725,10 +806,12 @@ class FileManager
 			toggleTree: this._fileManager.$<HTMLElement>( "#FM_B-ToggleTree" ),
 			upload:     this._fileManager.$<HTMLElement>( "#FM_B-Upload" ),
 			newFolder:  this._fileManager.$<HTMLElement>( "#FM_B-NewFolder" ),
-			details:    this._fileManager.$<HTMLElement>( "#FM_B-Details" ),
+			details:    null,
 			download:   this._fileManager.$<HTMLElement>( "#FM_B-Download" ),
 			rename:     this._fileManager.$<HTMLElement>( "#FM_B-Rename" ),
-			remove:     this._fileManager.$<HTMLElement>( "#FM_B-Remove" )
+			remove:     this._fileManager.$<HTMLElement>( "#FM_B-Remove" ),
+			closeInfo:  this._fileManager.$<HTMLElement>( "#FM_B-CloseInfo" ),
+			search:     null
 		};
 
 		// pozostałe elementy
@@ -739,11 +822,15 @@ class FileManager
 		this._title =
 			this._fileManager.$<HTMLElement>( ".breadcrumb p" );
 		this._directoryLoader =
-			this._fileManager.$<HTMLElement>( "#FM_L-Directory" );
+			this._fileManager.$<HTMLElement>( "#FM_E-Directory" );
 		this._entityLoader =
-			this._fileManager.$<HTMLElement>( "#FM_L-Entity" );
+			this._fileManager.$<HTMLElement>( "#FM_E-Entity" );
 		this._sidebar =
-			this._fileManager.$<HTMLElement>( "#FM_Sidebar" );
+			this._fileManager.$<HTMLElement>( "#FM_E-Sidebar" );
+		this._detailsPanel =
+			this._fileManager.$<HTMLElement>( "#FM_E-Details" );
+		this._footerPanel =
+			this._fileManager.$<HTMLElement>( "#FM_E-Footer" );
 
 		// szablon dla elementu wyświetlanego w prawym panelu
 		const etpl = this._fileManager.$( "#FM_T-EntityItem" );

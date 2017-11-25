@@ -9,7 +9,7 @@
 	<section class="filemanager white-back fill-free items-horizontal">
 
 		<!-- panel z drzewem folderów -->
-		<aside id="FM_Sidebar" class="sidebar lightgrey-back items-vertical">
+		<aside id="FM_E-Sidebar" class="sidebar lightgrey-back items-vertical">
 			<div class="breadcrumb items-horizontal">
 				<!-- przycisk przejścia do głównego katalogu -->
 				<i id="FM_B-Home" class="fa fa-home"></i>
@@ -19,7 +19,7 @@
 			</div>
 			<!-- drzewo katalogów -->
 			<div class="directory-panel fill-free p05">
-				<div id="FM_L-Directory" class="loader"></div>
+				<div id="FM_E-Directory" class="loader"></div>
 				<ul class="directory-tree">
 				</ul>
 			</div>
@@ -37,24 +37,28 @@
 				<i id="FM_B-Upload" class="fa fa-upload"></i>
 				<!-- tworzenie nowego folderu -->
 				<i id="FM_B-NewFolder" class="fa fa-folder"></i>
+				<!-- zamykanie okna ze szczegółami pliku -->
+				<i id="FM_B-CloseInfo" class="fa fa-times hidden"></i>
 			</div>
 			<!-- lista elementów -->
 			<div class="entity-panel fill-free p05">
-				<div id="FM_L-Entity" class="loader"></div>
+				<div id="FM_E-Entity" class="loader"></div>
 				<ul class="entities-list">
 				</ul>
+				<div id="FM_E-Details" class="items-vertical">
+				</div>
 			</div>
 			<!-- pasek sterowania katalogami -->
-			<div class="breadcrumb bottom items-horizontal">
+			<div id="FM_E-Footer" class="breadcrumb bottom items-horizontal">
 				<p id="FM_B-Download" class="button simple disabled">
-					<i class="fa fa-download blue"></i>Pobierz
+					<i class="fa fa-download"></i>Pobierz
 				</p>
 				<span class="fill-free"></span>
 				<p id="FM_B-Rename" class="button simple disabled">
-					<i class="fa fa-pencil green"></i>Zmień nazwę
+					<i class="fa fa-pencil"></i>Zmień nazwę
 				</p>
 				<p id="FM_B-Remove" class="button simple disabled">
-					<i class="fa fa-trash red"></i>Usuń
+					<i class="fa fa-trash"></i>Usuń
 				</p>
 			</div>
 		</div>
