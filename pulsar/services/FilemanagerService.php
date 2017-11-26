@@ -66,6 +66,11 @@ class FilemanagerService
 			if( $entity->isLink() || $entity->isDot() )
 				continue;
 
+			// typ mime
+			$mime = $entity->isDir()
+				? ''
+				: mime_content_type( $entity->getPathname() );
+
 			// uzupełnij informacje dla każdego elementu
 			$entities[] = [
 				'name'   => $entity->getFilename(),
@@ -73,11 +78,20 @@ class FilemanagerService
 				'modify' => $entity->getMTime(),
 				'access' => $entity->getATime(),
 				'type'   => $entity->getType(),
-				'mime'   => $entity->isDir()
-					? ''
-					: mime_content_type( $entity->getPathname() )
+				'mime'   => $mime
 			];
 		}
 		return $entities;
+	}
+
+	public function readFileMimeType( string $path ): string
+	{
+		$mime = mime_content_type( $path );
+		$type = $mime == 'image/png' || $mime == 'image/jpeg' ||
+			$mime == 'image/gif'
+			? $mime
+			: 'text/plain';
+
+		return $type;
 	}
 }

@@ -37,6 +37,10 @@
 				<i id="FM_B-Upload" class="fa fa-upload"></i>
 				<!-- tworzenie nowego folderu -->
 				<i id="FM_B-NewFolder" class="fa fa-folder"></i>
+				<!-- otwieranie poprzedniego pliku na liście -->
+				<i id="FM_B-PrevFile" class="fa fa-chevron-left hidden"></i>
+				<!-- otwieranie następnego pliku na liście -->
+				<i id="FM_B-NextFile" class="fa fa-chevron-right hidden"></i>
 				<!-- zamykanie okna ze szczegółami pliku -->
 				<i id="FM_B-CloseInfo" class="fa fa-times hidden"></i>
 			</div>
@@ -45,7 +49,24 @@
 				<div id="FM_E-Entity" class="loader"></div>
 				<ul class="entities-list">
 				</ul>
-				<div id="FM_E-Details" class="items-vertical">
+				<div id="FM_E-Details" class="hidden items-vertical">
+					<div class="img-details-container">
+						<img id="FM_E-ImgPreview" src="" />
+					</div>
+					<div id="FM_E-FileInfo">
+						<dl>
+							<dt>Nazwa pliku:</dt>
+							<dd id="FM_D-Name"></dd>
+
+							<dt>Typ:</dt>
+							<dd id="FM_D-Type"></dd>
+
+							<dt>Zmodyfikowano:</dt>
+							<dd id="FM_D-Modified"></dd>
+
+							<dt>Rozmiar:</dt>
+							<dd id="FM_D-Size"></dd>
+					</div>
 				</div>
 			</div>
 			<!-- pasek sterowania katalogami -->

@@ -141,6 +141,20 @@ class FileManager
 	 */
 	private _sidebar: HTMLElement;
 
+	/**
+	 * Kontrolka do poglądu obrazków.
+	 *
+	 * TYPE: HTMLImageElement
+	 */
+	private _imgPreview: HTMLImageElement;
+
+	/**
+	 * Elementy do których zapisywane będą szczegóły pliku.
+	 *
+	 * TYPE: IFileManagerDetails
+	 */
+	private _details: IFileManagerDetails;
+
 // =============================================================================
 
 	/**
@@ -519,6 +533,41 @@ class FileManager
 		this._buttons.closeInfo.addEventListener( "click", ev => {
 			this._toggleInfoView( false );
 		} );
+		this._buttons.nextFile.addEventListener( "click", ev => {
+			this._openNextFileInfo();
+		} );
+		this._buttons.prevFile.addEventListener( "click", ev => {
+			this._openPrevFileInfo();
+		} );
+	}
+
+	/**
+	 * Otwiera następny plik na liście.
+	 */
+	private _openNextFileInfo(): void
+	{
+		const obss = this._entities.getObservables();
+		const fidx = obss.findIndex( val => val == this._openedFile );
+
+		if( obss.length == fidx + 1 )
+			return;
+
+		this._openFileInfo( obss[fidx + 1] );
+	}
+
+	/**
+	 * Otwiera poprzedni plik na liście.
+	 */
+	private _openPrevFileInfo(): void
+	{
+		const obss = this._entities.getObservables();
+		const fidx = obss.findIndex( val => val == this._openedFile );
+		const pidx = obss.findIndex( val => val.value.type != 'dir' );
+
+		if( pidx > fidx - 1 )
+			return;
+
+		this._openFileInfo( obss[fidx - 1] );
 	}
 
 	/**
@@ -646,12 +695,9 @@ class FileManager
 					}
 					return;
 				}
-				// jeżeli jest to plik, otwórz szczegóły
+				// jeżeli jest to plik, otwórz jego szczegóły
 				else
-				{
-					this._openedFile = observable;
-					this._toggleInfoView( true, observable.value.name );
-				}
+					this._openFileInfo( observable );
 			} );
 		}
 	}
@@ -666,6 +712,7 @@ class FileManager
 	{
 		if( visible )
 		{
+			// pokaż niezbędne przyciski i ukryj niepotrzebne
 			this._entityPanel.classList.add( "hidden" );
 			this._footerPanel.classList.add( "hidden" );
 			this._detailsPanel.classList.remove( "hidden" );
@@ -675,14 +722,44 @@ class FileManager
 			this._buttons.up.classList.add( "hidden" );
 			this._buttons.closeInfo.classList.remove( "hidden" );
 
+			this._buttons.nextFile.classList.remove( "hidden" );
+			this._buttons.prevFile.classList.remove( "hidden" );
+
+			const obss = this._entities.getObservables();
+			const fidx = obss.findIndex( val => val.value.type != 'dir' );
+
+			// odblokuj lub zablokuj możliwość przełączenia na poprzedni plik
+			if( obss[fidx] == this._openedFile )
+				this._buttons.prevFile.classList.add( "disabled" );
+			else
+				this._buttons.prevFile.classList.remove( "disabled" );
+
+			// odblokuj lub zablokuj możliwość przełączenia na następny plik
+			if( obss[obss.length - 1] == this._openedFile )
+				this._buttons.nextFile.classList.add( "disabled" );
+			else
+				this._buttons.nextFile.classList.remove( "disabled" );
+
+			// wyświetl nazwę pliku
 			if( title && title != "" )
 			{
 				this._title.classList.remove( "root" );
 				this._title.innerHTML = title;
 			}
+
+			// podmień informacje o pliku pod jego podglądem
+			this._details.name.innerHTML = this._openedFile.value.name;
+			this._details.type.innerHTML = this._openedFile.value.mime;
+
+			this._details.modified.innerHTML =
+				this.formatDate( this._openedFile.value.modify );
+			this._details.size.innerHTML =
+				this.humanReadableSize( this._openedFile.value.size ) + " (" +
+				this._openedFile.value.size + " bajtów)";
 		}
 		else
 		{
+			// wróć do stanu sprzed wyświetlania informacji o pliku
 			this._entityPanel.classList.remove( "hidden" );
 			this._footerPanel.classList.remove( "hidden" );
 			this._detailsPanel.classList.add( "hidden" );
@@ -692,6 +769,10 @@ class FileManager
 			this._buttons.up.classList.remove( "hidden" );
 			this._buttons.closeInfo.classList.add( "hidden" );
 
+			this._buttons.nextFile.classList.add( "hidden" );
+			this._buttons.prevFile.classList.add( "hidden" );
+
+			// przywróć ścieżkę do aktualnego katalogu zamiast nazwy pliku
 			if( !this._currentObservable )
 			{
 				this._title.classList.add( "root" );
@@ -704,6 +785,25 @@ class FileManager
 				this._title.innerHTML = `/${path}`;
 			}
 		}
+	}
+
+	/**
+	 * Otwiera szczegóły pliku.
+	 *
+	 * PARAMETERS:
+	 *     observable: IObservableValue<IEntity>
+	 *         Obserwowana wartość zawierająca informacje o pliku.
+	 */
+	private _openFileInfo( observable: IObservableValue<IEntity> ): void
+	{
+		this._openedFile = observable;
+		this._toggleInfoView( true, observable.value.name );
+
+		const path  = this.getPath( this._currentObservable );
+		const fpath = `${path}/${observable.value.name}`;
+
+		// wyślij żądanie o listę plików w katalogu
+		this._imgPreview.src = "/micro/filemanager/file/" + fpath;
 	}
 
 	/**
@@ -811,7 +911,19 @@ class FileManager
 			rename:     this._fileManager.$<HTMLElement>( "#FM_B-Rename" ),
 			remove:     this._fileManager.$<HTMLElement>( "#FM_B-Remove" ),
 			closeInfo:  this._fileManager.$<HTMLElement>( "#FM_B-CloseInfo" ),
-			search:     null
+			search:     null,
+			prevFile:   this._fileManager.$<HTMLElement>( "#FM_B-PrevFile" ),
+			nextFile:   this._fileManager.$<HTMLElement>( "#FM_B-NextFile" )
+		};
+
+		// szczegóły pliku
+		this._details =
+		{
+			name:      this._fileManager.$<HTMLElement>( "#FM_D-Name" ),
+			type:      this._fileManager.$<HTMLElement>( "#FM_D-Type" ),
+			modified:  this._fileManager.$<HTMLElement>( "#FM_D-Modified" ),
+			size:      this._fileManager.$<HTMLElement>( "#FM_D-Size" ),
+			dimension: this._fileManager.$<HTMLElement>( "#FM_D-Dimension" )
 		};
 
 		// pozostałe elementy
@@ -831,6 +943,8 @@ class FileManager
 			this._fileManager.$<HTMLElement>( "#FM_E-Details" );
 		this._footerPanel =
 			this._fileManager.$<HTMLElement>( "#FM_E-Footer" );
+		this._imgPreview =
+			this._fileManager.$<HTMLImageElement>( "#FM_E-ImgPreview" );
 
 		// szablon dla elementu wyświetlanego w prawym panelu
 		const etpl = this._fileManager.$( "#FM_T-EntityItem" );

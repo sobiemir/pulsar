@@ -1014,7 +1014,7 @@ form .button-container {
 }
 
 
-.breadcrumb .fa:hover:not(.icononly) {
+.breadcrumb .fa:hover:not(.icononly):not(.disabled) {
 	background: #d4d4d4;
 }
 .breadcrumb .fa {
@@ -1023,6 +1023,10 @@ form .button-container {
 	width: 3rem;
 	text-align: center;
 	margin: 0;
+}
+.breadcrumb .fa.disabled {
+	color: #888;
+	cursor: default;
 }
 
 .pagemenu {
@@ -1150,4 +1154,39 @@ li.entity-entry.selected:hover i {
 }
 .breadcrumb.bottom .button.simple {
 	line-height: 3rem;
+}
+
+#FM_E-Details {
+	text-align: center;
+	min-height: 100%;
+	align-items: stretch;
+}
+.img-details-container {
+	display: flex;
+	flex: 1 1 0;
+}
+#FM_E-FileInfo {
+	border-top: 0.1rem #ccc solid;
+	padding-top: 0.5rem;
+}
+#FM_E-FileInfo dt {
+	width: 50%;
+	float: left;
+	font-weight: bold;
+	padding-right: 0.5rem;
+	text-align: right;
+}
+#FM_E-FileInfo dd {
+	width: 50%;
+	float: left;
+	text-align: left;
+}
+
+#FM_E-ImgPreview {
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: scale-down;
+	object-position: center;
+	flex: 1 1 0;
+	padding-bottom: 0.5rem;
 }

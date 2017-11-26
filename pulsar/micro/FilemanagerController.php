@@ -58,4 +58,20 @@ class FilemanagerController extends Injectable
 			$this->sfmgr->listEntities( $path )
 		);
 	}
+
+	public function fileAction( string $path = "/" ): bool
+	{
+		$path = $this->sfmgr->getRealPath( $path );
+
+		if( !is_file($path) )
+			return false;
+
+		$mime = $this->sfmgr->readFileMimeType( $path );
+
+		header( 'Content-Type: ' . $mime );
+		header( 'Content-Length: ' . filesize($path) );
+		header( 'Content-Disposition: filename=' . basename($path) );
+
+		readfile( $path );
+	}
 }

@@ -21,14 +21,9 @@ $collections = [];
 $filemanager = new Collection();
 $filemanager->setHandler( '\Pulsar\Micro\FilemanagerController', true );
 $filemanager->setPrefix( '/filemanager' );
-$filemanager->post(
-	'/directories',
-	'directoriesAction'
-);
-$filemanager->post(
-	'/entities',
-	'entitiesAction'
-);
+$filemanager->post( '/directories', 'directoriesAction' );
+$filemanager->post( '/entities', 'entitiesAction' );
+$filemanager->get( '/file/{path:(.*)}', 'fileAction' );
 
 $collections[] = $filemanager;
 
