@@ -59,33 +59,77 @@ class FilemanagerController extends Injectable
 		);
 	}
 
-	public function fileAction( string $path = "/" ): bool
+	public function downloadAction( string $path = "/" ): void
 	{
+		// pobierz ścieżkę do pliku
 		$path = $this->_fm->getRealPath( $path );
 
+		// tylko plik może być pobrany
 		if( !is_file($path) )
-			return false;
+			return;
 
+		// pobierz typ mime
+		$mime = $this->_fm->getMimeType( $path );
+		$file = basename( $path );
+
+		// ustaw nagłówki
+		header( 'Content-Description: File Transfer' );
+		header( 'Content-Type: ' . $mime );
+		header( 'Content-Disposition: attachment; filename="' . $file . '"' );
+		header( 'Expires: 0' );
+		header( 'Cache-Control: must-revalidate' );
+		header( 'Pragma: public' );
+		header( 'Content-Length:' . filesize($path) );
+
+		// jeżeli plik zajmuje więcej niż 1mb, pobieraj go częściami
+		if( filesize($path) > 1048576 )
+		{
+			$handle = fopen( $path, "rb" );
+
+			// po 8 kb
+			while( !feof($handle) )
+				echo fread( $handle, 8192 );
+
+			fclose( $handle );
+			return;
+		}
+
+		// jeżeli nie, pobierz cały
+		readfile( $path );
+	}
+
+	public function previewAction( string $path = "/" ): void
+	{
+		// pobierz ścieżkę do pliku
+		$path = $this->_fm->getRealPath( $path );
+
+		// jeżeli nie jest to plik, przerwij dalsze działanie
+		if( !is_file($path) )
+			return;
+
+		// pobierz typ mime
 		$mime = $this->_fm->getMimeType( $path, false );
 
+		// jeżeli typ mime został wykryty, ustaw go
 		if( $mime != '' )
 			header( 'Content-Type: ' . $mime );
-		header( 'Content-Disposition: filename=' . basename($path) );
+		header( 'Content-Disposition: filename="' . basename($path) . '"' );
 
+		// dla plików innych niż obrazy, przycinaj treść do 8kb
 		if( $mime != 'image/png' && $mime != 'image/jpeg' &&
-			$mime != 'image/gif' && filesize($path) > 4096 )
+			$mime != 'image/gif' && filesize($path) > 8192 )
 		{
-			header( 'Content-Length: 4096' );
+			header( 'Content-Length: 8192' );
 
 			$handle = fopen( $path, "rb" );
-    		echo fread( $handle, 4096 );
+    		echo fread( $handle, 8192 );
     		fclose( $handle );
 
-			return true;
+    		return;
 		}
 		header( 'Content-Length: ' . filesize($path) );
 
+		// wczytaj plik
 		readfile( $path );
-		return true;
 	}
 }

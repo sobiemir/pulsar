@@ -55,7 +55,7 @@ interface IFileManagerButtons
 	 *
 	 * TYPE: HTMLElement
 	 */
-	download: HTMLElement;
+	download: HTMLAnchorElement;
 
 	/**
 	 * Przycisk pozwalający na zmianę nazwy pliku lub folderu.
@@ -98,6 +98,8 @@ interface IFileManagerButtons
 	 * TYPE: HTMLElement
 	 */
 	prevFile: HTMLElement;
+
+	getOpened: HTMLAnchorElement;
 }
 
 interface IFileManagerDetails

@@ -37,6 +37,9 @@
 				<i id="FM_B-Upload" class="fa fa-upload"></i>
 				<!-- tworzenie nowego folderu -->
 				<i id="FM_B-NewFolder" class="fa fa-folder"></i>
+				<!-- pobieranie aktualnie otwartego pliku -->
+				<a href="#" id="FM_B-GetOpened" class="fa fa-download hidden">
+				</a>
 				<!-- otwieranie poprzedniego pliku na liście -->
 				<i id="FM_B-PrevFile" class="fa fa-chevron-left hidden"></i>
 				<!-- otwieranie następnego pliku na liście -->
@@ -72,9 +75,9 @@
 			</div>
 			<!-- pasek sterowania katalogami -->
 			<div id="FM_E-Footer" class="breadcrumb bottom items-horizontal">
-				<p id="FM_B-Download" class="button simple disabled">
+				<a href="#" id="FM_B-Download" class="button simple disabled">
 					<i class="fa fa-download"></i>Pobierz
-				</p>
+				</a>
 				<span class="fill-free"></span>
 				<p id="FM_B-Rename" class="button simple disabled">
 					<i class="fa fa-pencil"></i>Zmień nazwę

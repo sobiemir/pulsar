@@ -128,6 +128,13 @@ class FileManager
 	private _currentEntity: HTMLElement;
 
 	/**
+	 * Aktualnie zaznaczony element.
+	 *
+	 * TYPE: IObservableValue<IEntity>
+	 */
+	private _selectedEntity: IObservableValue<IEntity>;
+
+	/**
 	 * Aktualnie otwarty plik.
 	 *
 	 * TYPE: IObservableValue<IEntity>
@@ -669,6 +676,7 @@ class FileManager
 					this._currentEntity.classList.remove( "selected" );
 
 				this._currentEntity = observable.element;
+				this._selectedEntity = observable;
 				this._currentEntity.classList.add( "selected" );
 
 				// ustaw widoczne przyciski
@@ -731,6 +739,7 @@ class FileManager
 			this._buttons.upload.classList.add( "hidden" );
 			this._buttons.up.classList.add( "hidden" );
 			this._buttons.closeInfo.classList.remove( "hidden" );
+			this._buttons.getOpened.classList.remove( "hidden" );
 
 			this._buttons.nextFile.classList.remove( "hidden" );
 			this._buttons.prevFile.classList.remove( "hidden" );
@@ -768,6 +777,12 @@ class FileManager
 			this._details.size.innerHTML =
 				this.humanReadableSize( this._openedFile.value.size ) + " (" +
 				this._openedFile.value.size + " bajtów)";
+
+			const file = this._openedFile.value.name;
+			const path = this.getPath( this._currentObservable );
+
+			this._buttons.getOpened.href =
+				`/micro/filemanager/download/${path}${file}`;
 		}
 		else
 		{
@@ -780,6 +795,7 @@ class FileManager
 			this._buttons.upload.classList.remove( "hidden" );
 			this._buttons.up.classList.remove( "hidden" );
 			this._buttons.closeInfo.classList.add( "hidden" );
+			this._buttons.getOpened.classList.add( "hidden" );
 
 			this._buttons.nextFile.classList.add( "hidden" );
 			this._buttons.prevFile.classList.add( "hidden" );
@@ -815,7 +831,8 @@ class FileManager
 		this._toggleInfoView( true, observable.value.name );
 
 		const path = this.getPath( this._currentObservable );
-		const fsrc = `/micro/filemanager/file/${path}/${observable.value.name}`;
+		const file = observable.value.name;
+		const fsrc = `/micro/filemanager/preview/${path}/${file}`;
 
 		// podgląd obrazka
 		if( observable.value.mime == "image/png" ||
@@ -856,9 +873,20 @@ class FileManager
 	): void
 	{
 		if( download )
+		{
+			const path = this.getPath( this._currentObservable );
+			const file = this._selectedEntity.value.name;
+
 			this._buttons.download.classList.remove( "disabled" );
+			this._buttons.download.href =
+				`/micro/filemanager/download/${path}${file}`;
+		}
 		else
+		{
+
 			this._buttons.download.classList.add( "disabled" );
+			this._buttons.download.href = "#";
+		}
 
 		if( rename )
 			this._buttons.rename.classList.remove( "disabled" );
@@ -929,64 +957,59 @@ class FileManager
 	 */
 	private _prepareElements(): void
 	{
+		const $fm = this._fileManager;
+
 		// przyciski w menedżerze
 		this._buttons =
 		{
-			up:         this._fileManager.$<HTMLElement>( "#FM_B-Up" ),
-			home:       this._fileManager.$<HTMLElement>( "#FM_B-Home" ),
-			refresh:    this._fileManager.$<HTMLElement>( "#FM_B-Refresh" ),
-			toggleTree: this._fileManager.$<HTMLElement>( "#FM_B-ToggleTree" ),
-			upload:     this._fileManager.$<HTMLElement>( "#FM_B-Upload" ),
-			newFolder:  this._fileManager.$<HTMLElement>( "#FM_B-NewFolder" ),
+			up:         $fm.$<HTMLElement>( "#FM_B-Up" ),
+			home:       $fm.$<HTMLElement>( "#FM_B-Home" ),
+			refresh:    $fm.$<HTMLElement>( "#FM_B-Refresh" ),
+			toggleTree: $fm.$<HTMLElement>( "#FM_B-ToggleTree" ),
+			upload:     $fm.$<HTMLElement>( "#FM_B-Upload" ),
+			newFolder:  $fm.$<HTMLElement>( "#FM_B-NewFolder" ),
 			details:    null,
-			download:   this._fileManager.$<HTMLElement>( "#FM_B-Download" ),
-			rename:     this._fileManager.$<HTMLElement>( "#FM_B-Rename" ),
-			remove:     this._fileManager.$<HTMLElement>( "#FM_B-Remove" ),
-			closeInfo:  this._fileManager.$<HTMLElement>( "#FM_B-CloseInfo" ),
+			download:   $fm.$<HTMLAnchorElement>( "#FM_B-Download" ),
+			rename:     $fm.$<HTMLElement>( "#FM_B-Rename" ),
+			remove:     $fm.$<HTMLElement>( "#FM_B-Remove" ),
+			closeInfo:  $fm.$<HTMLElement>( "#FM_B-CloseInfo" ),
 			search:     null,
-			prevFile:   this._fileManager.$<HTMLElement>( "#FM_B-PrevFile" ),
-			nextFile:   this._fileManager.$<HTMLElement>( "#FM_B-NextFile" )
+			prevFile:   $fm.$<HTMLElement>( "#FM_B-PrevFile" ),
+			nextFile:   $fm.$<HTMLElement>( "#FM_B-NextFile" ),
+			getOpened:  $fm.$<HTMLAnchorElement>( "#FM_B-GetOpened" )
 		};
 
 		// szczegóły pliku
 		this._details =
 		{
-			name:      this._fileManager.$<HTMLElement>( "#FM_D-Name" ),
-			type:      this._fileManager.$<HTMLElement>( "#FM_D-Type" ),
-			modified:  this._fileManager.$<HTMLElement>( "#FM_D-Modified" ),
-			size:      this._fileManager.$<HTMLElement>( "#FM_D-Size" ),
-			dimension: this._fileManager.$<HTMLElement>( "#FM_D-Dimension" )
+			name:      $fm.$<HTMLElement>( "#FM_D-Name" ),
+			type:      $fm.$<HTMLElement>( "#FM_D-Type" ),
+			modified:  $fm.$<HTMLElement>( "#FM_D-Modified" ),
+			size:      $fm.$<HTMLElement>( "#FM_D-Size" ),
+			dimension: $fm.$<HTMLElement>( "#FM_D-Dimension" )
 		};
 
 		// pozostałe elementy
-		this._directoryPanel =
-			this._fileManager.$<HTMLElement>( ".directory-tree" );
-		this._entityPanel =
-			this._fileManager.$<HTMLElement>( ".entities-list" );
-		this._title =
-			this._fileManager.$<HTMLElement>( ".breadcrumb p" );
-		this._directoryLoader =
-			this._fileManager.$<HTMLElement>( "#FM_E-Directory" );
-		this._entityLoader =
-			this._fileManager.$<HTMLElement>( "#FM_E-Entity" );
-		this._sidebar =
-			this._fileManager.$<HTMLElement>( "#FM_E-Sidebar" );
-		this._detailsPanel =
-			this._fileManager.$<HTMLElement>( "#FM_E-Details" );
-		this._footerPanel =
-			this._fileManager.$<HTMLElement>( "#FM_E-Footer" );
-		this._imgPreview =
-			this._fileManager.$<HTMLImageElement>( "#FM_E-ImgPreview" );
-		this._filePreview =
-			this._fileManager.$<HTMLTextAreaElement>( "#FM_E-FilePreview" );
+		this._title           = $fm.$<HTMLElement>( ".breadcrumb p" );
+		this._directoryLoader = $fm.$<HTMLElement>( "#FM_E-Directory" );
+		this._entityLoader    = $fm.$<HTMLElement>( "#FM_E-Entity" );
+		this._sidebar         = $fm.$<HTMLElement>( "#FM_E-Sidebar" );
+
+		this._directoryPanel = $fm.$<HTMLElement>( ".directory-tree" );
+		this._entityPanel    = $fm.$<HTMLElement>( ".entities-list" );
+		this._detailsPanel   = $fm.$<HTMLElement>( "#FM_E-Details" );
+		this._footerPanel    = $fm.$<HTMLElement>( "#FM_E-Footer" );
+
+		this._imgPreview  = $fm.$<HTMLImageElement>( "#FM_E-ImgPreview" );
+		this._filePreview = $fm.$<HTMLTextAreaElement>( "#FM_E-FilePreview" );
 
 		// szablon dla elementu wyświetlanego w prawym panelu
-		const etpl = this._fileManager.$( "#FM_T-EntityItem" );
+		const etpl = $fm.$( "#FM_T-EntityItem" );
 		this._entityTemplate = etpl
 			? etpl.innerHTML
 			: '';
 		// szablon dla elementu wyświetlanego w lewym panelu
-		const dtpl = this._fileManager.$( "#FM_T-DirectoryItem" );
+		const dtpl = $fm.$( "#FM_T-DirectoryItem" );
 		this._directoryTemplate = dtpl
 			? dtpl.innerHTML
 			: '';
