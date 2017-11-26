@@ -242,7 +242,7 @@ class FileManager
 		const index = ~~Math.floor( Math.log(bytes) / Math.log(1024) );
 
 		if( !index )
-			return `${bytes} ${sizes[index]})`;
+			return `${bytes} ${sizes[index]}`;
 
 		return `${(bytes / (1024 ** index)).toFixed(2)} ${sizes[index]}`;
 	}
@@ -759,7 +759,9 @@ class FileManager
 
 			// podmień informacje o pliku pod jego podglądem
 			this._details.name.innerHTML = this._openedFile.value.name;
-			this._details.type.innerHTML = this._openedFile.value.mime;
+			this._details.type.innerHTML = this._openedFile.value.mime == ''
+				? '---'
+				: this._openedFile.value.mime;
 
 			this._details.modified.innerHTML =
 				this.formatDate( this._openedFile.value.modify );

@@ -44,16 +44,18 @@ $di->setShared( 'response', function()
 
 	return $response;
 } );
-
+$di->setShared( 'mimes', function()
+{
+	return require_once APP_PATH . 'config/mimes.php';
+} );
 $di->set( 'router', function()
 {
 	return new Router( false );
 } );
-
-$di->set('request', function()
+$di->set( 'request', function()
 {
 	return new Request();
-});
+} );
 
 $app = new Micro();
 $app->setDI( $di );

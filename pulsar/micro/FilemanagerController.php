@@ -27,48 +27,49 @@ class FilemanagerController extends Injectable
 	 *
 	 * TYPE: FilemanagerService
 	 */
-	private $sfmgr = null;
+	private $_fm = null;
 
 	/**
 	 * Konstruktor klasy FilemanagerController.
 	 */
 	public function __construct()
 	{
-		$this->sfmgr = new FilemanagerService();
+		$this->_fm = new FilemanagerService( $this->di );
 	}
 
 	public function directoriesAction(): string
 	{
 		$rec = (int)$this->request->getPost( 'recursive', null, 0 );
 
-		$path = $this->sfmgr->getRealPath(
+		$path = $this->_fm->getRealPath(
 			$this->request->getPost( 'path', null, '/' )
 		);
 		return json_encode(
-			$this->sfmgr->listDirectories( $path, $rec != 0 )
+			$this->_fm->listDirectories( $path, $rec != 0 )
 		);
 	}
 
 	public function entitiesAction(): string
 	{
-		$path = $this->sfmgr->getRealPath(
+		$path = $this->_fm->getRealPath(
 			$this->request->getPost( 'path', null, '/' )
 		);
 		return json_encode(
-			$this->sfmgr->listEntities( $path )
+			$this->_fm->listEntities( $path )
 		);
 	}
 
 	public function fileAction( string $path = "/" ): bool
 	{
-		$path = $this->sfmgr->getRealPath( $path );
+		$path = $this->_fm->getRealPath( $path );
 
 		if( !is_file($path) )
 			return false;
 
-		$mime = $this->sfmgr->readFileMimeType( $path );
+		$mime = $this->_fm->getMimeType( $path, false );
 
-		header( 'Content-Type: ' . $mime );
+		if( $mime != '' )
+			header( 'Content-Type: ' . $mime );
 		header( 'Content-Disposition: filename=' . basename($path) );
 
 		if( $mime != 'image/png' && $mime != 'image/jpeg' &&

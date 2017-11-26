@@ -16,8 +16,17 @@
 
 namespace Pulsar\Service;
 
+use Phalcon\DiInterface;
+
 class FilemanagerService
 {
+	protected $di;
+
+	public function __construct( DiInterface $di )
+	{
+		$this->di = $di;
+	}
+
 	public function getRealPath( string $path ): string
 	{
 		$path = realpath( BASE_PATH . 'files/' . $path );
@@ -66,29 +75,46 @@ class FilemanagerService
 			if( $entity->isLink() || $entity->isDot() )
 				continue;
 
-			// typ mime
-			$mime = $entity->isDir()
-				? ''
-				: mime_content_type( $entity->getPathname() );
-
-			// uzupełnij informacje dla każdego elementu
+			// uzupełnij informacje o pliku
 			$entities[] = [
 				'name'   => $entity->getFilename(),
 				'size'   => $entity->getSize(),
 				'modify' => $entity->getMTime(),
 				'access' => $entity->getATime(),
 				'type'   => $entity->getType(),
-				'mime'   => $mime
+				'mime'   => $entity->isDir()
+					? ''
+					: $this->getMimeType( $entity->getFilename() )
 			];
 		}
 		return $entities;
 	}
 
-	public function readFileMimeType( string $path ): string
+	public function getMimeType( string $path, bool $real = true ): string
 	{
-		$mime = mime_content_type( $path );
-		$type = $mime == 'image/png' || $mime == 'image/jpeg' ||
-			$mime == 'image/gif'
+		$mimes = $this->di->getShared( 'mimes' );
+
+		$ext  = pathinfo( $path, PATHINFO_EXTENSION );
+		$mime = !$ext || $ext == ''
+			? 'text/plain'
+			: (!isset( $mimes[$ext] )
+				? ''
+				: $mimes[$ext]
+			);
+
+		// prawdziwy typ
+		if( $real )
+			return $mime;
+
+		// typ obsługiwany przez aplikację
+		$valid_mimes = [
+			'image/png'  => 1,
+			'image/jpeg' => 1,
+			'image/gif'  => 1
+		];
+
+		// w przypadku gdy aplikacja nie obsługuje typu, zwraca text/plain
+		$type = isset( $valid_mimes[$mime] )
 			? $mime
 			: 'text/plain';
 
