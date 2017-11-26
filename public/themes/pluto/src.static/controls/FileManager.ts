@@ -149,6 +149,13 @@ class FileManager
 	private _imgPreview: HTMLImageElement;
 
 	/**
+	 * Kontrolka do podglądu zawartości plików.
+	 *
+	 * TYPE: HTMLTextAreaElement
+	 */
+	private _filePreview: HTMLTextAreaElement;
+
+	/**
 	 * Elementy do których zapisywane będą szczegóły pliku.
 	 *
 	 * TYPE: IFileManagerDetails
@@ -254,6 +261,9 @@ class FileManager
 	 */
 	public getPath( elem: IObservableValue<IFolder>, path: string = "" ): string
 	{
+		if( !elem )
+			return path;
+
 		if( elem.extra.owner.getUpper() )
 			return this.getPath(
 				elem.extra.owner.getUpper(),
@@ -796,14 +806,34 @@ class FileManager
 	 */
 	private _openFileInfo( observable: IObservableValue<IEntity> ): void
 	{
+		if( observable.value.type == 'dir' )
+			return;
+
 		this._openedFile = observable;
 		this._toggleInfoView( true, observable.value.name );
 
-		const path  = this.getPath( this._currentObservable );
-		const fpath = `${path}/${observable.value.name}`;
+		const path = this.getPath( this._currentObservable );
+		const fsrc = `/micro/filemanager/file/${path}/${observable.value.name}`;
 
-		// wyślij żądanie o listę plików w katalogu
-		this._imgPreview.src = "/micro/filemanager/file/" + fpath;
+		// podgląd obrazka
+		if( observable.value.mime == "image/png" ||
+			observable.value.mime == "image/jpeg" ||
+			observable.value.mime == "image/gif" )
+		{
+			this._imgPreview.classList.remove( "hidden" );
+			this._filePreview.classList.add( "hidden" );
+			this._imgPreview.src = fsrc;
+		}
+		// lub podgląd zawartości pliku
+		else
+		{
+			this._imgPreview.classList.add( "hidden" );
+			this._filePreview.classList.remove( "hidden" );
+
+			qwest.get( fsrc ).then( (xhr: XMLHttpRequest, response: any) => {
+				this._filePreview.innerHTML = response;
+			} );
+		}
 	}
 
 	/**
@@ -945,6 +975,8 @@ class FileManager
 			this._fileManager.$<HTMLElement>( "#FM_E-Footer" );
 		this._imgPreview =
 			this._fileManager.$<HTMLImageElement>( "#FM_E-ImgPreview" );
+		this._filePreview =
+			this._fileManager.$<HTMLTextAreaElement>( "#FM_E-FilePreview" );
 
 		// szablon dla elementu wyświetlanego w prawym panelu
 		const etpl = this._fileManager.$( "#FM_T-EntityItem" );

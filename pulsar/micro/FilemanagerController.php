@@ -69,9 +69,22 @@ class FilemanagerController extends Injectable
 		$mime = $this->sfmgr->readFileMimeType( $path );
 
 		header( 'Content-Type: ' . $mime );
-		header( 'Content-Length: ' . filesize($path) );
 		header( 'Content-Disposition: filename=' . basename($path) );
 
+		if( $mime != 'image/png' && $mime != 'image/jpeg' &&
+			$mime != 'image/gif' && filesize($path) > 4096 )
+		{
+			header( 'Content-Length: 4096' );
+
+			$handle = fopen( $path, "rb" );
+    		echo fread( $handle, 4096 );
+    		fclose( $handle );
+
+			return true;
+		}
+		header( 'Content-Length: ' . filesize($path) );
+
 		readfile( $path );
+		return true;
 	}
 }

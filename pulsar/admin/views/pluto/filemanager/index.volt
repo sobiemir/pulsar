@@ -51,6 +51,7 @@
 				</ul>
 				<div id="FM_E-Details" class="hidden items-vertical">
 					<div class="img-details-container">
+						<textarea id="FM_E-FilePreview"></textarea>
 						<img id="FM_E-ImgPreview" src="" />
 					</div>
 					<div id="FM_E-FileInfo">
