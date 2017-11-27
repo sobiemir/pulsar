@@ -39,11 +39,10 @@ class FilemanagerController extends Injectable
 
 	public function directoriesAction(): string
 	{
-		$rec = (int)$this->request->getPost( 'recursive', null, 0 );
+		$rec  = (int)$this->request->getPost( 'recursive', null, 0 );
+		$path = $this->request->getPost( 'path', null, '/' );
+		$path = trim( $this->_fm->getRealPath($path) );
 
-		$path = $this->_fm->getRealPath(
-			$this->request->getPost( 'path', null, '/' )
-		);
 		return json_encode(
 			$this->_fm->listDirectories( $path, $rec != 0 )
 		);
@@ -51,18 +50,28 @@ class FilemanagerController extends Injectable
 
 	public function entitiesAction(): string
 	{
-		$path = $this->_fm->getRealPath(
-			$this->request->getPost( 'path', null, '/' )
-		);
+		$path = $this->request->getPost( 'path', null, '/' );
+		$path = trim( $this->_fm->getRealPath($path) );
+
 		return json_encode(
 			$this->_fm->listEntities( $path )
+		);
+	}
+
+	public function createDirectoryAction(): string
+	{
+		$path = $this->request->getPost( 'path', null, '/' );
+		$path = trim( $this->_fm->getRealPath($path) );
+
+		return json_encode(
+			$this->_fm->createDirectory( $path )
 		);
 	}
 
 	public function downloadAction( string $path = "/" ): void
 	{
 		// pobierz ścieżkę do pliku
-		$path = $this->_fm->getRealPath( $path );
+		$path = trim( $this->_fm->getRealPath($path) );
 
 		// tylko plik może być pobrany
 		if( !is_file($path) )
@@ -101,7 +110,7 @@ class FilemanagerController extends Injectable
 	public function previewAction( string $path = "/" ): void
 	{
 		// pobierz ścieżkę do pliku
-		$path = $this->_fm->getRealPath( $path );
+		$path = trim( $this->_fm->getRealPath($path) );
 
 		// jeżeli nie jest to plik, przerwij dalsze działanie
 		if( !is_file($path) )

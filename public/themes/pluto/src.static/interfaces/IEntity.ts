@@ -7,8 +7,6 @@ interface IEntity
 	access: number;
 	type: string;
 	mime: string;
-	width: number;
-	height: number;
 }
 
 interface IFolder

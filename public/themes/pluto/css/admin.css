@@ -316,6 +316,7 @@ input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover, .bu
 	line-height: inherit;
 	margin-top: 0;
 	padding-left: 0;
+	color: #333;
 }
 .button.simple:hover, button.simple:hover 
 .button.simple:focus, button.simple:focus {
@@ -1197,4 +1198,14 @@ li.entity-entry.selected:hover i {
 }
 #FM_E-FilePreview:focus {
 	outline: none;
+}
+#FM_E-FolderName {
+	border: 0;
+	border-left: 1px #ccc solid;
+	border-right: 1px #ccc solid;
+	background: #fff;
+}
+#FM_E-FolderName:focus {
+	outline: none;
+	box-shadow: none;
 }

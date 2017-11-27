@@ -23,6 +23,7 @@ $filemanager->setHandler( '\Pulsar\Micro\FilemanagerController', true );
 $filemanager->setPrefix( '/filemanager' );
 $filemanager->post( '/directories', 'directoriesAction' );
 $filemanager->post( '/entities', 'entitiesAction' );
+$filemanager->post( '/create-directory', 'createDirectoryAction' );
 $filemanager->get( '/preview/{path:(.*)}', 'previewAction' );
 $filemanager->get( '/download/{path:(.*)}', 'downloadAction' );
 

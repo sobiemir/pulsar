@@ -47,6 +47,14 @@
 				<!-- zamykanie okna ze szczegółami pliku -->
 				<i id="FM_B-CloseInfo" class="fa fa-times hidden"></i>
 			</div>
+			<div id="FM_E-FolderCreate"
+				class="breadcrumb items-horizontal hidden">
+				<i class="fa fa-folder folder-icon icononly"></i>
+				<input id="FM_E-FolderName" type="text" class="fill-free" />
+				<button id="FM_B-CreateDir" class="button simple">
+					<i class="fa fa-plus"></i>Utwórz
+				</button>
+			</div>
 			<!-- lista elementów -->
 			<div class="entity-panel fill-free p05">
 				<div id="FM_E-Entity" class="loader"></div>

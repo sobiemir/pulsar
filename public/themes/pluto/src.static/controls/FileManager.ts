@@ -169,6 +169,20 @@ class FileManager
 	 */
 	private _details: IFileManagerDetails;
 
+	/**
+	 * Kontrolka do wpisywania nazwy nowego folderu.
+	 *
+	 * TYPE: HTMLInputElement
+	 */
+	private _newDirInput: HTMLInputElement;
+
+	/**
+	 * Panel tworzenia nowego folderu.
+	 *
+	 * TYPE: HTMLElement
+	 */
+	private _newDirPanel: HTMLElement;
+
 // =============================================================================
 
 	/**
@@ -550,11 +564,123 @@ class FileManager
 		this._buttons.closeInfo.addEventListener( "click", ev => {
 			this._toggleInfoView( false );
 		} );
+		// przejście do następnego pliku
 		this._buttons.nextFile.addEventListener( "click", ev => {
 			this._openNextFileInfo();
 		} );
+		// przejście do poprzedniego pliku
 		this._buttons.prevFile.addEventListener( "click", ev => {
 			this._openPrevFileInfo();
+		} );
+		// otwieranie panelu tworzenia nowego folderu
+		this._buttons.newFolder.addEventListener( "click", ev => {
+			this._newDirPanel.classList.remove( "hidden" );
+			this._newDirInput.focus();
+		} );
+		// tworzenie nowego folderu poprzez wciśnięcie przycisku
+		this._buttons.createFolder.addEventListener( "click", ev => {
+			this._createFolder( this._newDirInput.value );
+			this._newDirInput.value = "";
+		} );
+		// ukrywanie panelu tworzenia nowego folderu
+		this._newDirInput.addEventListener( "blur", ev => {
+			this._newDirPanel.classList.add( "hidden" );
+		} );
+		// tworzenie nowego folderu
+		this._newDirInput.addEventListener( "keypress", ev => {
+			if( ev.keyCode == 13 || ev.which == 13 )
+			{
+				this._createFolder( this._newDirInput.value );
+				this._newDirInput.blur();
+				this._newDirInput.value = "";
+			}
+		} );
+	}
+
+	/**
+	 * Tworzy folder w aktualnej lokalizacji o podanej nazwie.
+	 */
+	private _createFolder( name: string ): void
+	{
+		const path = this.getPath( this._currentObservable );
+
+		qwest.post( "/micro/filemanager/create-directory", {
+			path: `${path}${name}`
+		} ).then( (xhr: XMLHttpRequest, response) => {
+			if( response.status == '200' )
+			{
+				// wstaw element do tablicy
+				this._entities.push( {
+					name: name,
+					size: 0,
+					modify: Date.now() / 1000 | 0,
+					access: Date.now() / 1000 | 0,
+					type: 'dir',
+					mime: ''
+				} );
+				// posortuj
+				this._entities.getObservables().sort( (a, b) =>
+				{
+					const ret = a.value.name.localeCompare( b.value.name );
+
+					if( a.value.type === b.value.type )
+						return ret;
+					else if( a.value.type === "dir" )
+						return -1;
+					else if( b.value.type === "dir" )
+						return 1;
+
+					return ret;
+				} );
+				// odśwież po sortowaniu
+				this._entities.runSubscribers();
+
+				let owner = <RenderArrayTree<IFolder>>(
+					this._currentObservable
+						? this._currentObservable.extra.child
+						: this._directories
+				);
+
+				const val = {
+					name: name,
+					modify: Date.now() / 1000 | 0,
+					access: Date.now() / 1000 | 0,
+					children: [],
+					rolled: true,
+					checked: false
+				} as IFolder;
+
+				if( this._directories == null )
+					return;
+				else if( owner == null )
+				{
+					// utwórz drzewo z podelementami
+					this._currentObservable.extra.owner.createChild(
+						this._currentObservable,
+						[ val ]
+					);
+					this._currentObservable.value.children.push( val );
+					owner = this._currentObservable.extra.child;
+				}
+				else
+				{
+					owner.push( val );
+					this._currentObservable.value.children.push( val );
+				}
+
+				// posortuj
+				owner.getObservables().sort(
+					(a, b) => a.value.name.localeCompare( b.value.name )
+				);
+
+				if( this._currentObservable )
+					this._currentObservable.needUpdate = true;
+
+				// odśwież drzewo
+				this._directories.runSubscribers();
+
+				this._browseFolder
+			}
 		} );
 	}
 
@@ -962,21 +1088,22 @@ class FileManager
 		// przyciski w menedżerze
 		this._buttons =
 		{
-			up:         $fm.$<HTMLElement>( "#FM_B-Up" ),
-			home:       $fm.$<HTMLElement>( "#FM_B-Home" ),
-			refresh:    $fm.$<HTMLElement>( "#FM_B-Refresh" ),
-			toggleTree: $fm.$<HTMLElement>( "#FM_B-ToggleTree" ),
-			upload:     $fm.$<HTMLElement>( "#FM_B-Upload" ),
-			newFolder:  $fm.$<HTMLElement>( "#FM_B-NewFolder" ),
-			details:    null,
-			download:   $fm.$<HTMLAnchorElement>( "#FM_B-Download" ),
-			rename:     $fm.$<HTMLElement>( "#FM_B-Rename" ),
-			remove:     $fm.$<HTMLElement>( "#FM_B-Remove" ),
-			closeInfo:  $fm.$<HTMLElement>( "#FM_B-CloseInfo" ),
-			search:     null,
-			prevFile:   $fm.$<HTMLElement>( "#FM_B-PrevFile" ),
-			nextFile:   $fm.$<HTMLElement>( "#FM_B-NextFile" ),
-			getOpened:  $fm.$<HTMLAnchorElement>( "#FM_B-GetOpened" )
+			up:           $fm.$<HTMLElement>( "#FM_B-Up" ),
+			home:         $fm.$<HTMLElement>( "#FM_B-Home" ),
+			refresh:      $fm.$<HTMLElement>( "#FM_B-Refresh" ),
+			toggleTree:   $fm.$<HTMLElement>( "#FM_B-ToggleTree" ),
+			upload:       $fm.$<HTMLElement>( "#FM_B-Upload" ),
+			newFolder:    $fm.$<HTMLElement>( "#FM_B-NewFolder" ),
+			details:      null,
+			download:     $fm.$<HTMLAnchorElement>( "#FM_B-Download" ),
+			rename:       $fm.$<HTMLElement>( "#FM_B-Rename" ),
+			remove:       $fm.$<HTMLElement>( "#FM_B-Remove" ),
+			closeInfo:    $fm.$<HTMLElement>( "#FM_B-CloseInfo" ),
+			search:       null,
+			prevFile:     $fm.$<HTMLElement>( "#FM_B-PrevFile" ),
+			nextFile:     $fm.$<HTMLElement>( "#FM_B-NextFile" ),
+			getOpened:    $fm.$<HTMLAnchorElement>( "#FM_B-GetOpened" ),
+			createFolder: $fm.$<HTMLElement>( "#FM_B-CreateDir" )
 		};
 
 		// szczegóły pliku
@@ -999,9 +1126,11 @@ class FileManager
 		this._entityPanel    = $fm.$<HTMLElement>( ".entities-list" );
 		this._detailsPanel   = $fm.$<HTMLElement>( "#FM_E-Details" );
 		this._footerPanel    = $fm.$<HTMLElement>( "#FM_E-Footer" );
+		this._newDirPanel    = $fm.$<HTMLElement>( "#FM_E-FolderCreate" );
 
 		this._imgPreview  = $fm.$<HTMLImageElement>( "#FM_E-ImgPreview" );
 		this._filePreview = $fm.$<HTMLTextAreaElement>( "#FM_E-FilePreview" );
+		this._newDirInput = $fm.$<HTMLInputElement>( "#FM_E-FolderName" );
 
 		// szablon dla elementu wyświetlanego w prawym panelu
 		const etpl = $fm.$( "#FM_T-EntityItem" );

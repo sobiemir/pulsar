@@ -27,14 +27,55 @@ class FilemanagerService
 		$this->di = $di;
 	}
 
+	/**
+	 * https://github.com/thephpleague/flysystem/blob/master/src/Util.php
+	 */
+	public function normalizePath( string $path ): string
+	{
+		// zamień ukośniki wsteczne na zwykłe ukośniki
+		$path = str_replace( '\\', '/', $path );
+
+		// usuń nieprawidłowe znaki
+        while( preg_match('#\p{C}+|^\./#u', $path) )
+            $path = preg_replace( '#\p{C}+|^\./#u', '', $path );
+
+		$parts  = [];
+		$pieces = explode( '/', $path );
+
+		// sprawdzaj każdą część ścieżki
+		foreach( $pieces as $part )
+			switch ($part)
+			{
+				case '':
+				case '.':
+				break;
+				case '..':
+					if( empty($parts) )
+						throw new \Exception( 'Outside!' );
+
+					array_pop($parts);
+				break;
+				default:
+					$parts[] = $part;
+				break;
+			}
+
+		// połącz części na ścieżkę
+		return implode( '/', $parts );
+	}
+
 	public function getRealPath( string $path ): string
 	{
-		$path = realpath( BASE_PATH . 'files/' . $path );
+		// normalizuj ścieżkę
+		$path = $this->normalizePath( $path );
+		$path = BASE_PATH . 'files/' . $path;
 
 		// sprawdź czy ścieżka zawiera nazwę bazową - nie pozwól cofnąć się
 		// poza folder w którym użytkownik może wykonywać akcje
 		if( strpos( $path, BASE_PATH . 'files' ) !== 0 )
-			throw new \Exception("Not found");
+		{
+			throw new \Exception( $p );
+		}
 
 		return $path;
 	}
@@ -88,6 +129,48 @@ class FilemanagerService
 			];
 		}
 		return $entities;
+	}
+
+	public function createDirectory( string $path ): array
+	{
+		// sprawdź czy ścieżka jest pusta
+		if( $path == '' )
+			return [
+				'status'   => '406',
+				'message'  => 'Not Acceptable',
+				'response' => 'You must provide directory path'
+			];
+
+		// sprawdź czy pod tą nazwą zapisany jest już folder lub plik
+		if( file_exists($path) )
+			return [
+				'status'   => '409',
+				'message'  => 'Conflict',
+				'response' => 'Directory or file with this name already exists'
+			];
+
+		// sprawdź czy ścieżka do tworzonego folderu istnieje
+		if( !is_dir(dirname($path)) )
+			return [
+				'status'   => '406',
+				'message'  => 'Not Acceptable',
+				'response' => 'Path to directory not exist'
+			];
+
+		// spróbuj utworzyć plik
+		if( mkdir($path) )
+			return [
+				'status'   => '200',
+				'message'  => 'OK',
+				'response' => 1
+			];
+
+		// niepoprawne uprawnienia lub problem z tworzeniem pliku
+		return [
+			'status'   => '403',
+			'message'  => 'Forbidden',
+			'response' => 'Directory can\'t be created in this path'
+		];
 	}
 
 	public function getMimeType( string $path, bool $real = true ): string

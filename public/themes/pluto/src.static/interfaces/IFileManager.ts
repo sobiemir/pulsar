@@ -53,7 +53,7 @@ interface IFileManagerButtons
 	/**
 	 * Przycisk pozwalający na pobranie pliku.
 	 *
-	 * TYPE: HTMLElement
+	 * TYPE: HTMLAnchorElement
 	 */
 	download: HTMLAnchorElement;
 
@@ -99,7 +99,19 @@ interface IFileManagerButtons
 	 */
 	prevFile: HTMLElement;
 
+	/**
+	 * Przycisk pobierania otwartego pliku.
+	 *
+	 * TYPE: HTMLAnchorElement
+	 */
 	getOpened: HTMLAnchorElement;
+
+	/**
+	 * Przycisk wysyłania żądania dla tworzenia nowego folderu.
+	 *
+	 * TYPE: HTMLElement
+	 */
+	createFolder: HTMLElement;
 }
 
 interface IFileManagerDetails

@@ -117,6 +117,38 @@ class RenderArrayTree<TYPE> extends ObservableArray<TYPE>
 		super.runSubscribers();
 	}
 
+	/**
+	 * Tworzy poddrzewo elementów względem aktualnego drzewa.
+	 *
+	 * PARAMETERS:
+	 *     upper: IObservableValue<TYPE>
+	 *         Obserwowana zmienna do której drzewo ma zostać podpięte.
+	 *     child: TYPE[]
+	 *         Dzieci do podpięcia do drzewa.
+	 */
+	public createChild( upper: IObservableValue<TYPE>, child: TYPE[] ): void
+	{
+		// jeżeli zmienna posiada już dziecko, zostaw...
+		if( upper.extra.child )
+			return;
+
+		// utwórz nową tablicę
+		const observable = new RenderArrayTree<TYPE>( this, upper );
+		observable.options(
+		{
+			childIndex:   this._index,
+			treeSelector: this._tree,
+			place:        this._place,
+			template:     this._template
+		} );
+		// kopiuj subskrypcje i ustaw elementy dziecka
+		observable._subscribers = this._subscribers;
+		observable.set( child );
+
+		// i zapisz tablicę do zmiennej
+		upper.extra.child = observable;
+	}
+
 // =============================================================================
 
 	/**
@@ -169,16 +201,18 @@ class RenderArrayTree<TYPE> extends ObservableArray<TYPE>
 	}
 
 	/**
-	 * Tworzy nową obserwowaną tablicę z podelementów aktualnego elementu.
+	 * Pozwala na konwersję wartości do innego obiektu niż oryginalny.
+	 *
+	 * DESCRIPTION:
+	 *     Funkcja ta jest rozszerzeniem oryginalnej funkcji _valueConverter.
+	 *     Pozwala na tworzenie podelementów w drzewie, korzystając z indeksu
+	 *     podanego w opcjach.
 	 *
 	 * PARAMETERS:
-	 *     values: TYPE[]
-	 *         Tablica zawierająca podelementy.
-	 *     parent: RenderArray<TYPE>
-	 *         Tablica nadrzędna, która jest rodzicem elementów.
-	 *
-	 * RETURNS: RenderArray<TYPE>
-	 *     Tablicę zawierającą obserwowane wartości będącą podtablicą aktualnej.
+	 *     values: IObservableValue<TYPE>
+	 *         Wartości do zamiany na inną tablicę.
+	 * RETURNS: IObservable
+	 *     Tablicę z nowymi wartościami, tutaj przekazywana w parametrze.
 	 */
 	protected _valueConverter( obs: IObservableValue<TYPE> ):
 		IObservableValue<TYPE>
@@ -198,18 +232,7 @@ class RenderArrayTree<TYPE> extends ObservableArray<TYPE>
 			!(obs.value as any)[this._index].length )
 			return val;
 
-		const observable = new RenderArrayTree<TYPE>( this, val );
-		observable.options(
-		{
-			childIndex:   this._index,
-			treeSelector: this._tree,
-			place:        this._place,
-			template:     this._template
-		} );
-		observable._subscribers = this._subscribers;
-		observable.set( (obs.value as any)[this._index] );
-
-		val.extra.child = observable;
+		this.createChild( val, (obs.value as any)[this._index] );
 		return val;
 	}
 }
