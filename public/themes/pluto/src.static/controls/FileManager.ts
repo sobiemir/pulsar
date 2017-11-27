@@ -303,6 +303,7 @@ class FileManager
 	public rollDownToElem( elem: IObservableValue<IFolder> ): void
 	{
 		// sprawdź czy drzewo w elemencie jest rozwinięte czy nie
+		elem.value.rolled = true;
 		if( elem.value.rolled )
 		{
 			// jeżeli nie, rozwiń go
@@ -442,6 +443,34 @@ class FileManager
 
 // =============================================================================
 
+	private _onFolderCreate( ev: MouseEvent ): void
+	{
+		// if( this._failed )
+		// 	return;
+
+		// this._input.focus();
+
+		// // jeżeli wciśnięta została spacja, odwróć wartość
+		// const selectme = ev.detail === 0
+		// 	? !this._input.checked
+		// 	: this._input.checked;
+
+		// if( selectme )
+		// {
+		// 	this._input.checked = !selectme;
+		// 	this._control.classList.remove( "checked" );
+		// }
+		// else
+		// {
+		// 	this._input.checked = !selectme;
+		// 	this._control.classList.add( "checked" );
+		// }
+
+		// if( ev.detail !== 0 )
+		// 	ev.preventDefault();
+		// CheckBox._current = null;
+	}
+
 	/**
 	 * Akcja wywoływana po kliknięciu w folder z lewego panelu.
 	 *
@@ -576,14 +605,20 @@ class FileManager
 		this._buttons.newFolder.addEventListener( "click", ev => {
 			this._newDirPanel.classList.remove( "hidden" );
 			this._newDirInput.focus();
+
+			ev.stopPropagation();
 		} );
 		// tworzenie nowego folderu poprzez wciśnięcie przycisku
 		this._buttons.createFolder.addEventListener( "click", ev => {
 			this._createFolder( this._newDirInput.value );
 			this._newDirInput.value = "";
+			this._newDirPanel.classList.add( "hidden" );
 		} );
-		// ukrywanie panelu tworzenia nowego folderu
-		this._newDirInput.addEventListener( "blur", ev => {
+		// ukrywanie panelu dodawania folderu i plików
+		this._fileManager.addEventListener( "click", ev => {
+			if( ev.target == this._newDirInput ||
+				ev.target == this._buttons.createFolder )
+				return;
 			this._newDirPanel.classList.add( "hidden" );
 		} );
 		// tworzenie nowego folderu
@@ -591,8 +626,8 @@ class FileManager
 			if( ev.keyCode == 13 || ev.which == 13 )
 			{
 				this._createFolder( this._newDirInput.value );
-				this._newDirInput.blur();
 				this._newDirInput.value = "";
+				this._newDirPanel.classList.add( "hidden" );
 			}
 		} );
 	}
@@ -679,7 +714,12 @@ class FileManager
 				// odśwież drzewo
 				this._directories.runSubscribers();
 
-				this._browseFolder
+				this._browseFolder(
+					<HTMLElement>this._currentObservable.element.firstChild,
+					this._currentObservable,
+					null
+				);
+				this.rollDownToElem( this._currentObservable );
 			}
 		} );
 	}
