@@ -663,8 +663,39 @@ class FileManager
 			// wgraj pliki na serwer
 			qwest.post( "/micro/filemanager/upload", fdata ).then(
 				(xhr: XMLHttpRequest, response: any) => {
-					console.log( response );
-					return;
+					if( response.status != 200 )
+						return;
+
+					const file = <any>fdata.get( 'upload_files' );
+
+					this._entities.push( {
+						name: file.name,
+						size: file.size,
+						mime: file.type,
+						modify: file.lastModified,
+						access: Date.now() / 1000 | 0,
+						type: 'file'
+					} );
+
+					// posortuj
+					this._entities.getObservables().sort( (a, b) =>
+					{
+						const ret = a.value.name.localeCompare( b.value.name );
+
+						if( a.value.type === b.value.type )
+							return ret;
+						else if( a.value.type === "dir" )
+							return -1;
+						else if( b.value.type === "dir" )
+							return 1;
+
+						return ret;
+					} );
+					// odśwież po sortowaniu
+					this._entities.runSubscribers();
+
+					// ukryj panel
+					this._fileUploadPanel.classList.add( "hidden" );
 				}
 			);
 			ev.preventDefault();
