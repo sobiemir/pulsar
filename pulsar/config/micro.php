@@ -24,6 +24,7 @@ $filemanager->setPrefix( '/filemanager' );
 $filemanager->post( '/directories', 'directoriesAction' );
 $filemanager->post( '/entities', 'entitiesAction' );
 $filemanager->post( '/create-directory', 'createDirectoryAction' );
+$filemanager->post( '/upload', 'uploadAction' );
 $filemanager->get( '/preview/{path:(.*)}', 'previewAction' );
 $filemanager->get( '/download/{path:(.*)}', 'downloadAction' );
 

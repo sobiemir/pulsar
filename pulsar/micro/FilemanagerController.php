@@ -68,6 +68,39 @@ class FilemanagerController extends Injectable
 		);
 	}
 
+	public function uploadAction(): string
+	{
+		// sprawdź czy żądanie zawiera pliki
+		if( !$this->request->hasFiles() )
+			return json_encode( [
+				'status'   => '406',
+				'message'  => 'Not Acceptable',
+				'response' => 'Cannot upload data without files'
+			] );
+
+		// pobierz pliki do wgrania i folder
+		$path  = $this->request->getPost( 'path', null, '/' );
+		$files = $this->request->getUploadedFiles();
+
+		foreach( $files as $file )
+		{
+			// pobierz ścieżkę do pliku gdzie ma być wgrany
+			$path = $this->_fm->getRealPath( $path . '/' . $file->getName() );
+
+			// nie wgrywaj pliku o takiej samej nazwie
+			if( is_file($path) )
+				continue;
+
+			// zapisz plik
+			$file->moveTo( $path );
+		}
+
+		return json_encode( [
+			'status'  => '200',
+			'message' => 'OK'
+		] );
+	}
+
 	public function downloadAction( string $path = "/" ): void
 	{
 		// pobierz ścieżkę do pliku

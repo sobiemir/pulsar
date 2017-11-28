@@ -183,6 +183,27 @@ class FileManager
 	 */
 	private _newDirPanel: HTMLElement;
 
+	/**
+	 * Kontrolka do wgrywania plików na stronę.
+	 *
+	 * TYPE: HTMLInputElement
+	 */
+	private _uploadFile: HTMLInputElement;
+
+	/**
+	 * Lista wybranych plików do wgrania.
+	 *
+	 * TYPE: HTMLInputElement
+	 */
+	private _fileList: HTMLInputElement;
+
+	/**
+	 * Panel do wgrywania plików.
+	 *
+	 * TYPE: HTMLFormElement
+	 */
+	private _fileUploadPanel: HTMLFormElement;
+
 // =============================================================================
 
 	/**
@@ -443,34 +464,6 @@ class FileManager
 
 // =============================================================================
 
-	private _onFolderCreate( ev: MouseEvent ): void
-	{
-		// if( this._failed )
-		// 	return;
-
-		// this._input.focus();
-
-		// // jeżeli wciśnięta została spacja, odwróć wartość
-		// const selectme = ev.detail === 0
-		// 	? !this._input.checked
-		// 	: this._input.checked;
-
-		// if( selectme )
-		// {
-		// 	this._input.checked = !selectme;
-		// 	this._control.classList.remove( "checked" );
-		// }
-		// else
-		// {
-		// 	this._input.checked = !selectme;
-		// 	this._control.classList.add( "checked" );
-		// }
-
-		// if( ev.detail !== 0 )
-		// 	ev.preventDefault();
-		// CheckBox._current = null;
-	}
-
 	/**
 	 * Akcja wywoływana po kliknięciu w folder z lewego panelu.
 	 *
@@ -604,6 +597,7 @@ class FileManager
 		// otwieranie panelu tworzenia nowego folderu
 		this._buttons.newFolder.addEventListener( "click", ev => {
 			this._newDirPanel.classList.remove( "hidden" );
+			this._fileUploadPanel.classList.add( "hidden" );
 			this._newDirInput.focus();
 
 			ev.stopPropagation();
@@ -616,10 +610,11 @@ class FileManager
 		} );
 		// ukrywanie panelu dodawania folderu i plików
 		this._fileManager.addEventListener( "click", ev => {
-			if( ev.target == this._newDirInput ||
-				ev.target == this._buttons.createFolder )
+			if( this._newDirPanel.contains(<Node>ev.target) ||
+				this._fileUploadPanel.contains(<Node>ev.target) )
 				return;
 			this._newDirPanel.classList.add( "hidden" );
+			this._fileUploadPanel.classList.add( "hidden" );
 		} );
 		// tworzenie nowego folderu
 		this._newDirInput.addEventListener( "keypress", ev => {
@@ -629,6 +624,57 @@ class FileManager
 				this._newDirInput.value = "";
 				this._newDirPanel.classList.add( "hidden" );
 			}
+		} );
+		// zmiana pliku
+		this._uploadFile.addEventListener( "change", ev =>
+		{
+			let fm = "";
+
+			// brak plików
+			if( !this._uploadFile.files || this._uploadFile.files.length == 0 )
+				fm = "Brak plików...";
+			// gdy są, wypisz je wszystkie
+			else
+				for( let x = 0; x < this._uploadFile.files.length; ++x )
+				{
+					const ifm = this._uploadFile.value.replace(/\\/g,"/")
+						.split( '/' ).pop();
+
+					fm += ifm + (this._uploadFile.files.length - 1 == x
+						? ""
+						: " / "
+					);
+				}
+
+			// sprawdź dla pewności czy na pewno wykryto jakieś pliki
+			fm = fm.trim();
+			if( fm != "" )
+				this._fileList.value = fm;
+			else
+				this._fileList.value = "Brak plików...";
+		} );
+		// akcja wywoływana przy wciśnięciu przycisku wgrywania plików
+		this._fileUploadPanel.addEventListener( "submit", ev => {
+			const fdata = new FormData( this._fileUploadPanel );
+
+			// ustaw folder do którego pliki będą wgrywane
+			fdata.set( 'path', this.getPath(this._currentObservable) );
+
+			// wgraj pliki na serwer
+			qwest.post( "/micro/filemanager/upload", fdata ).then(
+				(xhr: XMLHttpRequest, response: any) => {
+					console.log( response );
+					return;
+				}
+			);
+			ev.preventDefault();
+			return false;
+		} );
+		// akcja wywoływana podczas otwierania panelu wgrywania plików
+		this._buttons.upload.addEventListener( "click", ev => {
+			this._newDirPanel.classList.add( "hidden" );
+			this._fileUploadPanel.classList.remove( "hidden" );
+			ev.stopPropagation();
 		} );
 	}
 
@@ -1143,7 +1189,8 @@ class FileManager
 			prevFile:     $fm.$<HTMLElement>( "#FM_B-PrevFile" ),
 			nextFile:     $fm.$<HTMLElement>( "#FM_B-NextFile" ),
 			getOpened:    $fm.$<HTMLAnchorElement>( "#FM_B-GetOpened" ),
-			createFolder: $fm.$<HTMLElement>( "#FM_B-CreateDir" )
+			createFolder: $fm.$<HTMLElement>( "#FM_B-CreateDir" ),
+			uploadFile:   $fm.$<HTMLElement>( "#FM_B-UploadFile" )
 		};
 
 		// szczegóły pliku
@@ -1162,15 +1209,19 @@ class FileManager
 		this._entityLoader    = $fm.$<HTMLElement>( "#FM_E-Entity" );
 		this._sidebar         = $fm.$<HTMLElement>( "#FM_E-Sidebar" );
 
-		this._directoryPanel = $fm.$<HTMLElement>( ".directory-tree" );
-		this._entityPanel    = $fm.$<HTMLElement>( ".entities-list" );
-		this._detailsPanel   = $fm.$<HTMLElement>( "#FM_E-Details" );
-		this._footerPanel    = $fm.$<HTMLElement>( "#FM_E-Footer" );
-		this._newDirPanel    = $fm.$<HTMLElement>( "#FM_E-FolderCreate" );
+		this._directoryPanel  = $fm.$<HTMLElement>( ".directory-tree" );
+		this._entityPanel     = $fm.$<HTMLElement>( ".entities-list" );
+		this._detailsPanel    = $fm.$<HTMLElement>( "#FM_E-Details" );
+		this._footerPanel     = $fm.$<HTMLElement>( "#FM_E-Footer" );
+		this._newDirPanel     = $fm.$<HTMLElement>( "#FM_E-FolderCreate" );
+		this._fileUploadPanel = $fm.$<HTMLFormElement>( "#FM_E-FileUpload" );
 
 		this._imgPreview  = $fm.$<HTMLImageElement>( "#FM_E-ImgPreview" );
 		this._filePreview = $fm.$<HTMLTextAreaElement>( "#FM_E-FilePreview" );
 		this._newDirInput = $fm.$<HTMLInputElement>( "#FM_E-FolderName" );
+
+		this._fileList   = $fm.$<HTMLInputElement>( "#FM_E-FileList" );
+		this._uploadFile = $fm.$<HTMLInputElement>( "#FM_E-FileName" );
 
 		// szablon dla elementu wyświetlanego w prawym panelu
 		const etpl = $fm.$( "#FM_T-EntityItem" );

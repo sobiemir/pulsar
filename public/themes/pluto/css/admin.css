@@ -1199,13 +1199,24 @@ li.entity-entry.selected:hover i {
 #FM_E-FilePreview:focus {
 	outline: none;
 }
-#FM_E-FolderName {
+#FM_E-FolderName, #FM_E-FileList {
 	border: 0;
 	border-left: 1px #ccc solid;
 	border-right: 1px #ccc solid;
 	background: #fff;
 }
-#FM_E-FolderName:focus {
+#FM_E-FolderName:focus, #FM_E-FileList:focus {
 	outline: none;
 	box-shadow: none;
+}
+#FM_E-FileUpload input[type="file"] {
+	width: 0;
+	height: 0;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+.breadcrumb .button.simple {
+	line-height: 3rem;
 }

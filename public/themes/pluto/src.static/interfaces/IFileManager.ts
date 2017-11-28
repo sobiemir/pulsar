@@ -112,6 +112,13 @@ interface IFileManagerButtons
 	 * TYPE: HTMLElement
 	 */
 	createFolder: HTMLElement;
+
+	/**
+	 * Przycisk wysyłania żądania do wgrania plików.
+	 *
+	 * TYPE: HTMLElement
+	 */
+	uploadFile: HTMLElement;
 }
 
 interface IFileManagerDetails

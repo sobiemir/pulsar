@@ -49,12 +49,26 @@
 			</div>
 			<div id="FM_E-FolderCreate"
 				class="breadcrumb items-horizontal hidden">
-				<i class="fa fa-folder folder-icon icononly"></i>
+				<i class="fa fa-folder icononly"></i>
 				<input id="FM_E-FolderName" type="text" class="fill-free" />
 				<button id="FM_B-CreateDir" class="button simple">
 					<i class="fa fa-plus"></i>Utwórz
 				</button>
 			</div>
+			<form id="FM_E-FileUpload" action="" method="post" 
+				class="breadcrumb items-horizontal hidden">
+				<label for="FM_E-FileName" class="button simple">
+					<i class="fa fa-file"></i>Wybierz pliki
+				</label>
+				<input id="FM_E-FileName" name="upload_files" multiple
+					type="file" class="hidden" />
+				<input type="text" id="FM_E-FileList" class="fill-free"
+					value="Brak plików..." disabled>
+				<button type="submit" id="FM_B-UploadFile"
+					class="button simple">
+					<i class="fa fa-plus"></i>Dodaj wybrane
+				</button>
+			</form>
 			<!-- lista elementów -->
 			<div class="entity-panel fill-free p05">
 				<div id="FM_E-Entity" class="loader"></div>
