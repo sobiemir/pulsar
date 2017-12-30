@@ -1,4 +1,31 @@
+/*
+ *  This file is part of Pulsar CMS
+ *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
+ *     ___       __            
+ *    / _ \__ __/ /__ ___ _____
+ *   / ___/ // / (_-</ _ `/ __/
+ *  /_/   \_,_/_/___/\_,_/_/
+ *
+ *  This source file is subject to the New BSD License that is bundled
+ *  with this package in the file LICENSE.txt.
+ *
+ *  You should have received a copy of the New BSD License along with
+ *  this program. If not, see <http://www.licenses.aculo.pl/>.
+ */
 
+// =============================================================================
+
+/**
+ * Klasa tworząca tablicę wyświetlającą listę elementów przy użyciu szablonu.
+ *
+ * DESCRIPTION:
+ *     Każdy wyświetlany element z listy korzysta z tego samego szablonu.
+ *     Do przetwarzania szablonów wykorzystywana jest biblioteka doT.
+ *     Przed użyciem należy zapoznać się z funkcją o nazwie "options", gdzie
+ *     można ustawić opcje dotyczące przetwarzania i wyświetlania szablonu.
+ *     Renderowanie (wyświetlanie) szablonu następuje automatycznie przy
+ *     odświeżaniu listy elementów.
+ */
 class RenderArray<TYPE> extends ObservableArray<TYPE>
 {
 	/**
@@ -22,9 +49,14 @@ class RenderArray<TYPE> extends ObservableArray<TYPE>
 	 */
 	protected _single: boolean;
 
+	/**
+	 * Obiekt główny w szablonie, zazwyczaj jest to "this".
+	 * 
+	 * TYPE: any
+	 */
 	protected _callObject: any;
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 	/**
 	 * Konstruktor klasy.
@@ -88,7 +120,7 @@ class RenderArray<TYPE> extends ObservableArray<TYPE>
 		super.runSubscribers();
 	}
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 	/**
 	 * Renderuje elementy z obserwowanej tablicy w aplikacji.

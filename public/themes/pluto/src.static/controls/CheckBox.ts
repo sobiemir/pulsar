@@ -13,6 +13,8 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
+// =============================================================================
+
 /**
  * Klasa kontrolki przycisku wyboru.
  *
@@ -33,7 +35,7 @@ class CheckBox
 	 */
 	private static _current: HTMLElement = null;
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 	/**
 	 * Oryginalny przycisk wyboru względem którego wyłapywane będzie skupienie.
@@ -56,7 +58,7 @@ class CheckBox
 	 */
 	private _control: HTMLElement = null;
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 	/**
 	 * Konstruktor kontrolki.
@@ -73,6 +75,10 @@ class CheckBox
 		// sprawdź czy oryginalny przycisk wyboru został znaleziony
 		if( this._input == null )
 		{
+			Logger.Warning(
+				"check",
+				"Original checkbox input was not found for current tag"
+			);
 			this._failed = true;
 			return;
 		}
@@ -84,7 +90,7 @@ class CheckBox
 		this._addEvents();
 	}
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 	/**
 	 * Dodaje zdarzenia do kontrolki.
@@ -136,11 +142,15 @@ class CheckBox
 
 		if( selectme )
 		{
+			Logger.Info( "check", "Input state: unchecked" );
+
 			this._input.checked = !selectme;
 			this._control.classList.remove( "checked" );
 		}
 		else
 		{
+			Logger.Info( "check", "Input state: checked" );
+
 			this._input.checked = !selectme;
 			this._control.classList.add( "checked" );
 		}
@@ -189,8 +199,7 @@ class CheckBox
 		if( this._failed )
 			return;
 
-		if( !this._control.classList.contains("focused") )
-			this._control.classList.add( "focused" );
+		this._control.classList.add( "focused" );
 	}
 
 	/**
@@ -222,8 +231,6 @@ class CheckBox
 				return;
 			}
 		}
-
-		if( this._control.classList.contains("focused") )
-			this._control.classList.remove( "focused" );
+		this._control.classList.remove( "focused" );
 	}
 }

@@ -988,25 +988,25 @@ form .button-container {
 	width: 70% !important;
 }
 
-.filemanager .sidebar {
+#filemanager aside {
 	width: 30%;
 	max-width: 350px;
 	min-width: 200px;
 	border-right: 1px #ccc solid;
 }
-.filemanager .breadcrumb {
+#filemanager .breadcrumb {
 	border-color: #ccc;
 	padding: 0;
 }
-.filemanager .breadcrumb .title {
+#filemanager .breadcrumb .title {
 	margin-left: 1rem;
 	color: #127889;
 }
-.filemanager .breadcrumb .title.root {
+#filemanager .breadcrumb .title.root {
 	color: #c83737;
 }
 
-.filemanager .caret {
+#filemanager .caret {
 	width: 2.0rem;
 	text-align: center;
 	font-size: 1.4rem;
@@ -1115,10 +1115,10 @@ form .button-container {
 	content: "\f115";
 }
 
-.filemanager .dir-entry span, .filemanager .entity-entry span {
+#filemanager .dir-entry span, #filemanager .entity-entry span {
 	line-height: 2rem;
 }
-.filemanager .dir-entry, .filemanager .entity-entry {
+#filemanager .dir-entry, #filemanager .entity-entry {
 	list-style: none;
 	margin-left: 0;
 	user-select: none;
@@ -1157,33 +1157,33 @@ li.entity-entry.selected:hover i {
 	line-height: 3rem;
 }
 
-#FM_E-Details {
+.entity-panel .details {
 	text-align: center;
 	min-height: 100%;
 	align-items: stretch;
 }
-.img-details-container {
+.details-container {
 	display: flex;
 	flex: 1 1 0;
 }
-#FM_E-FileInfo {
+.entity-panel .file-info {
 	border-top: 0.1rem #ccc solid;
 	padding-top: 0.5rem;
 }
-#FM_E-FileInfo dt {
+.entity-panel .file-info dt {
 	width: 50%;
 	float: left;
 	font-weight: bold;
 	padding-right: 0.5rem;
 	text-align: right;
 }
-#FM_E-FileInfo dd {
+.entity-panel .file-info dd {
 	width: 50%;
 	float: left;
 	text-align: left;
 }
 
-#FM_E-ImgPreview {
+.details-container img {
 	max-width: 100%;
 	max-height: 100%;
 	object-fit: scale-down;
@@ -1191,25 +1191,25 @@ li.entity-entry.selected:hover i {
 	flex: 1 1 0;
 	padding-bottom: 0.5rem;
 }
-#FM_E-FilePreview {
+.details-container textarea {
 	width: 100%;
 	resize: none;
 	margin-bottom: 0.5rem;
 }
-#FM_E-FilePreview:focus {
+.details-container textarea:focus {
 	outline: none;
 }
-#FM_E-FolderName, #FM_E-FileList {
+#filemanager input[type="text"] {
 	border: 0;
 	border-left: 1px #ccc solid;
 	border-right: 1px #ccc solid;
 	background: #fff;
 }
-#FM_E-FolderName:focus, #FM_E-FileList:focus {
+#filemanager input[type="text"]:focus {
 	outline: none;
 	box-shadow: none;
 }
-#FM_E-FileUpload input[type="file"] {
+#filemanager input[type="file"] {
 	width: 0;
 	height: 0;
 	opacity: 0;
@@ -1219,4 +1219,22 @@ li.entity-entry.selected:hover i {
 }
 .breadcrumb .button.simple {
 	line-height: 3rem;
+}
+
+.popup {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+}
+.popup.light {
+	background: rgba(192, 192, 192, 0.5);
+}
+.popup .container {
+	background: #fff;
+}
+.popup.light .container {
+	border: 1px #bbb solid;
+	margin: auto;
 }

@@ -1,4 +1,23 @@
+/*
+ *  This file is part of Pulsar CMS
+ *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
+ *     ___       __            
+ *    / _ \__ __/ /__ ___ _____
+ *   / ___/ // / (_-</ _ `/ __/
+ *  /_/   \_,_/_/___/\_,_/_/
+ *
+ *  This source file is subject to the New BSD License that is bundled
+ *  with this package in the file LICENSE.txt.
+ *
+ *  You should have received a copy of the New BSD License along with
+ *  this program. If not, see <http://www.licenses.aculo.pl/>.
+ */
 
+// =============================================================================
+
+/**
+ * Interfejs zawierający informacje na temat przycisków menedżera plików.
+ */
 interface IFileManagerButtons
 {
 	/**
@@ -30,25 +49,18 @@ interface IFileManagerButtons
 	toggleTree: HTMLElement;
 
 	/**
-	 * Przycisk wgrywania nowego pliku do witryny.
+	 * Przycisk otwierający panel wgrywania nowego pliku do witryny.
 	 *
 	 * TYPE: HTMLElement
 	 */
-	upload: HTMLElement;
+	showUploadPanel: HTMLElement;
 
 	/**
-	 * Przycisk tworzenia nowego folderu.
+	 * Przycisk otwierający panel tworzenia nowego katalogu.
 	 *
 	 * TYPE: HTMLElement
 	 */
-	newFolder: HTMLElement;
-
-	/**
-	 * Przycisk otwierający szczegóły pliku.
-	 *
-	 * TYPE: HTMLElement
-	 */
-	details: HTMLElement;
+	showCreatePanel: HTMLElement;
 
 	/**
 	 * Przycisk pozwalający na pobranie pliku.
@@ -58,32 +70,25 @@ interface IFileManagerButtons
 	download: HTMLAnchorElement;
 
 	/**
-	 * Przycisk pozwalający na zmianę nazwy pliku lub folderu.
+	 * Przycisk pozwalający na zmianę nazwy pliku lub katalogu.
 	 *
 	 * TYPE: HTMLElement
 	 */
 	rename: HTMLElement;
 
 	/**
-	 * Przycisk pozwalający na usunięcie pliku lub folderu.
+	 * Przycisk pozwalający na usunięcie pliku lub katalogu.
 	 *
 	 * TYPE: HTMLElement
 	 */
 	remove: HTMLElement;
 
 	/**
-	 * Przycisk zamykania panelu informacji na temat pliku.
+	 * Przycisk zamykania podglądu pliku.
 	 *
 	 * TYPE: HTMLElement
 	 */
-	closeInfo: HTMLElement;
-
-	/**
-	 * Przycisk wyszukiwania elementu...
-	 *
-	 * TYPE: HTMLElement
-	 */
-	search: HTMLElement;
+	closePreview: HTMLElement;
 
 	/**
 	 * Przycisk przewijania do następnego pliku.
@@ -104,14 +109,14 @@ interface IFileManagerButtons
 	 *
 	 * TYPE: HTMLAnchorElement
 	 */
-	getOpened: HTMLAnchorElement;
+	downloadCurrent: HTMLAnchorElement;
 
 	/**
-	 * Przycisk wysyłania żądania dla tworzenia nowego folderu.
+	 * Przycisk wysyłania żądania dla tworzenia nowego katalogu.
 	 *
 	 * TYPE: HTMLElement
 	 */
-	createFolder: HTMLElement;
+	createDirectory: HTMLElement;
 
 	/**
 	 * Przycisk wysyłania żądania do wgrania plików.
@@ -121,6 +126,11 @@ interface IFileManagerButtons
 	uploadFile: HTMLElement;
 }
 
+// =============================================================================
+
+/**
+ * Inferfejs zawierający szczegóły dotyczące wyświetlanego pliku.
+ */
 interface IFileManagerDetails
 {
 	/**
@@ -152,9 +162,178 @@ interface IFileManagerDetails
 	modified: HTMLElement;
 
 	/**
-	 * Informacja o wymiarach pliku.
+	 * Informacja o rozmiarze pliku.
 	 *
 	 * TYPE: HTMLElement
 	 */
 	size: HTMLElement;
+}
+
+// =============================================================================
+
+/**
+ * Interfejs zawierający panele używane w menedżerze plików.
+ */
+interface IFileManagerPanels
+{
+	/**
+	 * Panel wyświetlający drzewo katalogów.
+	 * 
+	 * TYPE: HTMLElement
+	 */
+	directories: HTMLElement;
+
+	/**
+	 * Panel wyświetlający listę plików.
+	 * 
+	 * TYPE: HTMLElement
+	 */
+	entities: HTMLElement;
+
+	/**
+	 * Panel wyświetlający szczegóły pliku.
+	 * 
+	 * TYPE: HTMLElement
+	 */
+	details: HTMLElement;
+
+	/**
+	 * Panel wyświetlający przyciski pod listą plików.
+	 * 
+	 * TYPE: HTMLElement
+	 */
+	footer: HTMLElement;
+
+	/**
+	 * Panel zawierający kontrolki służące dodawaniu nowego katalogu.
+	 * 
+	 * TYPE: HTMLElement
+	 */
+	createDirectory: HTMLElement;
+
+	/**
+	 * Panel zawierający kontrolki pozwalające na dodawanie plików.
+	 * 
+	 * TYPE: HTMLFormElement
+	 */
+	uploadFile: HTMLFormElement;
+
+	/**
+	 * Panel zawierający element wyświetlany podczas wczytywania plików.
+	 *
+	 * TYPE: HTMLElement
+	 */
+	entityLoader: HTMLElement;
+
+	/**
+	 * Panel zawierający element wyświetlany podczas wczytywania katalogów.
+	 *
+	 * TYPE: HTMLElement
+	 */
+	directoryLoader: HTMLElement;
+
+	/**
+	 * Panel boczny zawierający drzewo katalogów.
+	 *
+	 * TYPE: HTMLElement
+	 */
+	sidebar: HTMLElement;
+}
+
+// =============================================================================
+
+/**
+ * Interfejs zawierający kontrolki używane w menedżerze plików.
+ */
+interface IFileManagerControls
+{
+	/**
+	 * Nazwa pliku lub aktualna pozycja użytkownika w drzewie katalogów.
+	 *
+	 * TYPE: HTMLElement
+	 */
+	title: HTMLElement;
+
+	/**
+	 * Kontrolka wyświetlająca podgląd obrazków.
+	 *
+	 * TYPE: HTMLImageElement
+	 */
+	imagePreview: HTMLImageElement;
+
+	/**
+	 * Kontrolka wyświetlająca podgląd dla plików.
+	 *
+	 * TYPE: HTMLTextAreaElement
+	 */
+	filePreview: HTMLTextAreaElement;
+
+	/**
+	 * Nazwa tworzonego obiektu.
+	 *
+	 * TYPE: HTMLInputElement
+	 */
+	entityName: HTMLInputElement;
+
+	/**
+	 * Kontrolka wyboru plików do wgrywania.
+	 *
+	 * TYPE: HTMLInputElement
+	 */
+	uploadFile: HTMLInputElement;
+
+	/**
+	 * Lista plików do wgrania wyświetlanych w kontrolce.
+	 *
+	 * TYPE: HTMLInputElement
+	 */
+	selectedFiles: HTMLInputElement;
+}
+
+// =============================================================================
+
+/**
+ * Interfejs zawierający opcje używane podczas inicjalizacji menedżera plików.
+ */
+interface IFileManagerOptions
+{
+	/**
+	 * Element główny menedżera plików.
+	 *
+	 * TYPE: HTMLElement
+	 */
+	element: HTMLElement;
+
+	/**
+	 * Selektor względem którego wstawiane będą kolejne elementy w drzewie.
+	 *
+	 * TYPE: string
+	 */
+	treeSelector: string;
+
+	/**
+	 * Indeks do obiektu posiadającego dzieci.
+	 *
+	 * TYPE: string
+	 */
+	childIndex: string;
+
+	/**
+	 * Szablon dla pojedynczego katalogu w drzewie.
+	 *
+	 * TYPE: string | doT.RenderFunction
+	 */
+	directoryTemplate?: string;
+
+	/**
+	 * Szablon dla pojedynczego elementu w liście.
+	 *
+	 * TYPE: string | doT.RenderFunction
+	 */
+	entityTemplate?: string;
+
+	actionClasses: {
+		showSidebar: string;
+		hideSidebar: string;
+	};
 }

@@ -21,6 +21,7 @@
 		"public/themes/pluto/src.static/controls/TabControl.ts",
 		"public/themes/pluto/src.static/controls/FileManager.ts",
 		"public/themes/pluto/src.static/Application.ts",
-		"public/themes/pluto/src.static/Prototypes.ts"
+		"public/themes/pluto/src.static/Prototypes.ts",
+		"public/themes/pluto/src.static/Logger.ts"
 	]
 }

@@ -1,4 +1,34 @@
+/*
+ *  This file is part of Pulsar CMS
+ *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
+ *     ___       __            
+ *    / _ \__ __/ /__ ___ _____
+ *   / ___/ // / (_-</ _ `/ __/
+ *  /_/   \_,_/_/___/\_,_/_/
+ *
+ *  This source file is subject to the New BSD License that is bundled
+ *  with this package in the file LICENSE.txt.
+ *
+ *  You should have received a copy of the New BSD License along with
+ *  this program. If not, see <http://www.licenses.aculo.pl/>.
+ */
 
+// =============================================================================
+
+/**
+ * Klasa tworząca tablicę wyświetlającą drzewo elementów przy użyciu szablonu.
+ *
+ * DESCRIPTION:
+ *     Każdy wyświetlany element z listy korzysta z tego samego szablonu.
+ *     Do przetwarzania szablonów wykorzystywana jest biblioteka doT.
+ *     Każdy z elementów może posiadać listę elementów podrzędnych (dzieci).
+ *     Przed użyciem należy zapoznać się z funkcją o nazwie "options", gdzie
+ *     można ustawić opcje dotyczące przetwarzania i wyświetlania szablonu.
+ *     Drzewo można modyfikować również po utworzeniu, każda zmiana zostanie
+ *     odnotowana w przypisanych do klasy funkcjach.
+ *     Funkcje przypisywane do klasy nadrzędnej kopiowane są automatycznie do
+ *     wszystkich klas podrzędnych (w głąb drzewa).
+ */
 class RenderArrayTree<TYPE> extends ObservableArray<TYPE>
 {
 	/**
@@ -43,9 +73,14 @@ class RenderArrayTree<TYPE> extends ObservableArray<TYPE>
 	 */
 	protected _upper: IObservableValue<TYPE>;
 
+	/**
+	 * Obiekt główny w szablonie, zazwyczaj jest to "this".
+	 * 
+	 * TYPE: any
+	 */
 	protected _callObject: any;
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 	/**
 	 * Konstruktor klasy.
@@ -64,6 +99,17 @@ class RenderArrayTree<TYPE> extends ObservableArray<TYPE>
 		this._upper    = upper;
 	}
 
+	/**
+	 * Możliwe do ustawienia opcje dla klasy RenderArrayTree.
+	 *
+	 * DESCRIPTION:
+	 *     Opcje warto ustawić jeszcze przed wstawianiem elementów do tablicy.
+	 *     Zmiana opcji spowoduje odświeżenie widoku elementów.
+	 *
+	 * PARAMETERS:
+	 *     options: IRenderArrayTreeOptions
+	 *         Lista opcji do zmiany.
+	 */
 	public options( options: IRenderArrayTreeOptions ): void
 	{
 		if( options.childIndex )
@@ -81,11 +127,23 @@ class RenderArrayTree<TYPE> extends ObservableArray<TYPE>
 		this.runSubscribers();
 	}
 
+	/**
+	 * Pobiera nadrzędną listę elementów do której odnosi się aktualna lista.
+	 *
+	 * RETURNS: RenderArrayTree<TYPE>
+	 *     Nadrzędna lista do której odnosi się jest aktualna lista.
+	 */
 	public getParent(): RenderArrayTree<TYPE>
 	{
 		return this._parent;
 	}
 
+	/**
+	 * Pobiera element z listy nadrzędnej do którego przypisana jest lista.
+	 *
+	 * RETURNS: IObservableValue<TYPE>
+	 *     Element do którego przypisana jest lista.
+	 */
 	public getUpper(): IObservableValue<TYPE>
 	{
 		return this._upper;
@@ -149,7 +207,7 @@ class RenderArrayTree<TYPE> extends ObservableArray<TYPE>
 		upper.extra.child = observable;
 	}
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 	/**
 	 * Renderuje elementy z obserwowanej tablicy w aplikacji.

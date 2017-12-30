@@ -13,6 +13,9 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
+// =============================================================================
+
+// wyrażenia regularne używane przy parsowaniu szablonów w bibliotece doT
 const doTRegex = [
 	/\<\%([\s\S]+?)\%\>/g,
 	/\<\%=([\s\S]+?)\%\>/g,
@@ -23,6 +26,18 @@ const doTRegex = [
 	/\<\%~\s*(?:\%\>|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\%\>)/g
 ];
 
+// =============================================================================
+
+/**
+ * Klasa główna aplikacji.
+ *
+ * DESCRIPTION:
+ *     Inicjalizuje elementy które wymagają obsługi JavaScript do działania.
+ *     Są to między innymi: kontrolki zakładek, przyciski zaznaczania czy
+ *     menedżer plików.
+ *     Wszystkie z nich są inicjalizowane w odpowiednich funkcjach umieszczonych
+ *     w tej klasie.
+ */
 class Application
 {
 	/**
@@ -50,17 +65,26 @@ class Application
 	 */
 	public initTabControls(): void
 	{
-		$$<HTMLElement>( ".tab-control" ).forEach( elem =>
-		{
-			if( !elem.dataset.search )
-				return;
+		const tabs = $$<HTMLElement>(".tab-control");
 
+		if( !tabs || tabs.length == 0 )
+			return;
+
+		Logger.Debug(
+			"init",
+			`Creating tab controls, total: ${tabs.length}`
+		);
+		tabs.forEach( elem =>
+		{
 			const tab = new TabControl( elem );
 
+			if( !tab )
+				return;
+
 			// sprawdź która zakładka jest zaznaczona
-			const selected = tab.get("tabs").findIndex( (elem: any) => {
-				return elem.classList.contains( "selected" );
-			} );
+			const selected = tab.get("tabs").findIndex( (elem: any) =>
+				elem.classList.contains("selected")
+			);
 
 			tab.selectTab( selected, true );
 		} );
@@ -71,20 +95,46 @@ class Application
 	 */
 	public initCheckBoxes(): void
 	{
-		$$<HTMLElement>( ".checkbox" ).forEach( elem => new CheckBox(elem) );
+		const checkboxes = $$<HTMLElement>(".checkbox");
+
+		if( !checkboxes || checkboxes.length == 0 )
+			return;
+
+		Logger.Debug(
+			"init",
+			`Creating checkboxes, total: ${checkboxes.length}`
+		);
+		checkboxes.forEach( elem => new CheckBox(elem) );
 	}
 
 	/**
 	 * Podpina akcje pod znaleziony element menedżera plików.
+	 *
+	 * DESCRIPTION:
+	 *     Menedżer plików powinien być tylko jeden.
+	 *     Po inicjalizacji powinien być odpowiednio podpinany w miejsce gdzie
+	 *     użytkownik chce móc wybierać pliki lub je przeglądać i wgrywać.
+	 *     Szczegóły dotyczące inicjalizacji menedżera plików znajdują się
+	 *     w klasie FileManager.
 	 */
 	public initFileManager(): void
 	{
-		const fmgrdiv = $<HTMLElement>( ".filemanager" );
+		const fmgrdiv = $<HTMLElement>("#filemanager");
 
 		if( !fmgrdiv )
 			return;
 
-		new FileManager( fmgrdiv );
+		Logger.Debug( "init", "Creating filemanager instance" );
+
+		new FileManager( {
+			element:      fmgrdiv,
+			treeSelector: ".directory-subtree",
+			childIndex:   "children",
+			actionClasses: {
+				showSidebar: "fa-arrow-circle-o-left",
+				hideSidebar: "fa-arrow-circle-o-right"
+			}
+		} );
 	}
 
 	/**
@@ -100,15 +150,38 @@ class Application
 	 */
 	public initConfirmMessages(): void
 	{
-		$$<HTMLElement>( ".show-confirm" ).forEach( elem =>
-		{
-			if( !("confirm" in elem.dataset) )
-				return;
+		const messages = $$<HTMLElement>(".show-confirm");
 
+		if( !messages || messages.length == 0 )
+			return;
+
+		Logger.Debug(
+			"init",
+			`Initializing confirms, total: ${messages.length}`
+		);
+
+		messages.forEach( elem =>
+		{
+			// znacznik musi posiadać atrybut zawierający wyświetlaną wiadomość
+			if( !("confirm" in elem.dataset) )
+			{
+				Logger.Warning(
+					"init",
+					"Missing 'data-confirm' attribute in confirm"
+				);
+				return;
+			}
+
+			// akcja wywoływana po kliknięciu w element
 			elem.addEventListener( "click", (ev: MouseEvent) =>
 			{
 				if( confirm(elem.dataset.confirm) )
+				{
+					Logger.Info( "confirm", "Question was accepted" );
 					return true;
+				}
+
+				Logger.Info( "confirm", "Question was rejected" );
 
 				ev.stopPropagation();
 				ev.preventDefault();
@@ -120,6 +193,7 @@ class Application
 
 // =============================================================================
 
+// przygotuj aplikacje do działania dopiero po załadowaniu całego dokumentu
 document.addEventListener( "DOMContentLoaded", () =>
 {
 	const app = new Application();

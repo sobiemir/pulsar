@@ -1,4 +1,30 @@
+/*
+ *  This file is part of Pulsar CMS
+ *  Copyright (c) by sobiemir <sobiemir@aculo.pl>
+ *     ___       __            
+ *    / _ \__ __/ /__ ___ _____
+ *   / ___/ // / (_-</ _ `/ __/
+ *  /_/   \_,_/_/___/\_,_/_/
+ *
+ *  This source file is subject to the New BSD License that is bundled
+ *  with this package in the file LICENSE.txt.
+ *
+ *  You should have received a copy of the New BSD License along with
+ *  this program. If not, see <http://www.licenses.aculo.pl/>.
+ */
 
+// =============================================================================
+
+/**
+ * Klasa tworząca tablicę obserwowanych wartości.
+ *
+ * DESCRIPTION:
+ *     Każda zmiana w tablicy - dodawanie czy usuwanie elementu - odnotowywana
+ *     jest w podpiętych do klasy funkcjach.
+ *     Aby jednak zmiana mogła zostać odnotowana, każda operacja musi być
+ *     wykonywana przy użyciu wbudowanych w klasę funkcji.
+ *     Własna zmiana lub dodanie elementu do tablicy nie zostanie odnotowane.
+ */
 class ObservableArray<TYPE>
 {
 	/**
@@ -15,7 +41,7 @@ class ObservableArray<TYPE>
 	 */
 	protected _subscribers: IObservableFunction<TYPE>[];
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 	/**
 	 * Konstruktor klasy.
@@ -211,7 +237,7 @@ class ObservableArray<TYPE>
 			this._subscribers[x].func( this );
 	}
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 	/**
 	 * Pozwala na konwersję wartości do innego obiektu niż oryginalny.

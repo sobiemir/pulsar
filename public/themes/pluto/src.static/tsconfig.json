@@ -21,6 +21,7 @@
         "controls/TabControl.ts",
         "controls/FileManager.ts",
         "Application.ts",
-        "Prototypes.ts"
+        "Prototypes.ts",
+        "Logger.ts"
     ]
 }

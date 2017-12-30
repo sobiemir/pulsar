@@ -13,6 +13,8 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
+// =============================================================================
+
 /**
  * Klasa kontrolki zawierającej zakładki.
  *
@@ -23,9 +25,9 @@
  *     musi być do niej podpięty przy użyciu parametru 'data-variant', gdzie
  *     sprawdzany jest z parametrem 'data-id' zakładki.
  *     
- *     Aby jednak kontrolka podczas tworzenia mogłą znaleźć podpięte elementy
- *     należy zdefiniować dla niej parametr 'data-search' który ma zawierać
- *     regułę dla funkcji 'querySelectorAll', która szuka podpiętych elementów.
+ *     Aby jednak kontrolka podczas tworzenia mogła znaleźć podpięte elementy,
+ *     należy zdefiniować dla niej parametr 'data-search' który musi zawierać
+ *     regułę dla funkcji 'querySelectorAll', szukającą podpiętych elementów.
  *     Dodatkowo parametr 'data-form' pozwala na zawężenie wyszukiwania danych
  *     do konkretnego formularza.
  *     
@@ -121,7 +123,7 @@ class TabControl
 	 */
 	private _failed: boolean = false;
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 	/**
 	 * Konstruktor kontrolki.
@@ -142,36 +144,59 @@ class TabControl
 
 		if( !this._form )
 		{
-			this._failed = true;
+			this._failed = Logger.$( "tab", "NoAttrElem", "data-form" );
 			return;
 		}
 
-		// wiadomość w przypadku gdy model jest oznaczony jako nieistniejący
+		// wiadomość w przypadku gdy model dla zakładki nie istnieje
 		if( tab.dataset.message )
 		{
 			this._message = this._form.$<HTMLElement>( tab.dataset.message );
-			this._flags = this._form.$$<HTMLInputElement>( "input[data-mflag" );
-		}
-		else
-		{
-			this._message = null;
-			this._flags = null;
+			this._flags = this._form.$$<HTMLInputElement>("input[data-mflag]");
+
+			if( !this._message )
+			{
+				this._failed = Logger.$( "tab", "NoAttrElem", "data-message" );
+				return;
+			}
+			if( !this._flags || this._flags.length == 0 )
+			{
+				this._failed = Logger.Warning(
+					"tab",
+					"Missing input fields that should contain status for tabs"
+				);
+				return;
+			}
 		}
 
 		// przycisk usuwania danych z zakładki
 		if( tab.dataset.remove )
+		{
 			this._remove = this._form.$<HTMLElement>( tab.dataset.remove );
+			if( !this._remove )
+			{
+				this._failed = Logger.$( "tab", "NoAttrElem", "data-remove" );
+				return;
+			}
+		}
 
 		// przycisk dodawania danych do zakładki
 		if( tab.dataset.create )
+		{
 			this._create = this._form.$<HTMLElement>( tab.dataset.create );
+			if( !this._create )
+			{
+				this._failed = Logger.$( "tab", "NoAttrElem", "data-create" );
+				return;
+			}
+		}
 
 		// element w którym wyszukiwane są warianty
 		this._search = this._form.$<HTMLElement>( tab.dataset.search );
 
 		if( !this._search )
 		{
-			this._failed = true;
+			this._failed = Logger.$( "tab", "NoAttrElem", "data-search" );
 			return;
 		}
 
@@ -179,13 +204,25 @@ class TabControl
 		this._variants = this._search.$$<HTMLElement>( "[data-variant]" );
 
 		if( !this._variants || this._variants.length === 0 )
-			this._failed = true;
+		{
+			this._failed = Logger.Warning(
+				"tab",
+				"Missing variants that  tab controls"
+			);
+			return;
+		}
 
 		// lista zakładek w kontrolce
 		this._tabs = tab.$$<HTMLLIElement>( "li" );
 
 		if( !this._tabs || this._tabs.length === 0 )
-			this._failed = true;
+		{
+			this._failed = Logger.Warning(
+				"tab",
+				"Missing 'li' elements that are used as tabs in control"
+			);
+			return;
+		}
 
 		this.addEvents();
 	}
@@ -230,8 +267,8 @@ class TabControl
 		if( !this._create || !this._remove )
 			return;
 
-		this._create.addEventListener( "click", this._onCreateLanguage );
-		this._remove.addEventListener( "click", this._onRemoveLanguage );
+		this._create.addEventListener( "click", this._onCreateModel );
+		this._remove.addEventListener( "click", this._onRemoveModel );
 	}
 
 	/**
@@ -245,10 +282,22 @@ class TabControl
 	 */
 	public selectTab( index: number, force: boolean = false ): void
 	{
-		// sprawdź czy zakładka nie jest czasem już zaznaczona
-		if( this._failed || (!force && this._selected === index)
-			|| !(index in this._tabs) )
+		if( this._failed )
 			return;
+
+		// indeks poza zasięgiem
+		if( !(index in this._tabs) )
+		{
+			Logger.Warning( "tab", "Trying to select non existing tab" );
+			return;
+		}
+
+		// sprawdź czy zakładka nie jest czasem już zaznaczona
+		if( !force && this._selected === index )
+		{
+			Logger.Info( "tab", "Chosen tab is already selected" );
+			return;
+		}
 
 		const newli = this._tabs[index];
 		const newid = newli.dataset.id;
@@ -261,16 +310,14 @@ class TabControl
 			this._tabs[this._selected].classList.remove( "selected" );
 		newli.classList.add( "selected" );
 
-		// pokaż pola przypisane do zakładki
-		for( let x = 0; x < this._variants.length; ++x )
-		{
-			const variant = this._variants[x];
+		Logger.Info( "tab", `Trying to select tab with index: ${index}` );
 
+		// pokaż pola przypisane do zakładki
+		for( const variant of this._variants )
 			if( variant.dataset.variant == newid )
 				variant.classList.remove( "hidden" );
 			else if( variant.dataset.variant == oldid )
 				variant.classList.add( "hidden" );
-		}
 
 		// razem ze zmianą zakładki zmienia się też tryb wyświetlania danych
 		if( this._message != null && this._flags.length > 0 )
@@ -279,10 +326,7 @@ class TabControl
 			const fname = `flag:${newid}`;
 
 			// przeszukuj wszystkie flagi
-			for( let x = 0; x < this._flags.length; ++x )
-			{
-				const flag = this._flags[x];
-
+			for( const flag of this._flags )
 				if( flag.name == fname && this._remove && this._create )
 				{
 					// i jeżeli flaga jest dopuszczona do widoku, wyświetl dane
@@ -303,12 +347,11 @@ class TabControl
 					}
 					break;
 				}
-			}
 		}
 		this._selected = index;
 	}
 
-// =============================================================================
+// -----------------------------------------------------------------------------
 
 	/**
 	 * Akcja wywoływana podczas zmiany zakładki w kontrolce.
@@ -335,18 +378,18 @@ class TabControl
 	}
 
 	/**
-	 * Akcja wywoływana po kliknięciu w przycisk tworzenia języka.
+	 * Akcja wywoływana po kliknięciu w przycisk tworzenia modelu.
 	 *
 	 * DESCRIPTION:
-	 *     Wyświetla kontrolki formularza dla zaznaczonego języka ukrywając
-	 *     wiadomość o braku tłumaczenia.
+	 *     Wyświetla kontrolki formularza dla zaznaczonego modelu ukrywając
+	 *     wiadomość o braku danych.
 	 *     Dodatkowo zmienia flagę modelu używaną przy zapisie danych.
 	 *
 	 * PARAMETERS:
 	 *     ev: (MouseEvent)
 	 *         Argumenty zdarzenia.
 	 */
-	private _onCreateLanguage = ( ev: MouseEvent ): void =>
+	private _onCreateModel = ( ev: MouseEvent ): void =>
 	{
 		if( this._failed )
 			return;
@@ -359,6 +402,8 @@ class TabControl
 		if( index === -1 )
 			return;
 
+		Logger.Info( "tab", `Creating model for tab with index: ${index}` );
+
 		this._create.classList.add( "hidden" );
 		this._remove.classList.remove( "hidden" );
 
@@ -367,10 +412,10 @@ class TabControl
 	}
 
 	/**
-	 * Akcja wywoływana po kliknięciu w przycisk usuwania języka.
+	 * Akcja wywoływana po kliknięciu w przycisk usuwania modelu.
 	 *
 	 * DESCRIPTION:
-	 *     Wyświetla wiadomość o braku tłumaczenia dla zaznaczonego języka
+	 *     Wyświetla wiadomość o braku tłumaczenia dla zaznaczonego modelu
 	 *     ukrywając kontrolki formularza.
 	 *     Dodatkowo zmienia flagę modelu używaną przy zapisie danych.
 	 *
@@ -378,11 +423,12 @@ class TabControl
 	 *     ev: (MouseEvent)
 	 *         Argumenty zdarzenia.
 	 */
-	private _onRemoveLanguage = ( ev: MouseEvent ): void =>
+	private _onRemoveModel = ( ev: MouseEvent ): void =>
 	{
 		if( this._failed || !("confirm" in this._remove.dataset) )
 			return;
 
+		// wyświetl potwierdzenie - czy na pewno usunąć dany model
 		if( !window.confirm( this._remove.dataset.confirm ) )
 			return;
 
@@ -393,6 +439,8 @@ class TabControl
 
 		if( index === -1 )
 			return;
+
+		Logger.Info( "tab", `Removing model for tab with index: ${index}` );
 
 		this._remove.classList.add( "hidden" );
 		this._create.classList.remove( "hidden" );

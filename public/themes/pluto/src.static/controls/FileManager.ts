@@ -13,6 +13,14 @@
  *  this program. If not, see <http://www.licenses.aculo.pl/>.
  */
 
+// =============================================================================
+
+/**
+ * Klasa tworząca menedżer plików.
+ *
+ * DESCRIPTION:
+ *     Na jednej stronie może znajdować się tylko jeden menedżer plików.
+ */
 class FileManager
 {
 	/**
@@ -23,6 +31,27 @@ class FileManager
 	private _buttons: IFileManagerButtons;
 
 	/**
+	 * Lista paneli używanych w menedżerze plików.
+	 *
+	 * TYPE: IFileManagerPanels
+	 */
+	private _panels: IFileManagerPanels;
+
+	/**
+	 * Lista dodatkowych kontrolek menedżera plików.
+	 *
+	 * TYPE: IFileManagerControls
+	 */
+	private _controls: IFileManagerControls;
+
+	/**
+	 * Elementy do których zapisywane będą szczegóły pliku.
+	 *
+	 * TYPE: IFileManagerDetails
+	 */
+	private _details: IFileManagerDetails;
+
+	/**
 	 * Główny element na którym opiera się menedżer plików.
 	 *
 	 * TYPE: HTMLElement
@@ -30,95 +59,46 @@ class FileManager
 	private _fileManager: HTMLElement;
 
 	/**
-	 * Szczegóły o pliku otwierane po dwukrotnym kliknięciu na niego.
+	 * Lista katalogów w postaci obserwowanej renderowanej tablicy drzewa.
 	 *
-	 * TYPE: HTMLElement
+	 * TYPE: RenderArrayTree<IDirectory>
 	 */
-	private _detailsPanel: HTMLElement;
+	private _directories: RenderArrayTree<IDirectory>;
 
 	/**
-	 * Panel zawierający akcję dla plików i folderów.
-	 *
-	 * TYPE: HTMLElement
-	 */
-	private _footerPanel: HTMLElement;
-
-	/**
-	 * Panel zawierający listę folderów.
-	 *
-	 * TYPE: HTMLElement
-	 */
-	private _directoryPanel: HTMLElement;
-
-	/**
-	 * Lista folderów w postaci obserwowanej renderowanej tablicy drzewa.
-	 *
-	 * TYPE: RenderArrayTree<IFolder>
-	 */
-	private _directories: RenderArrayTree<IFolder>;
-
-	/**
-	 * Lista elementów w folderze w postaci obserwowanej renderowanej tablicy.
+	 * Lista elementów w katalogu w postaci obserwowanej renderowanej tablicy.
 	 * 
 	 * TYPE: RenderArray<IEntity>
 	 */
 	private _entities: RenderArray<IEntity>;
 
 	/**
-	 * Panel zawierający listę elementów w folderze.
-	 *
-	 * TYPE: HTMLElement
-	 */
-	private _entityPanel: HTMLElement;
-
-	/**
 	 * Szablon pojedynczego elementu w prawym panelu.
 	 *
 	 * TYPE: string
 	 */
-	private _entityTemplate: string;
+	private _entityTemplate: string | doT.RenderFunction;
 
 	/**
 	 * Szablon pojedynczego elementu w lewym panelu.
 	 *
 	 * TYPE: string
 	 */
-	private _directoryTemplate: string;
+	private _directoryTemplate: string | doT.RenderFunction;
 
 	/**
-	 * Element w którym wyświetlana będzie aktualna ścieżka.
-	 *
-	 * TYPE: HTMLElement
-	 */
-	private _title: HTMLElement;
-
-	/**
-	 * Element wczytywania danych po stronie panelu z folderami.
-	 *
-	 * TYPE: HTMLElement
-	 */
-	private _directoryLoader: HTMLElement;
-
-	/**
-	 * Element wczytywania danych po stronie panelu z danymi.
-	 *
-	 * TYPE: HTMLElement
-	 */
-	private _entityLoader: HTMLElement;
-
-	/**
-	 * Aktualnie zaznaczony element w panelu z drzewem folderów.
+	 * Aktualnie zaznaczony element w panelu z drzewem katalogów.
 	 *
 	 * TYPE: HTMLElement
 	 */
 	private _currentElement: HTMLElement;
 
 	/**
-	 * Aktualnie zaznaczony folder z obserwowaną wartością.
+	 * Aktualnie zaznaczony katalog z obserwowaną wartością.
 	 * 
-	 * TYPE: IObservableValue<IFolder>
+	 * TYPE: IObservableValue<IDirectory>
 	 */
-	private _currentObservable: IObservableValue<IFolder>;
+	private _currentObservable: IObservableValue<IDirectory>;
 
 	/**
 	 * Aktualny obiekt zaznaczony w prawym panelu.
@@ -142,67 +122,18 @@ class FileManager
 	private _openedFile: IObservableValue<IEntity>;
 
 	/**
-	 * Panel boczny menedżera plików zawierający listę folderów.
+	 * Flaga błędu przetwarzania danych w kontrolce.
 	 *
-	 * TYPE: HTMLElement
+	 * TYPE: boolean
 	 */
-	private _sidebar: HTMLElement;
+	private _failed: boolean = false;
 
 	/**
-	 * Kontrolka do poglądu obrazków.
+	 * Lista opcji przekazywanych w konstruktorze menedżera plików.
 	 *
-	 * TYPE: HTMLImageElement
+	 * TYPE: IFileManagerOptions
 	 */
-	private _imgPreview: HTMLImageElement;
-
-	/**
-	 * Kontrolka do podglądu zawartości plików.
-	 *
-	 * TYPE: HTMLTextAreaElement
-	 */
-	private _filePreview: HTMLTextAreaElement;
-
-	/**
-	 * Elementy do których zapisywane będą szczegóły pliku.
-	 *
-	 * TYPE: IFileManagerDetails
-	 */
-	private _details: IFileManagerDetails;
-
-	/**
-	 * Kontrolka do wpisywania nazwy nowego folderu.
-	 *
-	 * TYPE: HTMLInputElement
-	 */
-	private _newDirInput: HTMLInputElement;
-
-	/**
-	 * Panel tworzenia nowego folderu.
-	 *
-	 * TYPE: HTMLElement
-	 */
-	private _newDirPanel: HTMLElement;
-
-	/**
-	 * Kontrolka do wgrywania plików na stronę.
-	 *
-	 * TYPE: HTMLInputElement
-	 */
-	private _uploadFile: HTMLInputElement;
-
-	/**
-	 * Lista wybranych plików do wgrania.
-	 *
-	 * TYPE: HTMLInputElement
-	 */
-	private _fileList: HTMLInputElement;
-
-	/**
-	 * Panel do wgrywania plików.
-	 *
-	 * TYPE: HTMLFormElement
-	 */
-	private _fileUploadPanel: HTMLFormElement;
+	private _options: IFileManagerOptions;
 
 // =============================================================================
 
@@ -213,20 +144,80 @@ class FileManager
 	 *     tab: (HTMLElement)
 	 *         Główny element na którym opiera się menedżer plików.
 	 */
-	public constructor( div: HTMLElement )
+	public constructor( options: IFileManagerOptions )
 	{
 		this._directories = new RenderArrayTree();
 		this._entities    = new RenderArray();
-		this._fileManager = div;
+		this._fileManager = typeof options.element == "string"
+			? $( options.element )
+			: options.element;
+
+		// sprawdź czy element istnieje
+		if( !this._fileManager )
+		{
+			Logger.Warning(
+				"fm",
+				"Main element for filemanager was not found"
+			);
+			this._failed = true;
+			return;
+		}
+
+		// inicjalizuj podstawowe zmienne
+		this._details = {
+			name:      null,
+			type:      null,
+			modified:  null,
+			size:      null,
+			dimension: null
+		};
+		this._panels = {
+			directories:     null,
+			entities:        null,
+			details:         null,
+			footer:          null,
+			createDirectory: null,
+			uploadFile:      null,
+			entityLoader:    null,
+			directoryLoader: null,
+			sidebar:         null
+		};
+		this._buttons = {
+			up:              null,
+			home:            null,
+			refresh:         null,
+			toggleTree:      null,
+			showUploadPanel: null,
+			showCreatePanel: null,
+			download:        null,
+			rename:          null,
+			remove:          null,
+			closePreview:    null,
+			nextFile:        null,
+			prevFile:        null,
+			downloadCurrent: null,
+			createDirectory: null,
+			uploadFile:      null
+		};
+		this._controls = {
+			selectedFiles:   null,
+			uploadFile:      null,
+			title:           null,
+			imagePreview:    null,
+			filePreview:     null,
+			entityName:      null
+		};
+
+		this._options = options;
 
 		// przygotuj elementy menedżera
 		this._prepareElements();
 
 		this._directories.options({
-			treeSelector: ".directory-subtree",
-			childIndex:   "children",
+			treeSelector: this._options.treeSelector,
+			childIndex:   this._options.childIndex,
 			template:     this._directoryTemplate,
-			place:        this._directoryPanel
+			place:        this._panels.directories
 		});
 
 		// zdarzenia i subskrypcje
@@ -237,11 +228,11 @@ class FileManager
 		this._entities.options({
 			single:     false,
 			template:   this._entityTemplate,
-			place:      this._entityPanel,
+			place:      this._panels.entities,
 			callObject: this
 		});
 
-		this.getFolders();
+		this.getDirectories();
 		this.getEntities();
 	}
 
@@ -266,42 +257,19 @@ class FileManager
 	}
 
 	/**
-	 * Zamienia jednostkę rozmiaru pliku na największą z możliwych do użycia.
+	 * Pobiera ścieżkę z podanego katalogu.
 	 *
 	 * PARAMETERS:
-	 *     bytes: number
-	 *         Rozmiar pliku.
-	 *
-	 * RETURNS: string
-	 *     Rozmiar pliku liczony w największej możliwej jednostce.
-	 */
-	public humanReadableSize( bytes: number ): string
-	{
-		const sizes = ['B', 'KiB', 'MiB', 'GiB'];
-
-		if( !bytes )
-			return '0 B';
-		const index = ~~Math.floor( Math.log(bytes) / Math.log(1024) );
-
-		if( !index )
-			return `${bytes} ${sizes[index]}`;
-
-		return `${(bytes / (1024 ** index)).toFixed(2)} ${sizes[index]}`;
-	}
-
-	/**
-	 * Pobiera ścieżkę z podanego folderu.
-	 *
-	 * PARAMETERS:
-	 *     elem: IObservableValue<IFolder>
+	 *     elem: IObservableValue<IDirectory>
 	 *         Element z którego ścieżka będzie wnioskowana.
 	 *     path: string
 	 *         Ścieżka do dodania na koniec.
 	 *
 	 * RETURNS: string
-	 *     Wywnioskowana ścieżka z elementu.
+	 *     Utworzona ścieżka do elementu.
 	 */
-	public getPath( elem: IObservableValue<IFolder>, path: string = "" ): string
+	public getPath( elem: IObservableValue<IDirectory>, path: string = "" ):
+		string
 	{
 		if( !elem )
 			return path;
@@ -318,10 +286,10 @@ class FileManager
 	 * Rozwija drzewo do podanego elementu.
 	 *
 	 * PARAMETERS:
-	 *     elem: IObservableValue<IFolder>
+	 *     elem: IObservableValue<IDirectory>
 	 *         Element od którego ma się rozpocząć rozwijanie w górę.
 	 */
-	public rollDownToElem( elem: IObservableValue<IFolder> ): void
+	public rollDownToElem( elem: IObservableValue<IDirectory> ): void
 	{
 		// sprawdź czy drzewo w elemencie jest rozwinięte czy nie
 		elem.value.rolled = true;
@@ -331,7 +299,7 @@ class FileManager
 			const toggle = elem.element.$<HTMLElement>( "[data-click=toggle]" );
 
 			if( toggle != null )
-				this._toggleFolderTree(
+				this._toggleDirectory(
 					toggle,
 					elem,
 					null
@@ -339,7 +307,7 @@ class FileManager
 		}
 
 		// sprawdź czy istnieje rozdzic, który może być rozwinięty
-		const extra = <IRenderTreeExtra<IFolder>>elem.extra;
+		const extra = <IRenderTreeExtra<IDirectory>>elem.extra;
 		const upper = extra.owner.getUpper();
 
 		if( !upper )
@@ -350,25 +318,27 @@ class FileManager
 	}
 
 	/**
-	 * Wysyła żądanie do serwera o drzewo folderów.
+	 * Wysyła żądanie do serwera o drzewo katalogów.
 	 *
 	 * RETURNS: Qwest.Promise
 	 *     Obiekt oczekujący na wykonanie zapytania.
 	 */
-	public getFolders(): Qwest.Promise
+	public getDirectories(): Qwest.Promise
 	{
 		// pokaż panel ładowania
-		this._directoryLoader.classList.remove( "hidden" );
+		this._panels.directoryLoader.classList.remove( "hidden" );
 
 		// wyślij żądanie o listę katalogów
-		return qwest.post( "/micro/filemanager/directories",
+		return qwest
+		.post( "/micro/filemanager/directories",
 		{
 			path: '/',
 			recursive: 1
-		} ).then( (xhr: XMLHttpRequest, response?: IFolder[]): any =>
+		} )
+		.then( (xhr: XMLHttpRequest, response?: IDirectory[]): any =>
 		{
 			// zwiń wszystkie elementy
-			const rolled = (val: IFolder): void =>
+			const rolled = (val: IDirectory): void =>
 			{
 				val.rolled = true;
 				if( val.children && val.children.length )
@@ -379,38 +349,38 @@ class FileManager
 			// posortuj względem nazwy całe drzewo
 			response.deepSort( (a, b) => {
 				return a.name.localeCompare( b.name );
-			}, "children" );
+			}, this._options.childIndex );
 
 			this._directories.set( response );
 
 			// i schowaj panel ładowania
-			this._directoryLoader.classList.add( "hidden" );
-		} ).catch( (error: Error, xhr?: XMLHttpRequest): any =>
-		{
-			this._onLoadError( error, xhr );
-		} );
+			this._panels.directoryLoader.classList.add( "hidden" );
+		} )
+		.catch( this._qwestError );
 	}
 
 	/**
-	 * Wysyła żądanie do serwera o listę elementów w folderze.
+	 * Wysyła żądanie do serwera o listę elementów w katalogu.
 	 *
 	 * PARAMETERS:
-	 *     folder: string
-	 *         Folder z którego elementy mają być pobierane.
+	 *     directory: string
+	 *         Katalog z którego elementy mają być pobierane.
 	 * 
 	 * RETURNS: Qwest.Promise
 	 *     Obiekt oczekujący na wykonanie zapytania.
 	 */
-	public getEntities( folder: string = '/' ): Qwest.Promise
+	public getEntities( directory: string = '/' ): Qwest.Promise
 	{
 		// pokaż panel ładowania
-		this._entityLoader.classList.remove( "hidden" );
+		this._panels.entityLoader.classList.remove( "hidden" );
 
 		// wyślij żądanie o listę plików w katalogu
-		return qwest.post( "/micro/filemanager/entities",
+		return qwest
+		.post( "/micro/filemanager/entities",
 		{
-			path: folder
-		} ).then( (xhr: XMLHttpRequest, response?: IEntity[]): any =>
+			path: directory
+		} )
+		.then( (xhr: XMLHttpRequest, response?: IEntity[]): any =>
 		{
 			// sortuj elementy po nazwie i typie (katalog / plik)
 			response.sort( (a, b) =>
@@ -429,59 +399,31 @@ class FileManager
 			this._entities.set( response );
 
 			// ukryj panel ładowania
-			this._entityLoader.classList.add( "hidden" );
-		} ).catch( (error: Error, xhr?: XMLHttpRequest): any =>
-		{
-			this._onLoadError( error, xhr );
-		} );
-	}
-
-	/**
-	 * Formatuje datę (HH:mm - dd/MM/yyyy) z podanego znacznika czasu.
-	 *
-	 * PARAMETERS:
-	 *     timestamp: number
-	 *         Znacznik czasu rozpoczynający się do 1 stycznia 1970 roku.
-	 *
-	 * RETURNS: string
-	 *     Data utworzona względem odpowiedniego formatowania.
-	 */
-	public formatDate( timestamp: number )
-	{
-		const date = new Date( timestamp * 1000 );
-
-		const year    = date.getFullYear();
-		const month   = date.getMonth() + 1;
-		const day     = date.getDate();
-		const hours   = date.getHours();
-		const minutes = date.getMinutes();
-
-		return (hours > 9 ? hours : "0" + hours) + ":" +
-			(minutes > 9 ? minutes : "0" + minutes) + " - " +
-			(day > 9 ? day : "0" + day) + "/" +
-			(month > 9 ? month  : "0" + month) + "/" + year;
+			this._panels.entityLoader.classList.add( "hidden" );
+		} )
+		.catch( this._qwestError );
 	}
 
 // =============================================================================
 
 	/**
-	 * Akcja wywoływana po kliknięciu w folder z lewego panelu.
+	 * Akcja wywoływana po kliknięciu w katalog z lewego panelu.
 	 *
 	 * PARAMETERS:
 	 *     element: HTMLElement
 	 *         Kliknięty element w drzewie.
-	 *     observable: IObservableValue<IFolder>
+	 *     observable: IObservableValue<IDirectory>
 	 *         Zmienna zawierająca dane na temat katalogu.
 	 *     ev: MouseEvent
 	 *         Argumenty zdarzenia.
 	 */
-	private _browseFolder(
+	private _browseDirectory(
 		element:    HTMLElement,
-		observable: IObservableValue<IFolder>,
+		observable: IObservableValue<IDirectory>,
 		ev:         MouseEvent
 	): void
 	{
-		// jeżeli został zaznaczony już folder, odznacz go
+		// jeżeli został zaznaczony już katalog, odznacz go
 		if( this._currentElement )
 			this._currentElement.classList.remove( "selected" );
 
@@ -499,34 +441,37 @@ class FileManager
 			const path = this.getPath( observable );
 			this.getEntities( path );
 
-			this._title.classList.remove( "root" );
-			this._title.innerHTML = `/${path}`;
+			this._controls.title.classList.remove( "root" );
+			this._controls.title.innerHTML = `/${path}`;
 		}
-		// gdy brak aktualnego elementu, pobierz zawartość głównego folderu
+		// gdy brak aktualnego elementu, pobierz zawartość głównego katalogu
 		else
 		{
-			this._title.classList.add( "root" );
-			this._title.innerHTML = "Pulsar";
+			this._controls.title.classList.add( "root" );
+			this._controls.title.innerHTML = "Pulsar";
 		}
 
 		// wyłącz wszystkie przyciski akcji dla pliku
 		this._entityButtons( false, false, false );
+
+		// wyłącz podgląd pliku jeżeli jest włączony
+		this._togglePreview( false );
 	}
 
 	/**
-	 * Akcja wywoływana podczas kliknięcia w ikonę rozwijania folderów.
+	 * Akcja wywoływana podczas kliknięcia w ikonę rozwijania katalogów.
 	 *
 	 * PARAMETERS:
 	 *     element: HTMLElement
 	 *         Kliknięty element w drzewie.
-	 *     observable: IObservableValue<IFolder>
+	 *     observable: IObservableValue<IDirectory>
 	 *         Zmienna zawierająca dane na temat katalogu.
 	 *     ev: MouseEvent
 	 *         Argumenty zdarzenia.
 	 */
-	private _toggleFolderTree(
+	private _toggleDirectory(
 		element:    HTMLElement,
-		observable: IObservableValue<IFolder>,
+		observable: IObservableValue<IDirectory>,
 		ev:         MouseEvent
 	): void
 	{
@@ -552,7 +497,7 @@ class FileManager
 		}
 		observable.value.rolled = !observable.value.rolled;
 
-		// nie otwieraj folderu po rozwinięciu
+		// nie otwieraj katalogu po rozwinięciu
 		if( ev )
 			ev.stopPropagation();
 	}
@@ -562,85 +507,88 @@ class FileManager
 	 */
 	private _addEvents(): void
 	{
+		const buttons = this._buttons;
+
 		// przejście do głównego folderu
-		this._buttons.home.addEventListener( "click", () => {
+		buttons.home.addEventListener( "click", () => {
 			this.getEntities( "/" );
-			this._browseFolder( null, null, null );
+			this._browseDirectory( null, null, null );
 		} );
 		// odświeżenie folderów
-		this._buttons.refresh.addEventListener( "click", () => {
-			this.getFolders();
+		buttons.refresh.addEventListener( "click", () => {
+			this.getDirectories();
 			this.getEntities( "/" );
 
-			this._browseFolder( null, null, null );
+			this._browseDirectory( null, null, null );
 		} );
 		// przejście o jeden folder do góry
-		this._buttons.up.addEventListener( "click", ev => {
-			this._goToUpperFolder();
+		buttons.up.addEventListener( "click", () => {
+			this._goToUpperDirectory();
 		} );
 		// przełączanie panelu bocznego
-		this._buttons.toggleTree.addEventListener( "click", ev => {
+		buttons.toggleTree.addEventListener( "click", () => {
 			this._toggleTreePanel();
 		} );
 		// wyświetlanie szczegółów pliku
-		this._buttons.closeInfo.addEventListener( "click", ev => {
-			this._toggleInfoView( false );
+		buttons.closePreview.addEventListener( "click", () => {
+			this._togglePreview( false );
 		} );
 		// przejście do następnego pliku
-		this._buttons.nextFile.addEventListener( "click", ev => {
-			this._openNextFileInfo();
+		buttons.nextFile.addEventListener( "click", () => {
+			this._previewNextFile();
 		} );
 		// przejście do poprzedniego pliku
-		this._buttons.prevFile.addEventListener( "click", ev => {
-			this._openPrevFileInfo();
+		buttons.prevFile.addEventListener( "click", () => {
+			this._previewPreviousFile();
 		} );
 		// otwieranie panelu tworzenia nowego folderu
-		this._buttons.newFolder.addEventListener( "click", ev => {
-			this._newDirPanel.classList.remove( "hidden" );
-			this._fileUploadPanel.classList.add( "hidden" );
-			this._newDirInput.focus();
+		buttons.showCreatePanel.addEventListener( "click", (ev: MouseEvent) => {
+			this._panels.createDirectory.classList.remove( "hidden" );
+			this._panels.uploadFile.classList.add( "hidden" );
+			this._controls.entityName.focus();
 
 			ev.stopPropagation();
 		} );
 		// tworzenie nowego folderu poprzez wciśnięcie przycisku
-		this._buttons.createFolder.addEventListener( "click", ev => {
-			this._createFolder( this._newDirInput.value );
-			this._newDirInput.value = "";
-			this._newDirPanel.classList.add( "hidden" );
+		buttons.createDirectory.addEventListener( "click", () => {
+			this._createDirectory( this._controls.entityName.value );
+			this._controls.entityName.value = "";
+			this._panels.createDirectory.classList.add( "hidden" );
 		} );
 		// ukrywanie panelu dodawania folderu i plików
 		this._fileManager.addEventListener( "click", ev => {
-			if( this._newDirPanel.contains(<Node>ev.target) ||
-				this._fileUploadPanel.contains(<Node>ev.target) )
+			if( this._panels.createDirectory.contains(<Node>ev.target) ||
+				this._panels.uploadFile.contains(<Node>ev.target) )
 				return;
-			this._newDirPanel.classList.add( "hidden" );
-			this._fileUploadPanel.classList.add( "hidden" );
+			this._panels.createDirectory.classList.add( "hidden" );
+			this._panels.uploadFile.classList.add( "hidden" );
 		} );
 		// tworzenie nowego folderu
-		this._newDirInput.addEventListener( "keypress", ev => {
+		this._controls.entityName.addEventListener( "keypress", ev => {
 			if( ev.keyCode == 13 || ev.which == 13 )
 			{
-				this._createFolder( this._newDirInput.value );
-				this._newDirInput.value = "";
-				this._newDirPanel.classList.add( "hidden" );
+				this._createDirectory( this._controls.entityName.value );
+				this._controls.entityName.value = "";
+				this._panels.createDirectory.classList.add( "hidden" );
 			}
 		} );
 		// zmiana pliku
-		this._uploadFile.addEventListener( "change", ev =>
+		this._controls.uploadFile.addEventListener( "change", ev =>
 		{
+			const uploadControl = this._controls.uploadFile;
 			let fm = "";
 
 			// brak plików
-			if( !this._uploadFile.files || this._uploadFile.files.length == 0 )
+			if( !uploadControl.files || uploadControl.files.length == 0 )
 				fm = "Brak plików...";
 			// gdy są, wypisz je wszystkie
 			else
-				for( let x = 0; x < this._uploadFile.files.length; ++x )
+				for( let x = 0; x < uploadControl.files.length; ++x )
 				{
-					const ifm = this._uploadFile.value.replace(/\\/g,"/")
+					const ifm = uploadControl.value.replace(/\\/g,"/")
 						.split( '/' ).pop();
 
-					fm += ifm + (this._uploadFile.files.length - 1 == x
+					fm += ifm + (uploadControl.files.length - 1 == x
 						? ""
 						: " / "
 					);
@@ -649,19 +597,21 @@ class FileManager
 			// sprawdź dla pewności czy na pewno wykryto jakieś pliki
 			fm = fm.trim();
 			if( fm != "" )
-				this._fileList.value = fm;
+				this._controls.selectedFiles.value = fm;
 			else
-				this._fileList.value = "Brak plików...";
+				this._controls.selectedFiles.value = "Brak plików...";
 		} );
 		// akcja wywoływana przy wciśnięciu przycisku wgrywania plików
-		this._fileUploadPanel.addEventListener( "submit", ev => {
-			const fdata = new FormData( this._fileUploadPanel );
+		this._panels.uploadFile.addEventListener("submit", (ev: MouseEvent) => {
+			const fdata = new FormData( this._panels.uploadFile );
 
 			// ustaw folder do którego pliki będą wgrywane
 			fdata.set( 'path', this.getPath(this._currentObservable) );
 
 			// wgraj pliki na serwer
-			qwest.post( "/micro/filemanager/upload", fdata ).then(
+			qwest
+			.post( "/micro/filemanager/upload", fdata )
+			.then(
 				(xhr: XMLHttpRequest, response: any) => {
 					if( response.status != 200 )
 						return;
@@ -695,30 +645,34 @@ class FileManager
 					this._entities.runSubscribers();
 
 					// ukryj panel
-					this._fileUploadPanel.classList.add( "hidden" );
+					this._panels.uploadFile.classList.add( "hidden" );
 				}
-			);
+			)
+			.catch( this._qwestError );
+
 			ev.preventDefault();
 			return false;
 		} );
 		// akcja wywoływana podczas otwierania panelu wgrywania plików
-		this._buttons.upload.addEventListener( "click", ev => {
-			this._newDirPanel.classList.add( "hidden" );
-			this._fileUploadPanel.classList.remove( "hidden" );
+		buttons.showUploadPanel.addEventListener( "click", (ev: MouseEvent) => {
+			this._panels.createDirectory.classList.add( "hidden" );
+			this._panels.uploadFile.classList.remove( "hidden" );
 			ev.stopPropagation();
 		} );
 	}
 
 	/**
-	 * Tworzy folder w aktualnej lokalizacji o podanej nazwie.
+	 * Tworzy katalog w aktualnej lokalizacji o podanej nazwie.
 	 */
-	private _createFolder( name: string ): void
+	private _createDirectory( name: string ): void
 	{
 		const path = this.getPath( this._currentObservable );
 
-		qwest.post( "/micro/filemanager/create-directory", {
+		qwest
+		.post( "/micro/filemanager/create-directory", {
 			path: `${path}${name}`
-		} ).then( (xhr: XMLHttpRequest, response) => {
+		} )
+		.then( (xhr: XMLHttpRequest, response) => {
 			if( response.status == '200' )
 			{
 				// wstaw element do tablicy
@@ -747,7 +701,7 @@ class FileManager
 				// odśwież po sortowaniu
 				this._entities.runSubscribers();
 
-				let owner = <RenderArrayTree<IFolder>>(
+				let owner = <RenderArrayTree<IDirectory>>(
 					this._currentObservable
 						? this._currentObservable.extra.child
 						: this._directories
@@ -760,7 +714,7 @@ class FileManager
 					children: [],
 					rolled: true,
 					checked: false
-				} as IFolder;
+				} as IDirectory;
 
 				if( this._directories == null )
 					return;
@@ -791,20 +745,21 @@ class FileManager
 				// odśwież drzewo
 				this._directories.runSubscribers();
 
-				this._browseFolder(
+				this._browseDirectory(
 					<HTMLElement>this._currentObservable.element.firstChild,
 					this._currentObservable,
 					null
 				);
 				this.rollDownToElem( this._currentObservable );
 			}
-		} );
+		} )
+		.catch( this._qwestError );
 	}
 
 	/**
 	 * Otwiera następny plik na liście.
 	 */
-	private _openNextFileInfo(): void
+	private _previewNextFile(): void
 	{
 		const obss = this._entities.getObservables();
 		const fidx = obss.findIndex( val => val == this._openedFile );
@@ -812,13 +767,13 @@ class FileManager
 		if( obss.length == fidx + 1 )
 			return;
 
-		this._openFileInfo( obss[fidx + 1] );
+		this._previewFile( obss[fidx + 1] );
 	}
 
 	/**
 	 * Otwiera poprzedni plik na liście.
 	 */
-	private _openPrevFileInfo(): void
+	private _previewPreviousFile(): void
 	{
 		const obss = this._entities.getObservables();
 		const fidx = obss.findIndex( val => val == this._openedFile );
@@ -827,7 +782,7 @@ class FileManager
 		if( pidx > fidx - 1 )
 			return;
 
-		this._openFileInfo( obss[fidx - 1] );
+		this._previewFile( obss[fidx - 1] );
 	}
 
 	/**
@@ -855,10 +810,10 @@ class FileManager
 	 *     automatycznie dodaje subskrypcje dla podelementów w drzewie.
 	 *
 	 * PARAMETERS:
-	 *     obs: ObservableArray<IFolder>
+	 *     obs: ObservableArray<IDirectory>
 	 *         Lista obserwowanych plików.
 	 */
-	private _directorySubscription( obs: ObservableArray<IFolder> ): void
+	private _directorySubscription( obs: ObservableArray<IDirectory> ): void
 	{
 		// pobierz obserwowane wartości w drzewie
 		const observables = obs.getObservables();
@@ -878,7 +833,7 @@ class FileManager
 			if( toggle )
 				toggle.addEventListener( "click", ev =>
 				{
-					this._toggleFolderTree( toggle, observable, ev );
+					this._toggleDirectory( toggle, observable, ev );
 				} );
 			// otwieranie katalogu
 			if( browse )
@@ -887,10 +842,10 @@ class FileManager
 					if( this._currentObservable == observable )
 						return;
 
-					this._browseFolder( browse, observable, ev );
+					this._browseDirectory( browse, observable, ev );
 
 					if( this._currentObservable.value.rolled )
-						this._toggleFolderTree( toggle, observable, null );
+						this._toggleDirectory( toggle, observable, null );
 				} );
 		}
 	}
@@ -928,17 +883,17 @@ class FileManager
 				else
 					this._entityButtons( true, true, true );
 			} );
-			// otwórz folder lub szczegóły pliku
+			// otwórz katalog lub szczegóły pliku
 			observable.element.addEventListener( "dblclick", ev =>
 			{
 				// aktualnie zaznaczona wartość
 				const cdir = this._currentObservable
 					? (
-						<RenderArrayTree<IFolder>>
+						<RenderArrayTree<IDirectory>>
 						this._currentObservable.extra.child
 					) : this._directories;
 
-				// otwórz folder jeżeli kliknięto na niego
+				// otwórz katalog jeżeli kliknięto na niego
 				if( observable.value.type.toLowerCase() == "dir" )
 				{
 					const obs = cdir.getObservables();
@@ -947,7 +902,7 @@ class FileManager
 					);
 					if( idx > -1 )
 					{
-						this._browseFolder(
+						this._browseDirectory(
 							<HTMLElement>obs[idx].element.firstChild,
 							obs[idx],
 							null
@@ -958,7 +913,7 @@ class FileManager
 				}
 				// jeżeli jest to plik, otwórz jego szczegóły
 				else
-					this._openFileInfo( observable );
+					this._previewFile( observable );
 			} );
 		}
 	}
@@ -966,24 +921,37 @@ class FileManager
 	/**
 	 * Przełącza widok informacji o aktualnym pliku.
 	 *
+	 * DESCRIPTION:
+	 *     Przełączenie widoku wiąże się nie tylko z przełączeniem aktualnie
+	 *     wyświetlanego kontenera, ale również z przełączeniem ikon.
+	 *     Okno podglądu pliku posiada inny układ i inne akcje, które muszą
+	 *     być wyświetlone dla użytkownika.
+	 *     W przypadku wyświetlania pliku funkcja zamienia również napis
+	 *     na górnej belce z aktualnej ścieżki na nazwę wyświetlanego pliku.
+	 *
 	 * PARAMETERS:
-	 *     visible: Czy informacje o pliku mają być widoczne?
+	 *     visible: boolean
+	 *         Czy informacje o pliku mają być widoczne?
+	 *     title: string
+	 *         Napis na górnej belce (standardowo nazwa pliku lub ścieżka).
 	 */
-	private _toggleInfoView( visible: boolean, title: string = "" ): void
+	private _togglePreview( visible: boolean, title: string = "" ): void
 	{
 		if( visible )
 		{
-			// pokaż niezbędne przyciski i ukryj niepotrzebne
-			this._entityPanel.classList.add( "hidden" );
-			this._footerPanel.classList.add( "hidden" );
-			this._detailsPanel.classList.remove( "hidden" );
+			// ukryj niepotrzebne elementy
+			this._panels.entities.classList.add( "hidden" );
+			this._panels.footer.classList.add( "hidden" );
 
-			this._buttons.newFolder.classList.add( "hidden" );
-			this._buttons.upload.classList.add( "hidden" );
+			this._buttons.showCreatePanel.classList.add( "hidden" );
+			this._buttons.showUploadPanel.classList.add( "hidden" );
 			this._buttons.up.classList.add( "hidden" );
-			this._buttons.closeInfo.classList.remove( "hidden" );
-			this._buttons.getOpened.classList.remove( "hidden" );
 
+			// i pokaż pozostałe
+			this._panels.details.classList.remove( "hidden" );
+
+			this._buttons.closePreview.classList.remove( "hidden" );
+			this._buttons.downloadCurrent.classList.remove( "hidden" );
 			this._buttons.nextFile.classList.remove( "hidden" );
 			this._buttons.prevFile.classList.remove( "hidden" );
 
@@ -1002,11 +970,11 @@ class FileManager
 			else
 				this._buttons.nextFile.classList.remove( "disabled" );
 
-			// wyświetl nazwę pliku
+			// wyświetl nazwę pliku zamiast ścieżki do aktualnego katalogu
 			if( title && title != "" )
 			{
-				this._title.classList.remove( "root" );
-				this._title.innerHTML = title;
+				this._controls.title.classList.remove( "root" );
+				this._controls.title.innerHTML = title;
 			}
 
 			// podmień informacje o pliku pod jego podglądem
@@ -1016,62 +984,64 @@ class FileManager
 				: this._openedFile.value.mime;
 
 			this._details.modified.innerHTML =
-				this.formatDate( this._openedFile.value.modify );
+				this._openedFile.value.modify.toDateString();
 			this._details.size.innerHTML =
-				this.humanReadableSize( this._openedFile.value.size ) + " (" +
+				this._openedFile.value.size.toSizeString() + " (" +
 				this._openedFile.value.size + " bajtów)";
 
 			const file = this._openedFile.value.name;
 			const path = this.getPath( this._currentObservable );
 
-			this._buttons.getOpened.href =
+			this._buttons.downloadCurrent.href =
 				`/micro/filemanager/download/${path}${file}`;
 		}
 		else
 		{
-			// wróć do stanu sprzed wyświetlania informacji o pliku
-			this._entityPanel.classList.remove( "hidden" );
-			this._footerPanel.classList.remove( "hidden" );
-			this._detailsPanel.classList.add( "hidden" );
+			// ukryj niepotrzebne elementy
+			this._panels.details.classList.add( "hidden" );
 
-			this._buttons.newFolder.classList.remove( "hidden" );
-			this._buttons.upload.classList.remove( "hidden" );
-			this._buttons.up.classList.remove( "hidden" );
-			this._buttons.closeInfo.classList.add( "hidden" );
-			this._buttons.getOpened.classList.add( "hidden" );
-
+			this._buttons.closePreview.classList.add( "hidden" );
+			this._buttons.downloadCurrent.classList.add( "hidden" );
 			this._buttons.nextFile.classList.add( "hidden" );
 			this._buttons.prevFile.classList.add( "hidden" );
+
+			// i pokaż pozostałe
+			this._panels.entities.classList.remove( "hidden" );
+			this._panels.footer.classList.remove( "hidden" );
+
+			this._buttons.showCreatePanel.classList.remove( "hidden" );
+			this._buttons.showUploadPanel.classList.remove( "hidden" );
+			this._buttons.up.classList.remove( "hidden" );
 
 			// przywróć ścieżkę do aktualnego katalogu zamiast nazwy pliku
 			if( !this._currentObservable )
 			{
-				this._title.classList.add( "root" );
-				this._title.innerHTML = "Pulsar";
+				this._controls.title.classList.add( "root" );
+				this._controls.title.innerHTML = "Pulsar";
 			}
 			else
 			{
 				const path = this.getPath( this._currentObservable );
-				this._title.classList.remove( "root" );
-				this._title.innerHTML = `/${path}`;
+				this._controls.title.classList.remove( "root" );
+				this._controls.title.innerHTML = `/${path}`;
 			}
 		}
 	}
 
 	/**
-	 * Otwiera szczegóły pliku.
+	 * Otwiera podgląd pliku wraz z jego podstawowymi informacjami.
 	 *
 	 * PARAMETERS:
 	 *     observable: IObservableValue<IEntity>
 	 *         Obserwowana wartość zawierająca informacje o pliku.
 	 */
-	private _openFileInfo( observable: IObservableValue<IEntity> ): void
+	private _previewFile( observable: IObservableValue<IEntity> ): void
 	{
 		if( observable.value.type == 'dir' )
 			return;
 
 		this._openedFile = observable;
-		this._toggleInfoView( true, observable.value.name );
+		this._togglePreview( true, observable.value.name );
 
 		const path = this.getPath( this._currentObservable );
 		const file = observable.value.name;
@@ -1082,24 +1052,26 @@ class FileManager
 			observable.value.mime == "image/jpeg" ||
 			observable.value.mime == "image/gif" )
 		{
-			this._imgPreview.classList.remove( "hidden" );
-			this._filePreview.classList.add( "hidden" );
-			this._imgPreview.src = fsrc;
+			this._controls.imagePreview.classList.remove( "hidden" );
+			this._controls.filePreview.classList.add( "hidden" );
+			this._controls.imagePreview.src = fsrc;
 		}
 		// lub podgląd zawartości pliku
 		else
 		{
-			this._imgPreview.classList.add( "hidden" );
-			this._filePreview.classList.remove( "hidden" );
+			this._controls.imagePreview.classList.add( "hidden" );
+			this._controls.filePreview.classList.remove( "hidden" );
 
-			qwest.get( fsrc ).then( (xhr: XMLHttpRequest, response: any) => {
-				this._filePreview.innerHTML = response;
-			} );
+			qwest.get( fsrc )
+			.then( (xhr: XMLHttpRequest, response: any) => {
+				this._controls.filePreview.innerHTML = response;
+			} )
+			.catch( this._qwestError );
 		}
 	}
 
 	/**
-	 * Przełącza przyciski dla akcji dostępnych dla zaznaczonego elementu.
+	 * Przełącza przyciski akcji dostępnych dla zaznaczonego elementu.
 	 *
 	 * PARAMETERS:
 	 *     download: boolean
@@ -1115,6 +1087,7 @@ class FileManager
 		remove: boolean
 	): void
 	{
+		// przycisk pobierania elementu
 		if( download )
 		{
 			const path = this.getPath( this._currentObservable );
@@ -1126,16 +1099,17 @@ class FileManager
 		}
 		else
 		{
-
 			this._buttons.download.classList.add( "disabled" );
 			this._buttons.download.href = "#";
 		}
 
+		// przycisk zmiany nazwy
 		if( rename )
 			this._buttons.rename.classList.remove( "disabled" );
 		else
 			this._buttons.rename.classList.add( "disabled" );
 
+		// przycisk usuwania
 		if( remove )
 			this._buttons.remove.classList.remove( "disabled" );
 		else
@@ -1143,23 +1117,25 @@ class FileManager
 	}
 
 	/**
-	 * Przechodzi do folderu powyżej.
+	 * Przechodzi do katalogu wyżej w hierarchii.
 	 */
-	private _goToUpperFolder(): void
+	private _goToUpperDirectory(): void
 	{
 		if( !this._currentObservable )
 			return;
+
+		// sprawdź czy użytkownik nie przechodzi do katalogu głównego
 		if( !this._currentObservable.extra.owner.getUpper() )
 		{
-			this._browseFolder( null, null, null );
+			this._browseDirectory( null, null, null );
 			this.getEntities( "/" );
 			return;
 		}
 
-		const upper = <IObservableValue<IFolder>>
+		const upper = <IObservableValue<IDirectory>>
 			this._currentObservable.extra.owner.getUpper();
 
-		this._browseFolder(
+		this._browseDirectory(
 			<HTMLElement>upper.element.firstChild,
 			upper,
 			null
@@ -1168,102 +1144,88 @@ class FileManager
 
 	/**
 	 * Przełącza panel z drzewem katalogów.
+	 *
+	 * DESCRIPTION:
+	 *     Ukrywa lub pokazuje panel wyświetlający drzewo katalogów.
+	 *     Ukrycie powoduje również zmianę ikony na przycisku który odpowiada
+	 *     za wywołanie tej akcji.
 	 */
 	private _toggleTreePanel(): void
 	{
 		// jeżeli folder jest ukryty, pokaż go
-		if( this._sidebar.classList.contains("hidden") )
+		if( this._panels.sidebar.classList.contains("hidden") )
 		{
-			this._sidebar.classList.remove( "hidden" );
+			this._panels.sidebar.classList.remove( "hidden" );
 			this._buttons.toggleTree.classList.remove(
-				"fa-arrow-circle-o-right"
+				this._options.actionClasses.showSidebar
 			);
 			this._buttons.toggleTree.classList.add(
-				"fa-arrow-circle-o-left"
+				this._options.actionClasses.hideSidebar
 			);
 		}
 		// w przeciwnym razie go ukryj
 		else
 		{
-			this._sidebar.classList.add( "hidden" );
+			this._panels.sidebar.classList.add( "hidden" );
 			this._buttons.toggleTree.classList.remove(
-				"fa-arrow-circle-o-left"
+				this._options.actionClasses.hideSidebar
 			);
 			this._buttons.toggleTree.classList.add(
-				"fa-arrow-circle-o-right"
+				this._options.actionClasses.showSidebar
 			);
 		}
 	}
 
 	/**
-	 * Pobiera elementy z drzewa DOM.
+	 * Przygotowuje menedżer plików do działania.
+	 *
+	 * DESCRIPTION:
+	 *     Sprawdza przekazane w konstruktorze opcje i w zależności od ich
+	 *     zawartości pobiera elementy z drzewa DOM lub przypisuje te które
+	 *     zostały podane.
+	 *     Pobiera również szablony w przypadku gdy w opcjach podane zostały
+	 *     selektory zamiast funkcji.
 	 */
 	private _prepareElements(): void
 	{
+		if( this._failed )
+			return;
+
 		const $fm = this._fileManager;
 
-		// przyciski w menedżerze
-		this._buttons =
-		{
-			up:           $fm.$<HTMLElement>( "#FM_B-Up" ),
-			home:         $fm.$<HTMLElement>( "#FM_B-Home" ),
-			refresh:      $fm.$<HTMLElement>( "#FM_B-Refresh" ),
-			toggleTree:   $fm.$<HTMLElement>( "#FM_B-ToggleTree" ),
-			upload:       $fm.$<HTMLElement>( "#FM_B-Upload" ),
-			newFolder:    $fm.$<HTMLElement>( "#FM_B-NewFolder" ),
-			details:      null,
-			download:     $fm.$<HTMLAnchorElement>( "#FM_B-Download" ),
-			rename:       $fm.$<HTMLElement>( "#FM_B-Rename" ),
-			remove:       $fm.$<HTMLElement>( "#FM_B-Remove" ),
-			closeInfo:    $fm.$<HTMLElement>( "#FM_B-CloseInfo" ),
-			search:       null,
-			prevFile:     $fm.$<HTMLElement>( "#FM_B-PrevFile" ),
-			nextFile:     $fm.$<HTMLElement>( "#FM_B-NextFile" ),
-			getOpened:    $fm.$<HTMLAnchorElement>( "#FM_B-GetOpened" ),
-			createFolder: $fm.$<HTMLElement>( "#FM_B-CreateDir" ),
-			uploadFile:   $fm.$<HTMLElement>( "#FM_B-UploadFile" )
-		};
+		// pobierz kontrolki
+		const buttons  = $fm.$$<HTMLElement>( "[data-button]"  );
+		const details  = $fm.$$<HTMLElement>( "[data-detail]"  );
+		const panels   = $fm.$$<HTMLElement>( "[data-panel]"   );
+		const controls = $fm.$$<HTMLElement>( "[data-control]" );
 
-		// szczegóły pliku
-		this._details =
-		{
-			name:      $fm.$<HTMLElement>( "#FM_D-Name" ),
-			type:      $fm.$<HTMLElement>( "#FM_D-Type" ),
-			modified:  $fm.$<HTMLElement>( "#FM_D-Modified" ),
-			size:      $fm.$<HTMLElement>( "#FM_D-Size" ),
-			dimension: $fm.$<HTMLElement>( "#FM_D-Dimension" )
-		};
-
-		// pozostałe elementy
-		this._title           = $fm.$<HTMLElement>( ".breadcrumb p" );
-		this._directoryLoader = $fm.$<HTMLElement>( "#FM_E-Directory" );
-		this._entityLoader    = $fm.$<HTMLElement>( "#FM_E-Entity" );
-		this._sidebar         = $fm.$<HTMLElement>( "#FM_E-Sidebar" );
-
-		this._directoryPanel  = $fm.$<HTMLElement>( ".directory-tree" );
-		this._entityPanel     = $fm.$<HTMLElement>( ".entities-list" );
-		this._detailsPanel    = $fm.$<HTMLElement>( "#FM_E-Details" );
-		this._footerPanel     = $fm.$<HTMLElement>( "#FM_E-Footer" );
-		this._newDirPanel     = $fm.$<HTMLElement>( "#FM_E-FolderCreate" );
-		this._fileUploadPanel = $fm.$<HTMLFormElement>( "#FM_E-FileUpload" );
-
-		this._imgPreview  = $fm.$<HTMLImageElement>( "#FM_E-ImgPreview" );
-		this._filePreview = $fm.$<HTMLTextAreaElement>( "#FM_E-FilePreview" );
-		this._newDirInput = $fm.$<HTMLInputElement>( "#FM_E-FolderName" );
-
-		this._fileList   = $fm.$<HTMLInputElement>( "#FM_E-FileList" );
-		this._uploadFile = $fm.$<HTMLInputElement>( "#FM_E-FileName" );
+		// i przypisz je do odpowiednich zmiennych
+		$fill( this._buttons,  buttons,  "dataset", "button"  );
+		$fill( this._details,  details,  "dataset", "detail"  );
+		$fill( this._panels,   panels,   "dataset", "panel"   );
+		$fill( this._controls, controls, "dataset", "control" );
 
 		// szablon dla elementu wyświetlanego w prawym panelu
-		const etpl = $fm.$( "#FM_T-EntityItem" );
-		this._entityTemplate = etpl
-			? etpl.innerHTML
-			: '';
+		if( this._options.entityTemplate )
+			this._entityTemplate = this._options.entityTemplate;
+		else
+		{
+			const elem = $fm.$( "[data-template=entity]" );
+			this._entityTemplate = elem != null
+				? elem.innerHTML
+				: null;
+		}
+
 		// szablon dla elementu wyświetlanego w lewym panelu
-		const dtpl = $fm.$( "#FM_T-DirectoryItem" );
-		this._directoryTemplate = dtpl
-			? dtpl.innerHTML
-			: '';
+		if( this._options.directoryTemplate )
+			this._directoryTemplate = this._options.directoryTemplate;
+		else
+		{
+			const elem = $fm.$( "[data-template=directory]" );
+			this._directoryTemplate = elem != null
+				? elem.innerHTML
+				: null;
+		}
 	}
 
 	/**
@@ -1275,7 +1237,7 @@ class FileManager
 	 *     xml: XMLHttpRequest
 	 *         Informacje o zwracanych danych po zapytaniu.
 	 */
-	private _onLoadError = ( error: Error, xml: XMLHttpRequest ): void =>
+	private _qwestError = ( error: Error, xml: XMLHttpRequest ): void =>
 	{
 		console.log( error );
 	}
