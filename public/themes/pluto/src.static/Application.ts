@@ -131,8 +131,8 @@ class Application
 			treeSelector: ".directory-subtree",
 			childIndex:   "children",
 			actionClasses: {
-				showSidebar: "fa-arrow-circle-o-left",
-				hideSidebar: "fa-arrow-circle-o-right"
+				showSidebar: "fa-arrow-circle-o-right",
+				hideSidebar: "fa-arrow-circle-o-left"
 			}
 		} );
 	}

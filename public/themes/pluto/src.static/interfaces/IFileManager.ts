@@ -124,6 +124,20 @@ interface IFileManagerButtons
 	 * TYPE: HTMLElement
 	 */
 	uploadFile: HTMLElement;
+
+	/**
+	 * Zamyka okno wgrywania plików.
+	 *
+	 * TYPE: HTMLElement
+	 */
+	closeUploadPopup: HTMLElement;
+
+	/**
+	 * Zamyka okno tworzenia elementu.
+	 *
+	 * TYPE: HTMLElement
+	 */
+	closeCreatePopup: HTMLElement;
 }
 
 // =============================================================================

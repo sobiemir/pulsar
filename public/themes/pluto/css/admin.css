@@ -988,6 +988,7 @@ form .button-container {
 	width: 70% !important;
 }
 
+
 #filemanager aside {
 	width: 30%;
 	max-width: 350px;
@@ -1199,7 +1200,7 @@ li.entity-entry.selected:hover i {
 .details-container textarea:focus {
 	outline: none;
 }
-#filemanager input[type="text"] {
+/*#filemanager input[type="text"] {
 	border: 0;
 	border-left: 1px #ccc solid;
 	border-right: 1px #ccc solid;
@@ -1208,7 +1209,7 @@ li.entity-entry.selected:hover i {
 #filemanager input[type="text"]:focus {
 	outline: none;
 	box-shadow: none;
-}
+}*/
 #filemanager input[type="file"] {
 	width: 0;
 	height: 0;
@@ -1227,14 +1228,71 @@ li.entity-entry.selected:hover i {
 	height: 100%;
 	top: 0;
 	left: 0;
-}
-.popup.light {
-	background: rgba(192, 192, 192, 0.5);
+	z-index: 999;
+	background: rgba( 0, 0, 0, 0.5 );
 }
 .popup .container {
-	background: #fff;
-}
-.popup.light .container {
-	border: 1px #bbb solid;
+	background: #eee;
+	border: 0.1rem #fff solid;
+	min-width: 40rem;
+	outline: 0.1rem #222 solid;
 	margin: auto;
+}
+.popup .container h6 {
+	background: #222;
+	color: #eee;
+	padding: 0.5rem 0.8rem;
+	font-size: 1rem;
+	text-transform: uppercase;
+	margin: -1rem -1rem 1rem -1rem;
+}
+.popup input[type="text"] {
+	background: #fff;
+	width: 100%;
+}
+.popup input[type="text"]:focus {
+	outline: none;
+	box-shadow: none;
+}
+.popup .button-container {
+	margin-top: 1rem;
+	padding: 0;
+}
+.popup .container .selected-files {
+	background: #fff;
+	border: 1px #bbb solid;
+	height: 16rem;
+	list-style: none;
+	display: flex;
+	flex-direction: column;
+	margin-top: 1rem;
+	overflow: auto;
+}
+.popup .container .selected-files li {
+	margin: 0;
+	border-bottom: 0.1rem #ccc solid;
+	padding: 0.2rem 0.5rem;
+}
+.popup .container .selected-files li:nth-child(even) {
+	background: #f4f4f4;
+}
+.popup .container .selected-files li:last-child {
+	border-bottom: 0;
+}
+.popup .container .selected-files .empty {
+	text-align: center;
+	color: #666;
+	justify-content: center;
+}
+.button-container {
+	display: flex;
+}
+.button-container.text-right .button {
+	margin-left: 0.5rem;
+}
+.button-container.text-right .button:first-child {
+	margin-left: auto;
+}
+label.button {
+	line-height: 1.8rem;
 }

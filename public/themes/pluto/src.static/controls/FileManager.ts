@@ -183,29 +183,31 @@ class FileManager
 			sidebar:         null
 		};
 		this._buttons = {
-			up:              null,
-			home:            null,
-			refresh:         null,
-			toggleTree:      null,
-			showUploadPanel: null,
-			showCreatePanel: null,
-			download:        null,
-			rename:          null,
-			remove:          null,
-			closePreview:    null,
-			nextFile:        null,
-			prevFile:        null,
-			downloadCurrent: null,
-			createDirectory: null,
-			uploadFile:      null
+			up:               null,
+			home:             null,
+			refresh:          null,
+			toggleTree:       null,
+			showUploadPanel:  null,
+			showCreatePanel:  null,
+			download:         null,
+			rename:           null,
+			remove:           null,
+			closePreview:     null,
+			nextFile:         null,
+			prevFile:         null,
+			downloadCurrent:  null,
+			createDirectory:  null,
+			uploadFile:       null,
+			closeCreatePopup: null,
+			closeUploadPopup: null
 		};
 		this._controls = {
-			selectedFiles:   null,
-			uploadFile:      null,
-			title:           null,
-			imagePreview:    null,
-			filePreview:     null,
-			entityName:      null
+			selectedFiles: null,
+			uploadFile:    null,
+			title:         null,
+			imagePreview:  null,
+			filePreview:   null,
+			entityName:    null
 		};
 
 		this._options = options;
@@ -542,12 +544,11 @@ class FileManager
 			this._previewPreviousFile();
 		} );
 		// otwieranie panelu tworzenia nowego folderu
-		buttons.showCreatePanel.addEventListener( "click", (ev: MouseEvent) => {
-			this._panels.createDirectory.classList.remove( "hidden" );
-			this._panels.uploadFile.classList.add( "hidden" );
-			this._controls.entityName.focus();
+		buttons.showCreatePanel.addEventListener( "click", () => {
+			this._controls.entityName.value = "";
 
-			ev.stopPropagation();
+			this._panels.createDirectory.classList.remove( "hidden" );
+			this._controls.entityName.focus();
 		} );
 		// tworzenie nowego folderu poprzez wciśnięcie przycisku
 		buttons.createDirectory.addEventListener( "click", () => {
@@ -555,12 +556,12 @@ class FileManager
 			this._controls.entityName.value = "";
 			this._panels.createDirectory.classList.add( "hidden" );
 		} );
-		// ukrywanie panelu dodawania folderu i plików
-		this._fileManager.addEventListener( "click", ev => {
-			if( this._panels.createDirectory.contains(<Node>ev.target) ||
-				this._panels.uploadFile.contains(<Node>ev.target) )
-				return;
+		// ukrywanie panelu dodawania folderu
+		buttons.closeCreatePopup.addEventListener( "click", () => {
 			this._panels.createDirectory.classList.add( "hidden" );
+		} );
+		// ukrywanie panelu wgrywania plików
+		buttons.closeUploadPopup.addEventListener( "click", () => {
 			this._panels.uploadFile.classList.add( "hidden" );
 		} );
 		// tworzenie nowego folderu
@@ -573,36 +574,30 @@ class FileManager
 			}
 		} );
 		// zmiana pliku
-		this._controls.uploadFile.addEventListener( "change", ev =>
+		this._controls.uploadFile.addEventListener( "change", () =>
 		{
 			const uploadControl = this._controls.uploadFile;
-			let fm = "";
+			const selectedFiles = this._controls.selectedFiles;
 
 			// brak plików
 			if( !uploadControl.files || uploadControl.files.length == 0 )
-				fm = "Brak plików...";
+				selectedFiles.innerHTML =
+					'<li class="empty">Brak wybranych plików...</li>';
+
 			// gdy są, wypisz je wszystkie
 			else
+			{
+				selectedFiles.innerHTML = "";
+
 				for( let x = 0; x < uploadControl.files.length; ++x )
 				{
-					const ifm = uploadControl.value.replace(/\\/g,"/")
-						.split( '/' ).pop();
-
-					fm += ifm + (uploadControl.files.length - 1 == x
-						? ""
-						: " / "
-					);
+					const file = uploadControl.files[x];
+					selectedFiles.innerHTML += `<li>${file.name}</li>`;
 				}
-
-			// sprawdź dla pewności czy na pewno wykryto jakieś pliki
-			fm = fm.trim();
-			if( fm != "" )
-				this._controls.selectedFiles.value = fm;
-			else
-				this._controls.selectedFiles.value = "Brak plików...";
+			}
 		} );
 		// akcja wywoływana przy wciśnięciu przycisku wgrywania plików
-		this._panels.uploadFile.addEventListener("submit", (ev: MouseEvent) => {
+		this._panels.uploadFile.addEventListener("submit", ev => {
 			const fdata = new FormData( this._panels.uploadFile );
 
 			// ustaw folder do którego pliki będą wgrywane
@@ -654,10 +649,11 @@ class FileManager
 			return false;
 		} );
 		// akcja wywoływana podczas otwierania panelu wgrywania plików
-		buttons.showUploadPanel.addEventListener( "click", (ev: MouseEvent) => {
-			this._panels.createDirectory.classList.add( "hidden" );
+		buttons.showUploadPanel.addEventListener( "click", () => {
+			this._controls.selectedFiles.innerHTML =
+				'<li class="empty">Brak wybranych plików...</li>';
+
 			this._panels.uploadFile.classList.remove( "hidden" );
-			ev.stopPropagation();
 		} );
 	}
 

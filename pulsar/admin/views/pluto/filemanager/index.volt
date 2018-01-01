@@ -8,6 +8,41 @@
 	<!-- menedżer plików -->
 	<section id="filemanager" class="white-back fill-free items-horizontal">
 
+		<div data-panel="createDirectory" class="popup items-horizontal hidden">
+			<div class="container">
+				<h6>Tworzenie katalogu</h6>
+
+				<label for="Fm.IName">Nazwa katalogu:</label>
+				<br />
+				
+				<input data-control="entityName" id="Fm.IName" type="text" class="fill-free" />
+				<br />
+
+				<div class="button-container text-right">
+					<button data-button="createDirectory" class="button">Utwórz</button>
+					<button data-button="closeCreatePopup" class="button red">Zaniechaj</button>
+				</div>
+			</div>
+		</div>
+
+		<form data-panel="uploadFile" action="" method="post" class="popup items-horizontal hidden">
+			<div class="container">
+				<h6>Wgrywanie plików</h6>
+
+				<div class="button-container">
+					<label for="FM_IUpload" class="button black">Wybierz pliki</label>
+				</div>
+				<input data-control="uploadFile" id="FM_IUpload" multiple name="upload_files" type="file" class="hidden" />
+
+				<ul class="selected-files" data-control="selectedFiles"></ul>
+
+				<div class="button-container text-right">
+					<button data-button="uploadFile" type="submit" class="button">Dodaj</button>
+					<button data-button="closeUploadPopup" type="reset" class="button red">Zaniechaj</button>
+				</div>
+			</div>
+		</form>
+
 		<!-- panel z drzewem folderów -->
 		<aside data-panel="sidebar" class="lightgrey-back items-vertical">
 			<div class="breadcrumb items-horizontal">
@@ -60,7 +95,7 @@
 			</div>
 
 			<!-- panel tworzenia katalogu -->
-			<div data-panel="createDirectory"
+<!-- 			<div data-panel="createDirectory"
 				class="breadcrumb items-horizontal hidden">
 				<i class="fa fa-folder icononly"></i>
 				<input data-control="entityName" type="text"
@@ -68,10 +103,10 @@
 				<button data-button="createDirectory" class="button simple">
 					<i class="fa fa-plus"></i>Utwórz
 				</button>
-			</div>
+			</div> -->
 
 			<!-- panel wgrywania pliku -->
-			<form data-panel="uploadFile" action="" method="post" 
+<!-- 			<form data-panel="uploadFile" action="" method="post" 
 				class="breadcrumb items-horizontal hidden">
 				<label for="FM_IUpload" class="button simple">
 					<i class="fa fa-file"></i>Wybierz pliki
@@ -84,34 +119,10 @@
 					class="button simple">
 					<i class="fa fa-plus"></i>Dodaj wybrane
 				</button>
-			</form>
+			</form> -->
 			<!-- lista elementów -->
 			<div class="entity-panel fill-free p05">
 				<div data-panel="entityLoader" class="loader"></div>
-
-<!--
-				<form data-panel="uploadFile" action="" method="post" 
-					class="popup light items-horizontal hidden">
-
-					<div class="container">
-						<label for="FM_IUpload" class="button simple">
-							<i class="fa fa-file"></i>Wybierz pliki
-						</label>
-						<input
-							data-control="uploadFile" id="FM_IUpload" multiple
-							name="upload_files" type="file" class="hidden" />
-						<input
-							data-control="fileList" type="text" disabled
-							class="fill-free" value="Brak plików...">
-						<button
-							data-button="uploadFile" type="submit"
-							class="button simple">
-							<i class="fa fa-plus"></i>
-							Dodaj wybrane
-						</button>
-					</div>
-				</form>
--->
 
 				<ul data-panel="entities" class="entities-list">
 				</ul>
