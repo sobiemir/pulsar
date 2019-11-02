@@ -1,0 +1,11 @@
+{
+  "paths": {
+    "vendor": "../vendor",
+    "logs": "../logs",
+    "cache": "../cache"
+  },
+  "database": {
+    "driver": "sqlite",
+    "path": "../var/db.sqlite"
+  }
+}

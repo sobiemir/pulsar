@@ -21,3 +21,15 @@ package-lock.json
 pulsar/config/config.json
 
 .hidden/*
+
+old/*
+slim-skeleton/*
+server/vendor/*
+server/cache/*
+server/logs/*
+!server/cache/.gitignore
+!server/logs/.gitignore
+
+composer.lock
+package.lock
+yarn.lock
