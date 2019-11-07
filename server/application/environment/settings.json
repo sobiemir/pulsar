@@ -7,5 +7,12 @@
   "database": {
     "driver": "sqlite",
     "path": "../var/db.sqlite"
+  },
+  "logger": {
+    "name": "pulsar",
+    "level": "debug"
+  },
+  "application": {
+    "display-error-details": true
   }
 }
