@@ -6,7 +6,9 @@
     "slim/slim": "^4.3",
     "slim/psr7": "^0.6.0",
     "ext-json": "^1.7",
-    "php-di/php-di": "^6.0"
+    "php-di/php-di": "^6.0",
+    "doctrine/dbal": "^2.10",
+    "doctrine/migrations": "^2.2"
   },
   "scripts": {
     "start": "php -S localhost:8080 -t server/public"
