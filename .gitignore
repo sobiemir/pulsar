@@ -1,35 +1,48 @@
+# editor defaults
 .sublime/*
-.phalcon/*
 .vs/*
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
 
-public/themes/pluto/vendors/js/*
-public/themes/pluto/vendors/css/*
-public/themes/pluto/vendors/fonts/*
+#dependencies
+/node_modules
+/server/vendor
 
-node_modules/*
-pulsar/cache/*
+# compiled output
+/client/dist
+/client/tmp
+/client/out-tsc
+/client/bazel-out
 
-tslint.json
+# profiling files
+chrome-profiler-events*.json
+speed-measure-plugin*.json
 
-app/installer/languages/*
-app/admin/languages/*
+# server variables
+server/var/cache/*
+server/var/logs/*
+!server/var/cache/.gitignore
+!server/var/logs/.gitignore
 
-public/themes/pluto/js/static.js
-public/themes/pluto/js/static.js.map
-
-package-lock.json
-pulsar/config/config.json
-
-.hidden/*
-
-old/*
-slim-skeleton/*
-server/vendor/*
-server/cache/*
-server/logs/*
-!server/cache/.gitignore
-!server/logs/.gitignore
-
+# lock files
 composer.lock
 package.lock
 yarn.lock
+
+# misc
+.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+
+# system files
+.DS_Store
+Thumbs.db
