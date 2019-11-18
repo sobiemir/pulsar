@@ -13,7 +13,7 @@
       },
       "root": "client/creator",
       "sourceRoot": "client/creator/src",
-      "prefix": "pcr",
+      "prefix": "prc",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -122,6 +122,41 @@
             "production": {
               "devServerTarget": "creator:serve:production"
             }
+          }
+        }
+      }
+    },
+    "nebula": {
+      "projectType": "library",
+      "root": "client/nebula",
+      "sourceRoot": "client/nebula/src",
+      "prefix": "prn",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "client/nebula/tsconfig.lib.json",
+            "project": "client/nebula/ng-package.json"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "client/nebula/src/test.ts",
+            "tsConfig": "client/nebula/tsconfig.spec.json",
+            "karmaConfig": "client/nebula/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "client/nebula/tsconfig.lib.json",
+              "client/nebula/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }

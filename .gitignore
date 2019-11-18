@@ -13,10 +13,10 @@
 /server/vendor
 
 # compiled output
-/client/dist
-/client/tmp
-/client/out-tsc
-/client/bazel-out
+/dist
+/tmp
+/out-tsc
+/bazel-out
 
 # profiling files
 chrome-profiler-events*.json
